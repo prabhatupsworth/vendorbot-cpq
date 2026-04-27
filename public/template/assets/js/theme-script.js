@@ -16,7 +16,7 @@ let themesettings = `
                     <div class="input-themeselect">
                         <input type="radio" name="theme" id="lightTheme" value="light" checked>
                         <label for="lightTheme">
-                            <img src="assets/img/theme/theme-01.svg" alt="img">
+                            <img src="${ASSET_URL}/theme-01.svg" alt="img">
                             <span class="w-100">
                                 <span>Light</span>
                                 <span class="checkboxs-theme"></span>
@@ -28,7 +28,7 @@ let themesettings = `
                     <div class="input-themeselect">
                         <input type="radio" name="theme" id="darkTheme" value="dark">
                         <label for="darkTheme">
-                            <img src="assets/img/theme/theme-02.svg" alt="img">
+                            <img src="${ASSET_URL}/theme-02.svg" alt="img">
                             <span class="w-100">
                                 <span>Dark</span>
                                 <span class="checkboxs-theme"></span>
@@ -80,7 +80,7 @@ let themesettings = `
                     <div class="input-themeselect">
                         <input type="radio" name="sidebar" id="lightSidebar" value="light" checked>
                         <label for="lightSidebar">
-                            <img src="assets/img/theme/theme-03.svg" alt="img">
+                            <img src="${ASSET_URL}/theme-03.svg" alt="img">
                             <span class="w-100">
                                 <span>Light</span>
                                 <span class="checkboxs-theme"></span>
@@ -92,7 +92,7 @@ let themesettings = `
                     <div class="input-themeselect">
                         <input type="radio" name="sidebar" id="darkSidebar" value="dark">
                         <label for="darkSidebar">
-                            <img src="assets/img/theme/theme-04.svg" alt="img">
+                            <img src="${ASSET_URL}/theme-04.svg" alt="img">
                             <span class="w-100">
                                 <span>Dark</span>
                                 <span class="checkboxs-theme"></span>
@@ -104,7 +104,7 @@ let themesettings = `
                     <div class="input-themeselect">
                         <input type="radio" name="sidebar" id="blueSidebar" value="blue">
                         <label for="blueSidebar">
-                            <img src="assets/img/theme/theme-05.svg" alt="img">
+                            <img src="${ASSET_URL}/theme-05.svg" alt="img">
                             <span class="w-100">
                                 <span>Blue</span>
                                 <span class="checkboxs-theme"></span>
@@ -116,7 +116,7 @@ let themesettings = `
                     <div class="input-themeselect">
                         <input type="radio" name="sidebar" id="greenSidebar" value="green">
                         <label for="greenSidebar">
-                            <img src="assets/img/theme/theme-06.svg" alt="img">
+                            <img src="${ASSET_URL}/theme-06.svg" alt="img">
                             <span class="w-100">
                                 <span>Green</span>
                                 <span class="checkboxs-theme"></span>
@@ -133,7 +133,7 @@ let themesettings = `
                     <div class="input-themeselect">
                         <input type="radio" name="sidebarbg" id="sidebarBg1" value="sidebarbg1">
                         <label for="sidebarBg1">
-                            <img src="assets/img/theme/theme-07.svg" alt="img">
+                            <img src="${ASSET_URL}/theme-07.svg" alt="img">
                             <span class="w-100">
                                 <span>Bg-1</span>
                                 <span class="checkboxs-theme"></span>
@@ -145,7 +145,7 @@ let themesettings = `
                     <div class="input-themeselect">
                         <input type="radio" name="sidebarbg" id="sidebarBg2" value="sidebarbg2">
                         <label for="sidebarBg2">
-                            <img src="assets/img/theme/theme-08.svg" alt="img">
+                            <img src="${ASSET_URL}/theme-08.svg" alt="img">
                             <span class="w-100">
                                 <span>Bg-2</span>
                                 <span class="checkboxs-theme"></span>
@@ -157,7 +157,7 @@ let themesettings = `
                     <div class="input-themeselect">
                         <input type="radio" name="sidebarbg" id="sidebarBg3" value="sidebarbg3">
                         <label for="sidebarBg3">
-                            <img src="assets/img/theme/theme-09.svg" alt="img">
+                            <img src="${ASSET_URL}/theme-09.svg" alt="img">
                             <span class="w-100">
                                 <span>Bg-3</span>
                                 <span class="checkboxs-theme"></span>
@@ -169,7 +169,7 @@ let themesettings = `
                     <div class="input-themeselect">
                         <input type="radio" name="sidebarbg" id="sidebarBg4" value="sidebarbg4">
                         <label for="sidebarBg4">
-                            <img src="assets/img/theme/theme-10.svg" alt="img">
+                            <img src="${ASSET_URL}/theme-10.svg" alt="img">
                             <span class="w-100">
                                 <span>Bg-4</span>
                                 <span class="checkboxs-theme"></span>

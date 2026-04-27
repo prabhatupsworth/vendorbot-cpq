@@ -2,11 +2,11 @@
 
 			<!-- Logo -->
 			<div class="header-left active">
-				<a href="index.html" class="logo logo-normal">
+				<a href="/" class="logo logo-normal">
                     <img src="{{ asset('template/assets/img/logo.svg')}}" alt="Logo">
                     <img src="{{ asset('template/assets/img/white-logo.svg')}}" class="white-logo" alt="Logo">
                 </a>
-				<a href="index.html" class="logo-small">
+				<a href="/" class="logo-small">
 					<img src="{{ asset('template/assets/img/logo-small.svg')}}" alt="Logo">
 				</a>
 				<a id="toggle_btn" href="javascript:void(0);">
@@ -47,12 +47,12 @@
 					<!-- Nav List -->
 					<li class="nav-item nav-list">
 						<ul class="nav">
-							<li class="dark-mode-list">
+							{{-- <li class="dark-mode-list">
 								<a href="javascript:void(0);" id="dark-mode-toggle" class="dark-mode-toggle">
 									<i class="ti ti-sun light-mode active"></i>
 									<i class="ti ti-moon dark-mode"></i>
 								</a>
-							</li>
+							</li> --}}
 							<li class="nav-item dropdown">
 								<a href="javascript:void(0);" class="btn btn-header-list" data-bs-toggle="dropdown">
 									<i class="ti ti-layout-grid-add"></i>
@@ -307,15 +307,18 @@
 						</a>
 						<div class="dropdown-menu menu-drop-user">
 							<div class="profilename">
-								<a class="dropdown-item" href="index.html">
+								<a class="dropdown-item" href="{{route('dashboard')}}">
 									<i class="ti ti-layout-2"></i> Dashboard
 								</a>
-								<a class="dropdown-item" href="profile.html">
+								<a class="dropdown-item" href="{{route('profile')}}">
 									<i class="ti ti-user-pin"></i> My Profile
 								</a>
-								<a class="dropdown-item" href="login.html">
+								<a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
 									<i class="ti ti-lock"></i> Logout
 								</a>
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                @csrf
+                            </form>
 							</div>
 						</div>
 					</li>

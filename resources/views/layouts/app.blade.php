@@ -17,6 +17,9 @@
     <!-- Title -->
     <title>@yield('title', 'CRMS - Advanced Bootstrap 5 Admin Template for Customer Management')</title>
     <!-- Themescript JS -->
+    <script>
+        window.ASSET_URL = "{{ asset('template/assets/img/theme') }}";
+    </script>
     <script src="{{ asset('template/assets/js/theme-script.js') }}"></script>
 
     <!-- Apple Touch Icon -->
@@ -35,12 +38,23 @@
     <!-- Datatable CSS -->
     <link rel="stylesheet" href="{{ asset('template/assets/css/dataTables.bootstrap5.min.css') }}">
 
+
+    <!-- Select2 CSS -->
+    <link rel="stylesheet" href="{{ asset('template/assets/plugins/select2/css/select2.min.css') }}">
+
     <!-- Fontawesome CSS -->
     <link rel="stylesheet" href="{{ asset('template/assets/plugins/fontawesome/css/fontawesome.min.css') }}">
     <link rel="stylesheet" href="{{ asset('template/assets/plugins/fontawesome/css/all.min.css') }}">
 
     <!-- Daterangepicker CSS -->
     <link rel="stylesheet" href="{{ asset('template/assets/plugins/daterangepicker/daterangepicker.css') }}">
+
+    <!-- Datetimepicker CSS -->
+    <link rel="stylesheet" href="{{ asset('template/assets/css/bootstrap-datetimepicker.min.css') }}">
+
+    <!-- Summernote CSS -->
+    <link rel="stylesheet" href="{{ asset('template/assets/plugins/summernote/summernote-lite.min.css') }}">
+
 
     <!-- Main CSS -->
     <link rel="stylesheet" href="{{ asset('template/assets/css/style.css') }}">
@@ -49,17 +63,16 @@
 
 <body>
     <div class="main-wrapper">
-        <div class="preloader">
+        {{-- <div class="preloader">
             <span class="loader"></span>
-        </div>
+        </div> --}}
 
         @include('layouts.partials.header')
 
         @include('layouts.partials.sidebar')
 
-        <div class="page-wrapper">
-            @yield('content')
-        </div>
+        @yield('content')
+
 
     </div>
     <!-- jQuery -->
@@ -73,7 +86,7 @@
 
     <!-- Slimscroll JS -->
     <script src="{{ asset('template/assets/js/jquery.slimscroll.js') }}"></script>
-    <script src="assets/js/jquery.slimscroll.min.js"></script>
+    <script src="{{ asset('template/assets/js/jquery.slimscroll.min.js') }}"></script>
 
     <!-- Daterangepicker JS -->
     <script src="{{ asset('template/assets/js/moment.min.js') }}"></script>
@@ -88,12 +101,90 @@
     <script src="{{ asset('template/assets/js/dataTables.bootstrap5.min.js') }}"></script>
 
 
+    <!-- Sticky Sidebar JS -->
+    <script src="{{ asset('template/assets/plugins/theia-sticky-sidebar/ResizeSensor.js') }}"></script>
+    <script src="{{ asset('template/assets/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js') }}"></script>
+
+    <!-- Select2 JS -->
+    <script src="{{ asset('template/assets/plugins/select2/js/select2.min.js') }}"></script>
+
+    <!-- Datetimepicker JS -->
+    <script src="{{ asset('template/assets/js/bootstrap-datetimepicker.min.js') }}"></script>
+
+    <!-- Summernote JS -->
+    <script src="{{ asset('template/assets/plugins/summernote/summernote-lite.min.js') }}"></script>
     <!-- Custom Json Js -->
     <script src="{{ asset('template/assets/js/jsonscript.js') }}"></script>
 
 
     <!--- Custom Js -->
     <script src="{{ asset('template/assets/js/script.js') }}"></script>
+
+    @stack('scripts')
+
+    <script>
+        // ===============================
+        // 🔥 FILE INPUT PREVIEW
+        // ===============================
+        document.addEventListener('change', function(e) {
+
+            if (!e.target.classList.contains('image-input')) return;
+
+            const file = e.target.files[0];
+            const wrapper = e.target.closest('.profile-pic-upload');
+            const container = wrapper.querySelector('.preview-container');
+
+            if (!file) return;
+
+            if (!file.type.startsWith('image/')) {
+                alert('Only image allowed');
+                return;
+            }
+
+            if (file.size > 800000) {
+                alert('Max size 800KB');
+                return;
+            }
+
+            const reader = new FileReader();
+
+            reader.onload = function(event) {
+                container.innerHTML = '';
+
+                const img = document.createElement('img');
+                img.src = event.target.result;
+                img.classList.add('preview-img');
+
+                container.appendChild(img);
+            };
+
+            reader.readAsDataURL(file);
+        });
+
+
+        // ===============================
+        // 🔥 SET IMAGE FROM URL (EDIT MODE)
+        // ===============================
+        function setImagePreview(wrapperId, imageUrl) {
+
+            const wrapper = document.getElementById(wrapperId);
+
+            if (!wrapper) return;
+
+            const container = wrapper.querySelector('.preview-container');
+
+            container.innerHTML = '';
+
+            if (imageUrl) {
+                const img = document.createElement('img');
+                img.src = imageUrl;
+                img.classList.add('preview-img');
+                container.appendChild(img);
+            } else {
+                container.innerHTML = '<span><i class="ti ti-photo"></i></span>';
+            }
+        }
+    </script>
 </body>
 
 </html>
