@@ -1,18 +1,18 @@
    @extends('layouts.auth')
-
+   @section('title', 'Reset Password')
    @section('content')
-   
        <div class="d-flex flex-wrap w-100 vh-100 overflow-hidden account-bg-04">
            <div class="d-flex align-items-center justify-content-center flex-wrap vh-100 overflow-auto p-4 w-50 bg-backdrop">
-           
-               <form method="POST" action="{{route('password.update')}}" class="flex-fill">
-                <input type="hidden" name="token" value="{{ $token }}">
-<input type="hidden" name="email" value="{{ $email }}">
 
-                @csrf
+               <form method="POST" action="{{ route('password.update') }}" class="flex-fill">
+                   <input type="hidden" name="token" value="{{ $token }}">
+                   <input type="hidden" name="email" value="{{ $email }}">
+
+                   @csrf
                    <div class="mx-auto mw-450">
                        <div class="text-center mb-4">
-                           <img src="{{ asset('template/assets/img/logo.svg') }}" class="img-fluid" alt="Logo">
+                           <img src="{{ asset('template/assets/img/vb_logo.png') }}" width="150" class="img-fluid"
+                               alt="Logo">
                        </div>
                        <div class="mb-4">
                            <h4 class="mb-2 fs-20">Reset Password?</h4>
@@ -39,9 +39,7 @@
                        <div class="mb-3 text-center">
                            <h6>Return to <a href="login.html" class="text-purple link-hover"> Login</a></h6>
                        </div>
-                       <div class="text-center">
-                           <p class="fw-medium text-gray">Copyright &copy; 2024 - CRMS</p>
-                       </div>
+                       @include('auth.include.footer')
                    </div>
                </form>
            </div>

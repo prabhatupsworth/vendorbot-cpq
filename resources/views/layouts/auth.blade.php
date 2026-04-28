@@ -15,27 +15,32 @@
     <meta name="robots" content="index, follow">
 
     <!-- Title -->
-    <title>Login | CRMS - Advanced Bootstrap 5 Admin Template for Customer Management</title>
-
+    <title>
+        @hasSection('title')
+            @yield('title') | {{ config('app.name') }}
+        @else
+            {{ config('app.name') }}
+        @endif
+    </title>
     <!-- Apple Touch Icon -->
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('template/assets/img/apple-touch-icon.png')}}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('template/assets/img/apple-touch-icon.png') }}">
 
     <!-- Favicon -->
-    <link rel="icon" href="{{ asset('template/assets/img/favicon.png')}}" type="image/x-icon">
-    <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.png">
+    <link rel="icon" href="{{ asset('template/assets/img//vb_logo.png') }}" type="image/x-icon">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('template/assets/img//vb_logo.png') }}">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="{{ asset('template/assets/css/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{ asset('template/assets/css/bootstrap.min.css') }}">
 
     <!-- Tabler Icon CSS -->
-    <link rel="stylesheet" href="{{ asset('template/assets/plugins/tabler-icons/tabler-icons.css')}}">
+    <link rel="stylesheet" href="{{ asset('template/assets/plugins/tabler-icons/tabler-icons.css') }}">
 
     <!-- Fontawesome CSS -->
-    <link rel="stylesheet" href="{{ asset('template/assets/plugins/fontawesome/css/fontawesome.min.css')}}">
-    <link rel="stylesheet" href="{{ asset('template/assets/plugins/fontawesome/css/all.min.css')}}">
+    <link rel="stylesheet" href="{{ asset('template/assets/plugins/fontawesome/css/fontawesome.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('template/assets/plugins/fontawesome/css/all.min.css') }}">
 
     <!-- Main CSS -->
-    <link rel="stylesheet" href="{{ asset('template/assets/css/style.css')}}">
+    <link rel="stylesheet" href="{{ asset('template/assets/css/style.css') }}">
 
 </head>
 
@@ -52,19 +57,19 @@
     <!-- /Main Wrapper -->
 
     <!-- jQuery -->
-    <script src="{{ asset('template/assets/js/jquery-3.7.1.min.js')}}"></script>
+    <script src="{{ asset('template/assets/js/jquery-3.7.1.min.js') }}"></script>
 
     <!-- Bootstrap Core JS -->
-    <script src="{{ asset('template/assets/js/bootstrap.bundle.min.js')}}"></script>
+    <script src="{{ asset('template/assets/js/bootstrap.bundle.min.js') }}"></script>
 
     <!-- Feather Icon JS -->
-    <script src="{{ asset('template/assets/js/feather.min.js')}}"></script>
+    <script src="{{ asset('template/assets/js/feather.min.js') }}"></script>
 
     <!-- Slimscroll JS -->
-    <script src="{{ asset('template/assets/js/jquery.slimscroll.min.js')}}"></script>
+    <script src="{{ asset('template/assets/js/jquery.slimscroll.min.js') }}"></script>
 
     <!-- Custom JS -->
-    <script src="{{ asset('template/assets/js/script.js')}}"></script>
+    <script src="{{ asset('template/assets/js/script.js') }}"></script>
 
 </body>
 

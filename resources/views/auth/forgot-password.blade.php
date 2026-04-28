@@ -1,5 +1,5 @@
 @extends('layouts.auth')
-
+@section('title', 'Forgot Password')
 @section('content')
     <div class="d-flex flex-wrap w-100 vh-100 overflow-hidden account-bg-03">
         <div class="d-flex align-items-center justify-content-center flex-wrap vh-100 overflow-auto p-4 w-50 bg-backdrop">
@@ -7,7 +7,7 @@
                 @csrf
                 <div class="mx-auto mw-450">
                     <div class="text-center mb-4">
-                        <img src="{{ asset('template/assets/img/logo.svg')}}" class="img-fluid" alt="Logo">
+                        <img src="{{ asset('template/assets/img/vb_logo.png')}}" width="150" class="img-fluid" alt="Logo">
                     </div>
                     <div class="mb-4">
                         <h4 class="mb-2 fs-20">Forgot Password?</h4>
@@ -32,32 +32,8 @@
                     <div class="mb-3 text-center">
                         <h6>Return to <a href="{{route('login')}}" class="text-purple link-hover"> Login</a></h6>
                     </div>
-                    <div class="form-set-login or-text mb-3">
-                        <h4>OR</h4>
-                    </div>
-                    <div class="d-flex align-items-center justify-content-center flex-wrap mb-3">
-                        <div class="text-center me-2 flex-fill">
-                            <a href="javascript:void(0);"
-                                class="br-10 p-2 px-4 btn bg-pending  d-flex align-items-center justify-content-center">
-                                <img class="img-fluid m-1" src="{{ asset('template/assets/img/icons/facebook-logo.svg')}}" alt="Facebook">
-                            </a>
-                        </div>
-                        <div class="text-center me-2 flex-fill">
-                            <a href="javascript:void(0);"
-                                class="br-10 p-2 px-4 btn bg-white d-flex align-items-center justify-content-center">
-                                <img class="img-fluid  m-1" src="{{ asset('template/assets/img/icons/google-logo.svg')}}" alt="Facebook">
-                            </a>
-                        </div>
-                        <div class="text-center flex-fill">
-                            <a href="javascript:void(0);"
-                                class="bg-dark br-10 p-2 px-4 btn btn-dark d-flex align-items-center justify-content-center">
-                                <img class="img-fluid  m-1" src="{{ asset('template/assets/img/icons/apple-logo.svg')}}" alt="Apple">
-                            </a>
-                        </div>
-                    </div>
-                    <div class="text-center">
-                        <p class="fw-medium text-gray">Copyright &copy; 2024 - CRMS</p>
-                    </div>
+
+                    @include('auth.include.footer')
                 </div>
             </form>
         </div>

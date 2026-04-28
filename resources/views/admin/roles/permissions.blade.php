@@ -55,7 +55,7 @@
                                             <th>Edit</th>
                                             <th>View</th>
                                             <th>Delete</th>
-                                            <th class="no-sort">Allow Row</th>
+                                            <th class="no-sort">Select All</th>
                                         </tr>
                                     </thead>
                                     <tbody>

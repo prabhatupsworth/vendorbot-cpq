@@ -15,7 +15,7 @@
     <meta name="robots" content="index, follow">
 
     <!-- Title -->
-    <title>@yield('title', 'CRMS - Advanced Bootstrap 5 Admin Template for Customer Management')</title>
+    <title>@yield('title', 'Vendorbot CRM')</title>
     <!-- Themescript JS -->
     <script>
         window.ASSET_URL = "{{ asset('template/assets/img/theme') }}";
@@ -26,8 +26,8 @@
     <link rel="apple-touch-icon" sizes="180x180" href="assets/img/apple-touch-icon.png">
 
     <!-- Favicon -->
-    <link rel="icon" href="{{ asset('template/assets/img/favicon.png') }}" type="image/x-icon">
-    <link rel="shortcut icon" href="{{ asset('template/assets/img/favicon.png') }}" type="image/x-icon">
+    <link rel="icon" href="{{ asset('template/assets/img/vb_logo.png') }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ asset('template/assets/img/vb_logo.png') }}" type="image/x-icon">
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="{{ asset('template/assets/css/bootstrap.min.css') }}">
