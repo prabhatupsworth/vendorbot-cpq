@@ -8,5 +8,6 @@ return [
         'settings' => ['view','update'],
         'reports' => ['view','export'],
         'roles' => ['view','create','edit','delete'],
+        'pipedrive' => ['view', 'create', 'edit', 'delete'],
     ]
 ];

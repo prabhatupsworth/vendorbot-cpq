@@ -79,19 +79,33 @@ Route::middleware('auth')->group(function () {
         Route::delete('/{id}', [UserController::class, 'destroy'])->name('users.destroy');
     });
 
-    Route::prefix('settings')->name('settings.')->group(function () {
-        Route::get('/pipedrive', [PipedriveController::class, 'index'])->name('pipedrive.index');
-        Route::post('/pipedrive', [PipedriveController::class, 'store'])->name('pipedrive.store');
-        Route::get('/pipedrive/connect/{id}', [PipedriveController::class, 'connect'])->name('pipedrive.connect');
-        Route::post('/pipedrive/{id}/sync-stages', [PipedriveController::class, 'syncStages'])
-            ->name('pipedrive.sync.stages');
+    Route::prefix('settings/pipedrive')
+        ->name('settings.pipedrive.')
+        ->middleware('permission:pipedrive.view')
+        ->group(function () {
 
-        Route::post('/pipedrive/{id}/sync-fields', [PipedriveController::class, 'syncFields'])
-            ->name('pipedrive.sync.fields');
+            Route::get('/', [PipedriveController::class, 'index'])
+                ->name('index');
 
-        Route::get('/pipedrive/{id}/details', [PipedriveController::class, 'details'])
-        ->name('pipedrive.details');
-    });
+            Route::middleware('permission:pipedrive.create')->group(function () {
+                Route::post('/', [PipedriveController::class, 'store'])
+                    ->name('store');
+            });
+
+            Route::middleware('permission:pipedrive.edit')->group(function () {
+                Route::get('/connect/{id}', [PipedriveController::class, 'connect'])
+                    ->name('connect');
+
+                Route::get('/{id}/details', [PipedriveController::class, 'details'])
+                    ->name('details');
+
+                Route::post('/{id}/sync-stages', [PipedriveController::class, 'syncStages'])
+                    ->name('sync.stages');
+
+                Route::post('/{id}/sync-fields', [PipedriveController::class, 'syncFields'])
+                    ->name('sync.fields');
+            });
+        });
     /*
     |--------------------------------------------------------------------------
     | Role Module (Super Admin Only)
