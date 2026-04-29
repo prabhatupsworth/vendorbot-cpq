@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- Meta Tags -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -87,6 +87,10 @@
     <!-- Slimscroll JS -->
     <script src="{{ asset('template/assets/js/jquery.slimscroll.js') }}"></script>
     <script src="{{ asset('template/assets/js/jquery.slimscroll.min.js') }}"></script>
+
+    <!-- Sweetalert 2 -->
+    <script src="{{ asset('template/assets/plugins/sweetalert/sweetalert2.all.min.js') }}"></script>
+    <script src="{{ asset('template/assets/plugins/sweetalert/sweetalerts.min.js') }}"></script>
 
     <!-- Daterangepicker JS -->
     <script src="{{ asset('template/assets/js/moment.min.js') }}"></script>
@@ -184,6 +188,42 @@
                 container.innerHTML = '<span><i class="ti ti-photo"></i></span>';
             }
         }
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+
+            // ✅ SUCCESS ALERT
+            @if (session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: @json(session('success')),
+                    confirmButtonColor: '#3085d6'
+                });
+            @endif
+
+            // ❌ ERROR ALERT
+            @if (session('error'))
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: @json(session('error')),
+                    confirmButtonColor: '#d33'
+                });
+            @endif
+
+            // ⚠️ VALIDATION ERRORS (first error only)
+            @if ($errors->any())
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Validation Error',
+                    text: @json($errors->first()),
+                    confirmButtonColor: '#f39c12'
+                });
+            @endif
+
+        });
     </script>
 </body>
 

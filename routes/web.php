@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\Role\RoleController;
+use App\Http\Controllers\Admin\Settings\PipeDrive\PipedriveController;
 use App\Http\Controllers\Admin\User\UserController;
 use App\Http\Controllers\Profile\ProfileController;
 use App\Http\Controllers\Auth\AuthController;
@@ -78,6 +79,19 @@ Route::middleware('auth')->group(function () {
         Route::delete('/{id}', [UserController::class, 'destroy'])->name('users.destroy');
     });
 
+    Route::prefix('settings')->name('settings.')->group(function () {
+        Route::get('/pipedrive', [PipedriveController::class, 'index'])->name('pipedrive.index');
+        Route::post('/pipedrive', [PipedriveController::class, 'store'])->name('pipedrive.store');
+        Route::get('/pipedrive/connect/{id}', [PipedriveController::class, 'connect'])->name('pipedrive.connect');
+        Route::post('/pipedrive/{id}/sync-stages', [PipedriveController::class, 'syncStages'])
+            ->name('pipedrive.sync.stages');
+
+        Route::post('/pipedrive/{id}/sync-fields', [PipedriveController::class, 'syncFields'])
+            ->name('pipedrive.sync.fields');
+
+        Route::get('/pipedrive/{id}/details', [PipedriveController::class, 'details'])
+        ->name('pipedrive.details');
+    });
     /*
     |--------------------------------------------------------------------------
     | Role Module (Super Admin Only)

@@ -24,6 +24,9 @@
                                <input name="password" type="password" class="pass-input form-control">
                                <span class="ti toggle-password ti-eye-off"></span>
                            </div>
+                           @error('password')
+                               <div class="text-danger">{{ $message }}</div>
+                           @enderror
                        </div>
                        <div class="mb-3">
                            <label class="col-form-label">Confirm Password</label>
@@ -31,6 +34,9 @@
                                <input name="password_confirmation" type="password" class="pass-inputs form-control">
                                <span class="ti toggle-passwords ti-eye-off"></span>
                            </div>
+                           @error('password_confirmation')
+                               <div class="text-danger">{{ $message }}</div>
+                           @enderror
                        </div>
 
                        <div class="mb-3">

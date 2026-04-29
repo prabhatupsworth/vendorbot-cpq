@@ -1,0 +1,340 @@
+<?php
+
+namespace App\Http\Controllers\Admin\Settings\PipeDrive;
+
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use App\Models\PipeDrive\PipedriveAccount;
+use App\Models\PipeDrive\PipedriveField;
+use App\Models\PipeDrive\PipedrivePipeline;
+use App\Models\PipeDrive\PipedriveStage;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+
+class PipedriveController extends Controller
+{
+    public function index()
+    {
+        $accounts = PipedriveAccount::orderBy('created_at', 'desc')->get();
+
+        return view('settings.pipedrive.index', compact('accounts'));
+    }
+
+    public function store(Request $request)
+    {
+        try {
+            // ✅ VALIDATION
+            $validated = $request->validate([
+                'account_name' => 'required|string|max:255',
+                'api_key'      => 'required|string|min:10',
+                'base_url'     => 'required|url',
+            ], [
+                'account_name.required' => 'Account name is required',
+                'api_key.required'      => 'API key is required',
+                'base_url.required'     => 'Base URL is required',
+                'base_url.url'          => 'Enter a valid URL (https://example.pipedrive.com)',
+            ]);
+
+            DB::beginTransaction();
+
+            // ✅ CREATE RECORD
+            $account = PipedriveAccount::create([
+                'u_id'         => (string) Str::uuid(),
+                'account_name' => $validated['account_name'],
+                'api_key'      => $validated['api_key'],
+                'base_url'     => rtrim($validated['base_url'], '/'),
+            ]);
+
+            DB::commit();
+
+            // 🔥 ACTIVITY LOG (SUCCESS)
+            activityLog([
+                'module' => 'pipedrive',
+                'record_id' => $account->id,
+                'action' => 'create',
+                'status' => 'success',
+                'message' => 'Pipedrive account created successfully',
+                'meta' => [
+                    'account_name' => $account->account_name,
+                    'base_url' => $account->base_url
+                ]
+            ]);
+
+            return redirect()->back()
+                ->with('success', 'Pipedrive account added successfully!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            // 🔥 ACTIVITY LOG (FAILED)
+            activityLog([
+                'module' => 'pipedrive',
+                'action' => 'create',
+                'status' => 'failed',
+                'message' => $e->getMessage(),
+            ]);
+
+            return back()
+                ->withInput()
+                ->with('error', 'Something went wrong. Please try again.');
+        }
+    }
+
+    public function connect($id)
+    {
+        $account = PipedriveAccount::find($id);
+
+        if (!$account) {
+            return back()->with('error', 'Account not found');
+        }
+
+        if ($account->is_verified) {
+            return back()->with('info', 'Already connected');
+        }
+
+        // 👉 here you should call real API later
+        $account->update([
+            'is_verified' => 1
+        ]);
+
+        return back()->with('success', 'Pipedrive account connected successfully!');
+    }
+
+
+    public function syncStages($id)
+    {
+        $account = PipedriveAccount::find($id);
+
+        if (!$account) {
+            return back()->with('error', 'Account not found');
+        }
+
+        try {
+            DB::beginTransaction();
+
+            // 👉 YOUR PIPELINES DATA
+            $pipelines = [
+                [
+                    "id" => 1,
+                    "name" => "(Nicht nutzen) Sales Pipeline",
+                    "order_nr" => 3,
+                    "is_deleted" => false,
+                    "is_deal_probability_enabled" => true,
+                    "add_time" => "2018-01-09T10:04:30Z",
+                    "update_time" => "2019-12-22T21:40:06Z"
+                ],
+                [
+                    "id" => 3,
+                    "name" => "Sales Allg. Pipeline",
+                    "order_nr" => 0,
+                    "is_deleted" => false,
+                    "is_deal_probability_enabled" => true,
+                    "add_time" => "2018-01-10T10:27:55Z",
+                    "update_time" => "2025-10-16T14:00:20Z"
+                ],
+                [
+                    "id" => 5,
+                    "name" => "Kochevents Sales Pipeline",
+                    "order_nr" => 1,
+                    "is_deleted" => false,
+                    "is_deal_probability_enabled" => true,
+                    "add_time" => "2018-05-29T04:47:29Z",
+                    "update_time" => "2019-12-22T21:40:06Z"
+                ]
+            ];
+            foreach ($pipelines as $pipeline) {
+                PipedrivePipeline::updateOrCreate(
+                    [
+                        'pipedrive_account_id' => $account->id,
+                        'pipeline_id' => $pipeline['id']
+                    ],
+                    [
+                        'name' => $pipeline['name']
+                    ]
+                );
+            }
+
+            // 👉 YOUR STAGES DATA
+            $stages = [
+                [
+                    "id" => 1,
+                    "name" => "Neuer Lead",
+                    "pipeline_id" => 1
+                ],
+                [
+                    "id" => 2,
+                    "name" => "Kontakt hergestellt",
+                    "pipeline_id" => 1
+                ],
+                [
+                    "id" => 3,
+                    "name" => "Meeting vereinbart",
+                    "pipeline_id" => 1
+                ],
+                [
+                    "id" => 4,
+                    "name" => "Bedarf definiert",
+                    "pipeline_id" => 1
+                ],
+                [
+                    "id" => 5,
+                    "name" => "Angebot abgegeben",
+                    "pipeline_id" => 1
+                ],
+                [
+                    "id" => 6,
+                    "name" => "Verhandlungen gestartet",
+                    "pipeline_id" => 1
+                ],
+                [
+                    "id" => 7,
+                    "name" => "Bedarf festgestellt",
+                    "pipeline_id" => 3
+                ],
+                [
+                    "id" => 8,
+                    "name" => "Kontakte und Infos erfasst",
+                    "pipeline_id" => 3
+                ],
+                [
+                    "id" => 9,
+                    "name" => "Recherche und Loesung entwickelt",
+                    "pipeline_id" => 3
+                ],
+                [
+                    "id" => 10,
+                    "name" => "Infopaket erstellt",
+                    "pipeline_id" => 3
+                ],
+                [
+                    "id" => 11,
+                    "name" => "Infopaket versendet",
+                    "pipeline_id" => 3
+                ]
+            ];
+
+            foreach ($stages as $stage) {
+                PipedriveStage::updateOrCreate(
+                    [
+                        'pipedrive_account_id' => $account->id,
+                        'stage_id' => $stage['id']
+                    ],
+                    [
+                        'pipeline_id' => $stage['pipeline_id'],
+                        'name' => $stage['name']
+                    ]
+                );
+            }
+
+            $account->update([
+                'sync_stages' => 1
+            ]);
+
+            DB::commit();
+
+            // 🔥 LOG
+            activityLog([
+                'module' => 'pipedrive',
+                'record_id' => $account->id,
+                'action' => 'sync_stages',
+                'status' => 'success',
+                'message' => count($stages) . ' stages synced (dummy)'
+            ]);
+
+            // return back()->with('success', 'Dummy stages & pipelines synced successfully');
+            return response()->json(['message' => 'Dummy stages & pipelines synced successfully']);
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            activityLog([
+                'module' => 'pipedrive',
+                'record_id' => $account->id,
+                'action' => 'sync_stages',
+                'status' => 'failed',
+                'message' => $e->getMessage()
+            ]);
+
+            // return back()->with('error', 'Failed to sync');
+            return response()->json(['error' => 'Failed to sync stages'], 500);
+        }
+    }
+
+    public function syncFields($id)
+    {
+        $account = PipedriveAccount::find($id);
+
+        if (!$account) {
+            return back()->with('error', 'Account not found');
+        }
+
+        try {
+            // 👉 Example API call
+            // $response = Http::get("{$account->base_url}/api/v1/fields", [
+            //     'api_token' => $account->api_key
+            // ]);
+
+            // 👉 Simulate sync
+            PipedriveField::create([
+                'pipedrive_account_id' => $account->id,
+                'field_key' => 'test_field_' . rand(100, 999), // unique
+                'name' => 'Test Field',
+                'field_type' => 'text',
+            ]);
+
+
+            $account->update([
+                'sync_fields' => 1
+            ]);
+
+            sleep(1);
+            // 🔥 LOG
+            activityLog([
+                'module' => 'pipedrive',
+                'record_id' => $account->id,
+                'action' => 'sync_fields',
+                'status' => 'success',
+                'message' => 'Fields synced successfully'
+            ]);
+
+            // return back()->with('success', 'Fields synced successfully');
+            return response()->json(['message' => 'Fields synced successfully']);
+        } catch (\Exception $e) {
+
+            activityLog([
+                'module' => 'pipedrive',
+                'record_id' => $account->id,
+                'action' => 'sync_fields',
+                'status' => 'failed',
+                'message' => $e->getMessage()
+            ]);
+
+            // return back()->with('error', 'Failed to sync fields');
+            return response()->json(['error' => 'Failed to sync fields'], 500);
+        }
+    }
+
+    public function details($id)
+    {
+        $account = PipedriveAccount::find($id);
+
+        if (!$account) {
+            return response()->json(['error' => 'Account not found'], 404);
+        }
+
+        $stages = PipedriveStage::with([
+            'pipeline' => function ($q) {
+                $q->select('pipeline_id', 'name'); // ✅ include key + required column
+            }
+        ])
+            ->where('pipedrive_account_id', $id)
+            ->get(['id', 'name', 'stage_id', 'pipeline_id']);
+
+        $fields = PipedriveField::where('pipedrive_account_id', $id)->get();
+
+        return response()->json([
+            'account' => $account,
+            'stages' => $stages,
+            'fields' => $fields
+        ]);
+    }
+}
