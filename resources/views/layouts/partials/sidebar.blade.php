@@ -44,22 +44,38 @@
                         @endcan
                     </ul>
                 </li>
+                  <li>
+                    <h6 class="submenu-hdr">CRM</h6>
+                    <ul>
+                        <li><a href="{{ route('projects.index') }}"
+                                class="{{ request()->routeIs('projects.*') ? 'active' : '' }}"><i
+                                    class="ti ti-briefcase"></i><span>Projects</span></a></li>
+                    </ul>
+                </li>
                 <li>
                     <h6 class="submenu-hdr">Settings</h6>
                     <ul>
 
                         <li class="submenu">
-                            <a href="javascript:void(0);" class="{{request()->routeIs('settings.*')? 'subdrop active' : ''}}">
+                            <a href="javascript:void(0);"
+                                class="{{ request()->routeIs('settings.*') ? 'subdrop active' : '' }}">
                                 <i class="ti ti-world-cog"></i><span>Website Settings</span><span
                                     class="menu-arrow"></span>
                             </a>
                             <ul style="display: none;">
-                                <li><a href="{{ route('settings.pipedrive.index') }}" class="{{request()->routeIs('settings.pipedrive.index')? 'active' : ''}}">Pipedrive</a></li>
+                                <li><a href="{{ route('settings.pipedrive.index') }}"
+                                        class="{{ request()->routeIs('settings.pipedrive.index') ? 'active' : '' }}">Pipedrive</a>
+                                </li>
+                                <li><a href="{{ route('settings.invoice.lexware.index') }}"
+                                        class="{{ request()->routeIs('settings.invoice.lexware.index') ? 'active' : '' }}">Lexware</a>
+                                </li>
                             </ul>
                         </li>
                     </ul>
                 </li>
+
             </ul>
+
         </div>
     </div>
 </div>

@@ -1,11 +1,14 @@
 <?php
 
+use App\Http\Controllers\ActivityLog\ActivityLogController;
 use App\Http\Controllers\Admin\Role\RoleController;
+use App\Http\Controllers\Admin\Settings\Invoice\Lexware\LexwareController;
 use App\Http\Controllers\Admin\Settings\PipeDrive\PipedriveController;
 use App\Http\Controllers\Admin\User\UserController;
 use App\Http\Controllers\Profile\ProfileController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Dashboard\DashboardController;
+use App\Http\Controllers\Project\ProjectController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -47,6 +50,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/security', [ProfileController::class, 'security'])->name('security');
     // Logout
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+    Route::get('/history/{module}/{recordId?}', [ActivityLogController::class, 'getModuleHistory'])->name('history.module');
 
     /*
     |--------------------------------------------------------------------------
@@ -93,6 +98,11 @@ Route::middleware('auth')->group(function () {
             });
 
             Route::middleware('permission:pipedrive.edit')->group(function () {
+                Route::post('/{id}/update', [PipedriveController::class, 'update'])
+                    ->name('update');
+            });
+
+            Route::middleware('permission:pipedrive.edit')->group(function () {
                 Route::get('/connect/{id}', [PipedriveController::class, 'connect'])
                     ->name('connect');
 
@@ -106,6 +116,36 @@ Route::middleware('auth')->group(function () {
                     ->name('sync.fields');
             });
         });
+
+    Route::prefix('settings/invoice/lexware')
+        ->name('settings.invoice.lexware.')
+        ->middleware('permission:lexware.view')
+        ->group(function () {
+
+            Route::get('/', [LexwareController::class, 'index'])->name('index');
+
+            Route::get('/{id}/edit', [LexwareController::class, 'edit'])->name('edit');
+
+            Route::post('/store', [LexwareController::class, 'store'])
+                ->middleware('permission:lexware.create')
+                ->name('store');
+
+            Route::post('/{id}/update', [LexwareController::class, 'update'])
+                ->middleware('permission:lexware.edit')
+                ->name('update');
+
+            Route::get('/connect/{id}', [LexwareController::class, 'connect'])->name('connect');
+
+            Route::get('/{id}/details', [LexwareController::class, 'details'])->name('details');
+        });
+    Route::prefix('projects')->name('projects.')->group(function () {
+        Route::get('/', [ProjectController::class, 'index'])->name('index');
+        Route::post('/store', [ProjectController::class, 'store'])->name('store');
+        Route::get('/{id}/edit', [ProjectController::class, 'edit'])->name('edit');
+        Route::put('/{id}/update', [ProjectController::class, 'update'])->name('update');
+        Route::get('/{id}', [ProjectController::class, 'show'])->name('show');
+        Route::delete('/{id}', [ProjectController::class, 'destroy'])->name('destroy');
+    });
     /*
     |--------------------------------------------------------------------------
     | Role Module (Super Admin Only)

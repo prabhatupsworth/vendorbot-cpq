@@ -51,12 +51,24 @@
                                                     <img class="rounded-circle" width="50"
                                                         src="{{ asset('template/assets/img/icons/pipedrive.png') }}"
                                                         alt="Icon">
-                                                    <button class="btn btn-light btn-icon btn-sm rounded-pill view-details"
-                                                        data-bs-toggle="offcanvas"
-                                                        data-bs-target="#offcanvas_view_pipedrive"
-                                                        data-id="{{ $account->id }}">
-                                                        <i class="ti ti-eye text-muted"></i>
-                                                    </button>
+                                                    <div>
+                                                        <button
+                                                            class="btn btn-sm btn-icon btn-primary rounded-pill edit-btn"
+                                                            data-bs-toggle="offcanvas"
+                                                            data-bs-target="#offcanvas_add_pipedrive"
+                                                            data-id="{{ $account->id }}"
+                                                            data-name="{{ $account->account_name }}"
+                                                            data-url="{{ $account->base_url }}">
+                                                            <i class="ti ti-edit text-white"></i>
+                                                        </button>
+                                                        <button
+                                                            class="btn btn-light btn-icon btn-sm rounded-pill view-details"
+                                                            data-bs-toggle="offcanvas"
+                                                            data-bs-target="#offcanvas_view_pipedrive"
+                                                            data-id="{{ $account->id }}">
+                                                            <i class="ti ti-eye text-muted"></i>
+                                                        </button>
+                                                    </div>
                                                 </div>
 
                                                 <div class="d-flex align-items-center justify-content-between mb-4">
@@ -120,7 +132,7 @@
 
         <div class="offcanvas offcanvas-end offcanvas-large" tabindex="-1" id="offcanvas_add_pipedrive">
             <div class="offcanvas-header border-bottom">
-                <h5 class="fw-semibold">Add Pipedrive Account</h5>
+                <h5 class="fw-semibold" id="offcanvasTitle">Add Pipedrive Account</h5>
                 <button type="button"
                     class="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
                     data-bs-dismiss="offcanvas" aria-label="Close">
@@ -128,7 +140,7 @@
                 </button>
             </div>
             <div class="offcanvas-body">
-                <form action="{{ route('settings.pipedrive.store') }}" method="POST">
+                <form id="pipedriveForm" action="{{ route('settings.pipedrive.store') }}" method="POST">
                     @csrf
 
                     <div class="row">
@@ -137,7 +149,7 @@
                         <div class="col-md-12">
                             <div class="mb-3">
                                 <label class="col-form-label">Account Name <span class="text-danger">*</span></label>
-                                <input type="text" name="account_name"
+                                <input type="text" name="account_name" id="account_name"
                                     class="form-control @error('account_name') is-invalid @enderror"
                                     value="{{ old('account_name') }}" required>
 
@@ -168,7 +180,7 @@
                         <div class="col-md-12">
                             <div class="mb-3">
                                 <label class="col-form-label">Base URL <span class="text-danger">*</span></label>
-                                <input type="text" name="base_url"
+                                <input id="base_url" type="text" name="base_url"
                                     class="form-control @error('base_url') is-invalid @enderror"
                                     placeholder="https://yourcompany.pipedrive.com" value="{{ old('base_url') }}"
                                     required>
@@ -181,7 +193,7 @@
 
                     </div>
                     <div class="d-flex justify-content-end mt-3">
-                        <button type="submit" class="btn btn-primary">Add</button>
+                        <button type="submit" class="btn btn-primary" id="submitBtn">Add</button>
                     </div>
                 </form>
             </div>
@@ -208,6 +220,10 @@
                             <li class="nav-item"><a class="nav-link" href="#bottom-tab1" data-bs-toggle="tab">Stages</a>
                             </li>
                             <li class="nav-item"><a class="nav-link" href="#bottom-tab2" data-bs-toggle="tab">Fields</a>
+                            </li>
+
+                            <li class="nav-item"><a class="nav-link" href="#bottom-tab3"
+                                    data-bs-toggle="tab">History</a>
                             </li>
 
                         </ul>
@@ -317,11 +333,33 @@
                                     </table>
                                 </div>
                             </div>
+                            <div class="tab-pane" id="bottom-tab3">
+                                <div class="table-responsive">
+                                    <table class="table table-striped mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>Status</th>
+                                                <th>Message</th>
+                                                <th>Performed By</th>
+                                                <th>Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="historyTableBody">
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="d-flex justify-content-end mt-3">
+                                    <a id="load_more" class="btn btn-danger nav-link mt-2" href="#">Load
+                                        More</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
     </div>
 
     @push('scripts')
@@ -352,7 +390,7 @@
                             return res.json();
                         })
                         .then(data => {
-
+                            renderHistoryTable(data.activityLog);
                             // 🔥 ACCOUNT DETAILS
                             accountName.textContent = data.account.account_name || '--';
                             accountUrl.textContent = data.account.base_url || '--';
@@ -362,12 +400,12 @@
                                 '<span class="badge bg-outline-danger">Not Connected</span>';
 
                             syncStages.innerHTML = data.account.sync_stages ?
-                                '<span class="badge bg-outline-success">Enabled</span>' :
-                                '<span class="badge bg-outline-secondary">Disabled</span>';
+                                '<span class="badge bg-outline-success">Synced</span>' :
+                                '<span class="badge bg-outline-secondary">Not Synced</span>';
 
                             syncFields.innerHTML = data.account.sync_fields ?
-                                '<span class="badge bg-outline-success">Enabled</span>' :
-                                '<span class="badge bg-outline-secondary">Disabled</span>';
+                                '<span class="badge bg-outline-success">Synced</span>' :
+                                '<span class="badge bg-outline-secondary">Not Synced</span>';
 
                             document.getElementById('createdAt').textContent = data.account.created_at ?
                                 moment(data.account.created_at).format('DD MMM YYYY, hh:mm A') :
@@ -382,6 +420,8 @@
                             // 🔥 CLEAR TABLES
                             stagesTableBody.innerHTML = '';
                             fieldsTableBody.innerHTML = '';
+
+                            document.getElementById('load_more').href = `/history/pipedrive/${id}`;
 
                             // 🔥 STAGES TABLE
                             if (data.stages && data.stages.length > 0) {
@@ -437,6 +477,26 @@
                                 '<tr><td colspan="4" class="text-center text-danger">Failed to load data</td></tr>';
                         });
                 });
+            });
+        </script>
+
+        <script>
+            document.addEventListener('click', function(e) {
+
+                const btn = e.target.closest('.edit-btn');
+                if (!btn) return;
+                // 👉 Change title & button
+                document.getElementById('offcanvasTitle').innerText = 'Edit Pipedrive Account';
+                document.getElementById('submitBtn').innerText = 'Update';
+
+                // 👉 Set form action
+                const form = document.getElementById('pipedriveForm');
+                form.action = `/settings/pipedrive/${btn.dataset.id}/update`;
+
+                // 👉 Fill values
+                document.querySelector('#account_name').value = btn.dataset.name;
+                document.querySelector('#base_url').value = btn.dataset.url;
+
             });
         </script>
 
@@ -550,6 +610,50 @@
                     });
 
             });
+        </script>
+
+
+        <script>
+            function renderHistoryTable(data) {
+                const tbody = document.getElementById('historyTableBody');
+                tbody.innerHTML = '';
+
+                if (!data.length) {
+                    tbody.innerHTML = `
+            <tr>
+                <td colspan="4" class="text-center text-muted">No records found</td>
+            </tr>
+        `;
+                    return;
+                }
+
+                data.forEach(item => {
+
+                    // 👉 Status badge
+                    let statusBadge = '';
+                    if (item.status === 'success') {
+                        statusBadge = `<span class="badge bg-success">Success</span>`;
+                    } else if (item.status === 'failed') {
+                        statusBadge = `<span class="badge bg-danger">Failed</span>`;
+                    } else {
+                        statusBadge = `<span class="badge bg-secondary">${item.status}</span>`;
+                    }
+
+                    // 👉 Format date
+                    const date = new Date(item.performed_at).toLocaleString();
+
+                    const row = `
+            <tr>
+                <td>${statusBadge}</td>
+                <td>${item.message ?? '-'}</td>
+                <td>${item.user?.name ?? 'System'}</td>
+                <td>${date}</td>
+            </tr>
+        `;
+
+                    tbody.insertAdjacentHTML('beforeend', row);
+                });
+            }
         </script>
     @endpush
 @endsection
