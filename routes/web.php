@@ -9,6 +9,7 @@ use App\Http\Controllers\Profile\ProfileController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Project\ProjectController;
+use App\Http\Controllers\TestController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,6 +17,12 @@ use Illuminate\Support\Facades\Route;
 | Guest Routes (Not Logged In)
 |--------------------------------------------------------------------------
 */
+
+Route::get('/test', [TestController::class, 'index'])->name('test.index');
+Route::get('/test/list', [TestController::class, 'list'])->name('test.list');
+Route::post('/test', [TestController::class, 'store'])->name('test.store');
+Route::put('/test/{id}', [TestController::class, 'update'])->name('test.update');
+Route::delete('/test/{id}', [TestController::class, 'destroy'])->name('test.destroy');
 
 Route::middleware('guest')->group(function () {
 
@@ -34,6 +41,7 @@ Route::middleware('guest')->group(function () {
     // Reset Password
     Route::get('/reset-password/{token}', [AuthController::class, 'showResetPassword'])->name('password.reset');
     Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update');
+
 });
 
 

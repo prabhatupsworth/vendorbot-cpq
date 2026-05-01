@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Project;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ProjectRequest;
 use App\Models\ActivityLog;
 use App\Models\Invoice\InvoiceAccount;
 use App\Models\PipeDrive\PipedriveAccount;
 use App\Models\Project\Project;
-use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -27,19 +27,12 @@ class ProjectController extends Controller
     }
 
     // ✅ STORE
-    public function store(Request $request)
+    public function store(ProjectRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'website_url' => 'nullable|url',
-            'event_name' => 'nullable|string|max:255',
-            'flow_type' => 'required|in:simple,full',
-            'invoice_enabled' => 'nullable|boolean',
-            'pipedrive_account_id' => 'nullable|exists:pipedrive_accounts,id',
-            'invoice_account_id' => 'nullable|exists:invoice_accounts,id',
-        ]);
 
         try {
+            $validated = $request->validated();
+
             $project = Project::create([
                 'name' => $validated['name'],
                 'slug' => Str::slug($validated['name']) . '-' . time(),
@@ -82,18 +75,9 @@ class ProjectController extends Controller
     }
 
     // ✅ UPDATE
-    public function update(Request $request, $id)
+    public function update(ProjectRequest $request, $id)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'website_url' => 'nullable|url',
-            'event_name' => 'nullable|string|max:255',
-            'flow_type' => 'required|in:simple,full',
-            'invoice_enabled' => 'nullable|boolean',
-            'pipedrive_account_id' => 'nullable|exists:pipedrive_accounts,id',
-            'invoice_account_id' => 'nullable|exists:invoice_accounts,id',
-        ]);
-
+        $validated = $request->validated();
         try {
             $project = Project::findOrFail($id);
 

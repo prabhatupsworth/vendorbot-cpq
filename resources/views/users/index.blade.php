@@ -86,22 +86,22 @@
 
                                                             <!-- EDIT -->
                                                             @can('users.edit')
-                                                            <a href="javascript:void(0);"
-                                                                class="dropdown-item d-flex align-items-center edit-btn"
-                                                                data-id="{{ $user->id }}" data-bs-toggle="offcanvas"
-                                                                data-bs-target="#offcanvas_edit">
-                                                                <i class="ti ti-edit text-primary me-2"></i> Edit
-                                                            </a>
+                                                                <a href="javascript:void(0);"
+                                                                    class="dropdown-item d-flex align-items-center edit-btn"
+                                                                    data-id="{{ $user->id }}" data-bs-toggle="offcanvas"
+                                                                    data-bs-target="#offcanvas_edit">
+                                                                    <i class="ti ti-edit text-primary me-2"></i> Edit
+                                                                </a>
                                                             @endcan
 
-                                                             @can('users.delete')
-                                                            <!-- DELETE -->
-                                                            <a href="javascript:void(0);"
-                                                                class="dropdown-item d-flex align-items-center delete-btn"
-                                                                data-id="{{ $user->id }}" data-bs-toggle="modal"
-                                                                data-bs-target="#delete_contact">
-                                                                <i class="ti ti-trash text-danger me-2"></i> Delete
-                                                            </a>
+                                                            @can('users.delete')
+                                                                <!-- DELETE -->
+                                                                <a href="javascript:void(0);"
+                                                                    class="dropdown-item d-flex align-items-center delete-btn"
+                                                                    data-id="{{ $user->id }}" data-bs-toggle="modal"
+                                                                    data-bs-target="#delete_contact">
+                                                                    <i class="ti ti-trash text-danger me-2"></i> Delete
+                                                                </a>
                                                             @endcan
                                                         </div>
                                                     </div>
@@ -194,15 +194,19 @@
                         <div class="radio-wrap">
                             <label class="col-form-label">Status</label>
                             <div class="d-flex align-items-center">
+
                                 <div class="me-2">
-                                    <input type="radio" class="status-radio" name="status" checked value="1">
+                                    <input type="radio" class="status-radio" id="active1" name="status"
+                                        value="1" checked>
                                     <label for="active1">Active</label>
                                 </div>
+
                                 <div>
-                                    <input value="0" type="radio" class="status-radio" id="inactive1"
-                                        name="status">
+                                    <input type="radio" class="status-radio" id="inactive1" name="status"
+                                        value="0">
                                     <label for="inactive1">Inactive</label>
                                 </div>
+
                             </div>
                         </div>
 
