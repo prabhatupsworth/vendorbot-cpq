@@ -47,9 +47,12 @@
                   <li>
                     <h6 class="submenu-hdr">CRM</h6>
                     <ul>
+                        @can('projects.view')
                         <li><a href="{{ route('projects.index') }}"
                                 class="{{ request()->routeIs('projects.*') ? 'active' : '' }}"><i
-                                    class="ti ti-briefcase"></i><span>Projects</span></a></li>
+                                    class="ti ti-briefcase"></i><span>Projects</span></a>
+                        </li>
+                        @endcan
                     </ul>
                 </li>
                 <li>
@@ -63,12 +66,17 @@
                                     class="menu-arrow"></span>
                             </a>
                             <ul style="display: none;">
+                                 @can('pipedrive.view')
                                 <li><a href="{{ route('settings.pipedrive.index') }}"
                                         class="{{ request()->routeIs('settings.pipedrive.index') ? 'active' : '' }}">Pipedrive</a>
                                 </li>
+                                @endcan
+                                 @can('lexware.view')
                                 <li><a href="{{ route('settings.invoice.lexware.index') }}"
                                         class="{{ request()->routeIs('settings.invoice.lexware.index') ? 'active' : '' }}">Lexware</a>
                                 </li>
+                                @endcan
+
                             </ul>
                         </li>
                     </ul>

@@ -144,7 +144,7 @@
 													</a>
 												</li>
 												<li>
-													<a href="leads.html">
+													<a href="#">
 														<div class="menu-details">
 															<span class="menu-list-icon bg-secondary">
 																<i class="ti ti-chart-arcs"></i>
@@ -201,12 +201,12 @@
 								</div>
 							</li>
 							<li class="nav-item">
-								<a href="faq.html" class="btn btn-help">
+								<a href="#" class="btn btn-help">
 									<i class="ti ti-help-hexagon"></i>
 								</a>
 							</li>
 							<li class="nav-item">
-								<a href="lead-reports.html" class="btn btn-chart-pie">
+								<a href="#" class="btn btn-chart-pie">
 									<i class="ti ti-chart-pie"></i>
 								</a>
 							</li>
