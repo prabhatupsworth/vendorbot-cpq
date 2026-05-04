@@ -2,7 +2,6 @@ $(document).on("click", ".edit-form", function () {
 
     let btn = $(this);
     let form = $(btn.data("form"));
-
     form[0].reset();
 
     form.attr("action", btn.data("url"));
@@ -49,10 +48,76 @@ $(document).on("submit", ".ajax-form", function (e) {
     btn.prop("disabled", true)
         .html('<span class="spinner-border spinner-border-sm me-1"></span> Saving...');
 
+    // $.ajax({
+    //     url: form.attr("action"),
+    //     method: form.find("input[name=_method]").val() || "POST",
+    //     data: form.serialize(),
+
+    //     success: function (res) {
+
+    //         Swal.fire({
+    //             icon: 'success',
+    //             title: res.message,
+    //             timer: 1500,
+    //             showConfirmButton: false
+    //         })
+    //         // .then(() => {
+    //         SWR['company_1']?.mutate(res.data ?? res, { revalidate: true });
+    //         // 🔥 alert close hone ke baad modal close
+    //         let canvasEl = form.closest(".offcanvas")[0];
+
+    //         if (canvasEl) {
+    //             let canvas = bootstrap.Offcanvas.getInstance(canvasEl)
+    //                 || new bootstrap.Offcanvas(canvasEl);
+
+    //             canvas.hide();
+    //         }
+
+    //         // form reset
+    //         form[0].reset();
+
+    //         // table reload (dynamic)
+    //         let tableSelector = form.data("table");
+    //         if (tableSelector) {
+    //             $(tableSelector).DataTable().ajax.reload(null, false);
+    //         }
+    //         // });
+    //     },
+
+    //     error: function (xhr) {
+    //         if (xhr.status === 422) {
+    //             let errors = xhr.responseJSON.errors;
+
+    //             Object.keys(errors).forEach(field => {
+    //                 let input = form.find(`[name="${field}"]`);
+    //                 input.addClass("is-invalid");
+    //                 form.find(`.error-${field}`).text(errors[field][0]);
+    //             });
+    //         } else {
+    //             Swal.fire({
+    //                 icon: 'error',
+    //                 title: 'Error',
+    //                 text: xhr.responseJSON?.message || 'Something went wrong'
+    //             });
+    //         }
+    //     },
+
+    //     complete: function () {
+    //         // loader OFF
+    //         btn.prop("disabled", false).html("Save");
+    //     }
+    // });
+
+
+    let formData = new FormData(form[0]);
+
     $.ajax({
         url: form.attr("action"),
-        method: form.find("input[name=_method]").val() || "POST",
-        data: form.serialize(),
+        method: "POST", // always POST (Laravel spoofing)
+        data: formData,
+
+        processData: false, // ✅ IMPORTANT
+        contentType: false, // ✅ IMPORTANT
 
         success: function (res) {
 
@@ -61,10 +126,11 @@ $(document).on("submit", ".ajax-form", function (e) {
                 title: res.message,
                 timer: 1500,
                 showConfirmButton: false
-            })
-            // .then(() => {
+            });
 
-            // 🔥 alert close hone ke baad modal close
+            // 🔥 SWR update
+            SWR['company_1']?.mutate(res.data ?? res, { revalidate: true });
+
             let canvasEl = form.closest(".offcanvas")[0];
 
             if (canvasEl) {
@@ -74,15 +140,7 @@ $(document).on("submit", ".ajax-form", function (e) {
                 canvas.hide();
             }
 
-            // form reset
             form[0].reset();
-
-            // table reload (dynamic)
-            let tableSelector = form.data("table");
-            if (tableSelector) {
-                $(tableSelector).DataTable().ajax.reload(null, false);
-            }
-            // });
         },
 
         error: function (xhr) {
@@ -101,11 +159,6 @@ $(document).on("submit", ".ajax-form", function (e) {
                     text: xhr.responseJSON?.message || 'Something went wrong'
                 });
             }
-        },
-
-        complete: function () {
-            // loader OFF
-            btn.prop("disabled", false).html("Save");
         }
     });
 });

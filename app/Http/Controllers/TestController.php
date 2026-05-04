@@ -24,7 +24,7 @@ class TestController extends Controller
     public function list()
     {
         return response()->json([
-            "data" => Project::latest()->get()
+            "projects" => Project::latest()->get()
         ]);
     }
 
@@ -77,7 +77,7 @@ class TestController extends Controller
     }
 
     // ✅ Optional: Show single (API based edit)
-    public function show($id)
+    public function edit($id)
     {
         $project = Project::findOrFail($id);
 

@@ -8,6 +8,8 @@ use App\Models\ActivityLog;
 use App\Models\Invoice\InvoiceAccount;
 use App\Models\PipeDrive\PipedriveAccount;
 use App\Models\Project\Project;
+use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -136,19 +138,61 @@ class ProjectController extends Controller
     public function show($id)
     {
         try {
-            $project = Project::with(['pipedriveAccount:id,account_name', 'invoiceAccount:id,type'])->findOrFail($id);
+            $project = Project::with(['pipedriveAccount:id,account_name', 'invoiceAccount:id,type', 'companyDetails', 'users:id,name'])->findOrFail($id);
+            $allUsers = User::pluck('name', 'id')->toArray();
+
             $activityLog = ActivityLog::with('user:id,name')
                 ->where('module', 'projects')
                 ->where('record_id', $id)
                 ->latest() // or orderBy('performed_at', 'desc')
-                ->limit(10)
+                ->limit(5)
                 ->get();
-            return response()->json(['project' => $project, 'activityLog' => $activityLog]);
+            // return response()->json(['project' => $project, 'activityLog' => $activityLog]);
+            return view('projects.show', compact('project', 'activityLog', 'allUsers'));
         } catch (\Exception $e) {
 
             Log::error('Project Show Error: ' . $e->getMessage());
 
             return response()->json(['error' => 'Project not found'], 404);
+        }
+    }
+
+    public function add_user(Request $request, $projectId)
+    {
+        $validated = $request->validate([
+            'user_ids' => 'required|array',
+            'user_ids.*' => 'exists:users,id'
+        ]);
+
+        $project = Project::findOrFail($projectId);
+
+        // 🔥 Just attach (no role)
+        $project->users()->syncWithoutDetaching($validated['user_ids']);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Users added successfully'
+        ]);
+    }
+
+    public function remove_user($projectId, $userId)
+    {
+        try {
+            $project = Project::findOrFail($projectId);
+
+            // 🔥 detach user from project
+            $project->users()->detach($userId);
+
+            return response()->json([
+                'status' => true,
+                'message' => 'User removed successfully'
+            ]);
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong'
+            ], 500);
         }
     }
 }

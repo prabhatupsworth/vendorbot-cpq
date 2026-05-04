@@ -140,10 +140,13 @@
                                                             style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate3d(-104px, 35px, 0px);"
                                                             data-popper-placement="bottom-start"
                                                             data-popper-reference-hidden="" data-popper-escaped="">
-                                                            <a class="dropdown-item viewProject"
+                                                            {{-- <a class="dropdown-item viewProject"
                                                                 data-id="{{ $project->id }}" data-bs-toggle="offcanvas"
                                                                 data-bs-target="#offcanvas_view_project" href="#"><i
+                                                                    class="ti ti-eye text-success"></i> View</a> --}}
+                                                            <a class="dropdown-item" href="{{route('projects.show',$project->id)}}"><i
                                                                     class="ti ti-eye text-success"></i> View</a>
+
                                                             <a class="dropdown-item editProject" data-bs-toggle="offcanvas"
                                                                 data-bs-target="#offcanvas_add"
                                                                 data-id="{{ $project->id }}" href="#"><i
@@ -187,8 +190,7 @@
                     {{-- NAME --}}
                     <div class="col-md-6 mb-3">
                         <label class="col-form-label">Name <span class="text-danger">*</span></label>
-                        <input placeholder="Enter project name" type="text" name="name" class="form-control"
-                            required>
+                        <input placeholder="Enter project name" type="text" name="name" class="form-control" required>
                     </div>
 
                     {{-- WEBSITE URL --}}

@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\User\UserController;
 use App\Http\Controllers\Profile\ProfileController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Dashboard\DashboardController;
+use App\Http\Controllers\Project\ProjectCompanyDetailController;
 use App\Http\Controllers\Project\ProjectController;
 use App\Http\Controllers\TestController;
 use Illuminate\Support\Facades\Route;
@@ -20,6 +21,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/test', [TestController::class, 'index'])->name('test.index');
 Route::get('/test/list', [TestController::class, 'list'])->name('test.list');
+Route::get('/test/{id}', [TestController::class, 'edit'])->name('test.edit');
 Route::post('/test', [TestController::class, 'store'])->name('test.store');
 Route::put('/test/{id}', [TestController::class, 'update'])->name('test.update');
 Route::delete('/test/{id}', [TestController::class, 'destroy'])->name('test.destroy');
@@ -41,7 +43,6 @@ Route::middleware('guest')->group(function () {
     // Reset Password
     Route::get('/reset-password/{token}', [AuthController::class, 'showResetPassword'])->name('password.reset');
     Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update');
-
 });
 
 
@@ -153,6 +154,30 @@ Route::middleware('auth')->group(function () {
         Route::put('/{id}/update', [ProjectController::class, 'update'])->name('update');
         Route::get('/{id}', [ProjectController::class, 'show'])->name('show');
         Route::delete('/{id}', [ProjectController::class, 'destroy'])->name('destroy');
+
+        Route::prefix('{project}/company')->name('company.')->group(function () {
+
+            // store / update (same)
+            Route::post('/store', [ProjectCompanyDetailController::class, 'store'])
+                ->name('store');
+
+            // get company data
+            Route::get('/', [ProjectCompanyDetailController::class, 'show'])
+                ->name('show');
+
+            // delete logo (optional)
+            Route::delete('/logo/{id}', [ProjectCompanyDetailController::class, 'deleteLogo'])
+                ->name('logo.delete');
+        });
+
+        Route::prefix('{project}/users')->name('users.')->group(function () {
+             Route::post('/add-users', [ProjectController::class, 'add_user'])
+                ->name('add');
+            Route::delete('/{user}/user-remove', [ProjectController::class, 'remove_user'])
+            ->name('remove');
+        });
+
+
     });
     /*
     |--------------------------------------------------------------------------

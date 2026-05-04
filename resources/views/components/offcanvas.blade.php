@@ -19,7 +19,7 @@
         <div class="d-flex justify-content-end gap-2 mt-3 border-top pt-3">
             <button class="btn btn-light" data-bs-dismiss="offcanvas">Cancel</button>
 
-            <button type="submit" form="{{ $formId }}" class="btn btn-primary js-submit-btn">
+            <button type="submit" data-form="{{ $formId }}" form="{{ $formId }}" class="btn btn-primary js-submit-btn swr-create-btn">
                 {{ $submitText }}
             </button>
         </div>

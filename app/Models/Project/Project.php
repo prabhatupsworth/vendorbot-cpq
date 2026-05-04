@@ -62,4 +62,15 @@ class Project extends Model
             $project->uid = Str::uuid();
         });
     }
+
+    public function companyDetails()
+    {
+        return $this->hasOne(ProjectCompanyDetail::class, 'project_id');
+    }
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'project_users')
+            ->withTimestamps();
+    }
 }

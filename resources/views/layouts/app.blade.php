@@ -124,9 +124,11 @@
     <!--- Custom Js -->
     <script src="{{ asset('template/assets/js/script.js') }}"></script>
 
-    @stack('scripts')
     {{-- form handle js --}}
     <script src="{{ asset('/js/form-engine.js') }}"></script>
+    <script src="{{ asset('js/swr.js') }}"></script>
+    <script src="{{ asset('js/swr-helper.js') }}"></script>
+    @stack('scripts')
 
     <script>
         // ===============================
@@ -224,6 +226,42 @@
                     confirmButtonColor: '#f39c12'
                 });
             @endif
+
+        });
+    </script>
+
+    <script>
+        document.addEventListener('swr:success', function(e) {
+
+            const res = e.detail;
+            const form = e.target;
+            const offcanvas = form.closest('.offcanvas');
+
+            if (offcanvas) {
+                bootstrap.Offcanvas.getInstance(offcanvas)?.hide();
+            }
+            Swal.fire({
+                icon: 'success',
+                title: res?.message || 'Success',
+                timer: 1500,
+                showConfirmButton: false
+            });
+
+        });
+
+        document.addEventListener('swr:error', function(e) {
+
+            const err = e.detail;
+
+            // ❌ Ignore validation errors (already shown under inputs)
+            if (err?.errors) return;
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: err?.message || 'Something went wrong',
+                confirmButtonColor: '#d33'
+            });
 
         });
     </script>
