@@ -80,7 +80,7 @@ class PipedriveController extends Controller
         }
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, int $id)
     {
         $account = PipedriveAccount::find($id);
 
@@ -145,7 +145,7 @@ class PipedriveController extends Controller
         }
     }
 
-    public function connect($id)
+    public function connect(int $id)
     {
         $account = PipedriveAccount::find($id);
 
@@ -166,7 +166,7 @@ class PipedriveController extends Controller
     }
 
 
-    public function syncStages($id)
+    public function syncStages(int $id)
     {
         $account = PipedriveAccount::find($id);
 
@@ -325,7 +325,7 @@ class PipedriveController extends Controller
         }
     }
 
-    public function syncFields($id)
+    public function syncFields(int $id)
     {
         $account = PipedriveAccount::find($id);
 
@@ -379,7 +379,7 @@ class PipedriveController extends Controller
         }
     }
 
-    public function details($id)
+    public function details(int $id)
     {
         $account = PipedriveAccount::find($id);
 
@@ -411,6 +411,17 @@ class PipedriveController extends Controller
             'stages' => $stages,
             'fields' => $fields,
             'activityLog' => $activityLog
+        ]);
+    }
+
+    public function pipelines(int $accountId)
+    {
+        $pipelines = PipedrivePipeline::where('pipedrive_account_id', $accountId)
+            ->pluck('name', 'id');
+
+        return response()->json([
+            'status' => true,
+            'data' => $pipelines
         ]);
     }
 }

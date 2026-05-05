@@ -125,9 +125,8 @@
     <script src="{{ asset('template/assets/js/script.js') }}"></script>
 
     {{-- form handle js --}}
+    <script src="{{ asset('/js/ui-renderer.js') }}"></script>
     <script src="{{ asset('/js/form-engine.js') }}"></script>
-    <script src="{{ asset('js/swr.js') }}"></script>
-    <script src="{{ asset('js/swr-helper.js') }}"></script>
     @stack('scripts')
 
     <script>

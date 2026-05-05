@@ -63,7 +63,7 @@
                                             </div>
                                         </div>
                                         <a href="javascript:void(0);" class="btn btn-primary" data-bs-toggle="offcanvas"
-                                            data-bs-target="#offcanvas_add"><i
+                                            data-bs-target="#projectCanvas"><i
                                                 class="ti ti-square-rounded-plus me-2"></i>Add New Project</a>
                                     </div>
                                 </div>
@@ -144,15 +144,21 @@
                                                                 data-id="{{ $project->id }}" data-bs-toggle="offcanvas"
                                                                 data-bs-target="#offcanvas_view_project" href="#"><i
                                                                     class="ti ti-eye text-success"></i> View</a> --}}
-                                                            <a class="dropdown-item" href="{{route('projects.show',$project->id)}}"><i
+                                                            <a class="dropdown-item"
+                                                                href="{{ route('projects.show', $project->id) }}"><i
                                                                     class="ti ti-eye text-success"></i> View</a>
 
-                                                            <a class="dropdown-item editProject" data-bs-toggle="offcanvas"
-                                                                data-bs-target="#offcanvas_add"
-                                                                data-id="{{ $project->id }}" href="#"><i
-                                                                    class="ti ti-edit text-blue"></i> Edit</a>
-                                                            <a class="dropdown-item" href="#" data-bs-toggle="modal"
-                                                                data-bs-target="#delete_project"><i
+                                                            <a href="#" class="dropdown-item edit-form"
+                                                                data-bs-toggle="offcanvas" data-bs-target="#projectCanvas"
+                                                                data-type="edit"
+                                                                data-url="{{ route('projects.update', $project->id) }}"
+                                                                data-method="PUT" data-data='@json($project)'
+                                                                data-form="#projectForm">
+                                                                <i class="ti ti-edit text-blue"></i> Edit
+                                                            </a>
+                                                            <a class="dropdown-item deleteProject" href="#"
+                                                                data-bs-toggle="modal" data-bs-target="#delete_project"
+                                                                data-id="{{ $project->id }}"><i
                                                                     class="ti ti-trash text-danger"></i> Delete</a>
                                                         </div>
                                                     </div>
@@ -175,238 +181,91 @@
     <!-- /Page Wrapper -->
 
     <!-- Add Edit Project -->
-    <div class="offcanvas offcanvas-end offcanvas-large" tabindex="-1" id="offcanvas_add">
-        <div class="offcanvas-header border-bottom">
-            <h4 id="offcanvas-title">Add New Project</h4>
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
-        </div>
+    <x-offcanvas id="projectCanvas" title="Project" formId="projectForm">
 
-        <div class="offcanvas-body">
-            <form action="{{ route('projects.store') }}" method="POST">
-                @csrf
+        <form id="projectForm" class="ajax-form" method="POST" action="{{ route('projects.store') }}">
 
-                <div class="row">
+            @csrf
 
-                    {{-- NAME --}}
-                    <div class="col-md-6 mb-3">
-                        <label class="col-form-label">Name <span class="text-danger">*</span></label>
-                        <input placeholder="Enter project name" type="text" name="name" class="form-control" required>
-                    </div>
+            @php
+                $config = [
+                    [
+                        'name' => 'name',
+                        'label' => 'Name',
+                        'type' => 'text',
+                        'placeholder' => 'Enter project name',
+                        'required' => true,
+                        'col' => 6,
+                    ],
 
-                    {{-- WEBSITE URL --}}
-                    <div class="col-md-6 mb-3">
-                        <label class="col-form-label">Website URL</label>
-                        <input placeholder="Enter website URL" type="text" name="website_url" class="form-control">
-                    </div>
+                    [
+                        'name' => 'website_url',
+                        'label' => 'Website URL',
+                        'type' => 'text',
+                        'placeholder' => 'Enter website URL',
+                        'col' => 6,
+                    ],
 
-                    {{-- EVENT NAME --}}
-                    <div class="col-md-6 mb-3">
-                        <label class="col-form-label">Event Name</label>
-                        <input placeholder="Enter event name" type="text" name="event_name" class="form-control">
-                    </div>
+                    [
+                        'name' => 'event_name',
+                        'label' => 'Event Name',
+                        'type' => 'text',
+                        'placeholder' => 'Enter event name',
+                        'col' => 6,
+                    ],
 
-                    {{-- FLOW TYPE --}}
-                    <div class="col-md-6 mb-3">
-                        <label class="col-form-label">Flow Type <span class="text-danger">*</span></label>
-                        <select name="flow_type" class="form-select" required>
-                            <option value="simple" selected>Simple</option>
-                            <option value="full">Full</option>
-                        </select>
-                    </div>
+                    [
+                        'name' => 'flow_type',
+                        'label' => 'Flow Type',
+                        'type' => 'select',
+                        'options' => [
+                            'simple' => 'Simple',
+                            'full' => 'Full',
+                        ],
+                        'required' => true,
+                        'col' => 6,
+                    ],
 
-                    {{-- INVOICE ENABLED --}}
-                    <div class="col-md-6 mb-3">
-                        <label class="col-form-label">Invoice Enabled</label>
-                        <select name="invoice_enabled" class="form-select">
-                            <option value="0">No</option>
-                            <option value="1">Yes</option>
-                        </select>
-                    </div>
+                    [
+                        'name' => 'pipedrive_account_id',
+                        'label' => 'Pipedrive Account',
+                        'type' => 'select',
+                        'options' => $pipedriveAccounts ?? [],
+                        'col' => 6,
+                    ],
 
-                    {{-- PIPEDRIVE ACCOUNT --}}
-                    <div class="col-md-6 mb-3">
-                        <label class="col-form-label">Pipedrive Account</label>
-                        <select name="pipedrive_account_id" class="form-select">
-                            <option value="">Select</option>
-                            @foreach ($pipedriveAccounts as $id => $account_name)
-                                <option value="{{ $id }}">{{ $account_name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
+                    // 🔥 pipeline (dynamic)
+                    [
+                        'name' => 'pipeline_id',
+                        'label' => 'Pipeline',
+                        'type' => 'select',
+                        'options' => [], // loaded via JS
+                        'col' => 6,
+                        'id' => 'pipelineSelect',
+                    ],
 
-                    {{-- INVOICE ACCOUNT --}}
-                    <div class="col-md-6 mb-3">
-                        <label class="col-form-label">Invoice Account</label>
-                        <select name="invoice_account_id" class="form-select">
-                            <option value="">Select</option>
-                            @foreach ($invoiceAccounts as $id => $type)
-                                <option value="{{ $id }}">{{ $type }}</option>
-                            @endforeach
-                        </select>
-                    </div>
+                    [
+                        'name' => 'invoice_account_id',
+                        'label' => 'Invoice Account',
+                        'type' => 'select',
+                        'options' => $invoiceAccounts ?? [],
+                        'col' => 6,
+                    ],
+                    [
+                        'name' => 'invoice_enabled',
+                        'label' => 'Invoice Enabled',
+                        'type' => 'checkbox',
+                        'col' => 12,
+                    ],
+                ];
+            @endphp
 
-                </div>
+            <x-form.fields :config="$config" />
 
-                <div class="text-end mt-3">
-                    <button type="button" class="btn btn-light" data-bs-dismiss="offcanvas">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Create</button>
-                </div>
-            </form>
-        </div>
-    </div>
+        </form>
+
+    </x-offcanvas>
     <!-- /Add Edit Project -->
-
-    {{-- View Project --}}
-    <div class="offcanvas offcanvas-end offcanvas-large" tabindex="-1" id="offcanvas_view_project">
-        <div class="offcanvas-header border-bottom">
-            <h5 class="fw-semibold">Project Details</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
-        </div>
-
-        <div class="offcanvas-body">
-            <div class="card">
-                <div class="card-body">
-
-                    <!-- 🔹 Tabs -->
-                    <ul class="nav nav-tabs nav-tabs-bottom mb-3">
-                        <li class="nav-item">
-                            <a class="nav-link active" data-bs-toggle="tab" href="#project-overview">Overview</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-bs-toggle="tab" href="#project-status">Status</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-bs-toggle="tab" href="#project-history">History</a>
-                        </li>
-                    </ul>
-
-                    <div class="tab-content">
-
-                        <!-- ✅ OVERVIEW -->
-                        <div class="tab-pane show active" id="project-overview">
-
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <div>
-                                    <h5 class="text-capitalize" id="p_name">--</h5>
-                                    <small class="text-muted" id="p_slug">--</small>
-                                </div>
-
-                                {{-- <div id="p_status">
-                                    <span class="badge bg-secondary">--</span>
-                                </div> --}}
-                            </div>
-
-                            <hr>
-
-                            <div class="row g-3">
-
-                                <div class="col-md-6">
-                                    <div class="p-3 border rounded bg-light">
-                                        <small>Website</small>
-                                        <p id="p_website">--</p>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <div class="p-3 border rounded bg-light">
-                                        <small>Event</small>
-                                        <p id="p_event">--</p>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <div class="p-3 border rounded bg-light">
-                                        <small>Flow Type</small>
-                                        <p id="p_flow">--</p>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <div class="p-3 border rounded bg-light">
-                                        <small>Invoice</small>
-                                        <p id="p_invoice">--</p>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <div class="p-3 border rounded bg-light">
-                                        <small>Pipedrive</small>
-                                        <p id="p_pipedrive">--</p>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <div class="p-3 border rounded bg-light">
-                                        <small>Invoice Account</small>
-                                        <p id="p_invoice_acc">--</p>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-
-                        <!-- ✅ STATUS -->
-                        <div class="tab-pane" id="project-status">
-                            <div class="row g-3">
-
-                                <div class="col-md-6">
-                                    <div class="p-3 border rounded bg-light">
-                                        <small>Pipedrive Sync Status</small>
-                                        <p id="p_sync"></p>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <div class="p-3 border rounded bg-light">
-                                        <small>Plugin Status</small>
-                                        <p id="p_plugin"></p>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <div class="p-3 border rounded bg-light">
-                                        <small>Plugin Connected At</small>
-                                        <p id="p_connected"></p>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <div class="p-3 border rounded bg-light">
-                                        <small>Plugin Last Ping</small>
-                                        <p id="p_ping"></p>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-
-                        <!-- ✅ HISTORY -->
-                        <div class="tab-pane" id="project-history">
-                            <div class="table-responsive">
-                                <table class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>Status</th>
-                                            <th>Message</th>
-                                            <th>User</th>
-                                            <th>Date</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="projectHistoryBody"></tbody>
-                                </table>
-                            </div>
-                            <div class="d-flex justify-content-end mt-3">
-                                <a id="load_more" class="btn btn-danger nav-link mt-2" href="#">Load
-                                    More</a>
-                            </div>
-                        </div>
-
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Delete Project -->
     <div class="modal fade" id="delete_project" role="dialog">
@@ -421,7 +280,11 @@
                         <p class="mb-0">Are you sure you want to remove <br> project you selected.</p>
                         <div class="d-flex align-items-center justify-content-center mt-4">
                             <a href="#" class="btn btn-light me-2" data-bs-dismiss="modal">Cancel</a>
-                            <a href="projects.html" class="btn btn-danger">Yes, Delete it</a>
+                            <form id="deleteForm" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger">Yes, Delete it</button>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -432,111 +295,38 @@
 
     @push('scripts')
         <script>
-            // edit project with jqueery ajax
-            $(document).on('click', '.editProject', function() {
-                $('#offcanvas-title').text('Edit Project');
-                let projectId = $(this).data('id');
-                $.ajax({
-                    url: '/projects/' + projectId + '/edit',
-                    method: 'GET',
-                    success: function(response) {
-                        // Populate the edit form with the project details
-                        $('#offcanvas_add input[name="name"]').val(response.name);
-                        $('#offcanvas_add input[name="website_url"]').val(response.website_url);
-                        $('#offcanvas_add input[name="event_name"]').val(response.event_name);
-                        $('#offcanvas_add select[name="flow_type"]').val(response.flow_type);
-                        $('#offcanvas_add select[name="invoice_enabled"]').val(response.invoice_enabled ?
-                            '1' : '0');
-                        $('#offcanvas_add select[name="pipedrive_account_id"]').val(response
-                            .pipedrive_account_id);
-                        $('#offcanvas_add select[name="invoice_account_id"]').val(response
-                            .invoice_account_id);
-                        let form = $('#offcanvas_add form');
+            $(document).on('change', 'select[name="pipedrive_account_id"]', function() {
 
-                        form.attr('action', '/projects/' + projectId + '/update');
+                let accountId = $(this).val();
+                let pipelineSelect = $(this).closest('form').find('#pipelineSelect');
+                console.log(pipelineSelect);
 
-                        // remove old _method if exists
-                        form.find('input[name="_method"]').remove();
+                pipelineSelect.html('<option>Loading...</option>');
 
-                        // add PUT method
-                        form.append('<input type="hidden" name="_method" value="PUT">');
+                if (!accountId) {
+                    pipelineSelect.html('<option value="">Select Pipeline</option>');
+                    pipelineSelect.trigger('change'); // 🔥
+                    return;
+                }
 
-                        // change button text
-                        form.find('button[type="submit"]').text('Update');
+                $.get(`/settings/pipedrive/${accountId}/pipelines`, function(res) {
 
-                    },
-                    error: function(xhr) {
-                        alert('Failed to fetch project details.');
+                    let options = '<option value="">Select Pipeline</option>';
+
+                    Object.entries(res.data).forEach(([id, name]) => {
+                        options += `<option value="${id}">${name}</option>`;
+                    });
+
+                    pipelineSelect.html(options);
+
+                    // 🔥 set selected value AFTER options loaded
+                    let selectedPipeline = pipelineSelect.data("selected");
+
+                    if (selectedPipeline) {
+                        pipelineSelect.val(selectedPipeline);
                     }
-                });
-            });
-        </script>
 
-
-        <script>
-            $(document).on('click', '.viewProject', function() {
-
-                let id = $(this).data('id');
-
-                $.ajax({
-                    url: '/projects/' + id,
-                    method: 'GET',
-                    success: function(res) {
-                        console.log(res.project);
-                        $('#p_name').text(res?.project?.name);
-                        $('#p_slug').text(res?.project?.slug);
-                        $('#p_website').text(res?.project?.website_url ?? '-');
-                        $('#p_event').text(res?.project?.event_name ?? '-');
-
-                        $('#p_flow').html(
-                            `<span class="badge bg-primary">${res?.project?.flow_type}</span>`);
-
-                        $('#p_invoice').html(
-                            res?.project?.invoice_enabled ?
-                            '<span class="badge bg-success">Enabled</span>' :
-                            '<span class="badge bg-secondary">Disabled</span>'
-                        );
-
-                        $('#p_pipedrive').text(res?.project.pipedrive_account?.account_name ?? '-');
-                        $('#p_invoice_acc').text(res?.project?.invoice_account?.type ?? '-');
-
-                        $('#p_sync').html(
-                            res?.project?.pipedrive_sync_status ?
-                            '<span class="badge bg-success">Synced</span>' :
-                            '<span class="badge bg-warning">Not Synced</span>'
-                        );
-
-                        $('#p_plugin').html(
-                            res?.project?.plugin_connected ?
-                            '<span class="badge bg-success">Connected</span>' :
-                            '<span class="badge bg-danger">Disconnected</span>'
-                        );
-
-                        $('#p_connected').text(res?.project?.plugin_connected_at ?? '-');
-                        $('#p_ping').text(res?.project?.plugin_last_ping_at ?? 'Never');
-
-                        // Populate history table
-                        let historyHtml = '';
-                        res?.activityLog.forEach(function(log) {
-                            historyHtml += `<tr>
-                                    <td><span class="badge bg-info">${log.status}</span></td>
-                                    <td>${log.message}</td>
-                                    <td>${log.user ? log.user.name : 'System'}</td>
-                                    <td>${new Date(log.performed_at).toLocaleString()}</td>
-                                </tr>`;
-                        });
-                        $('#projectHistoryBody').html(historyHtml);
-                        $('#load_more').attr('href', `/history/projects/${res?.project?.id}`);
-                    },
-                    error: function() {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'Failed to fetch Project details. Please try again.',
-                            confirmButtonColor: '#d33'
-                        });
-
-                    }
+                    pipelineSelect.trigger('change');
                 });
 
             });

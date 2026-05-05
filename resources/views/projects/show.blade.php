@@ -42,6 +42,15 @@
             padding: 5px 10px;
             border-radius: 20px;
         }
+
+        .geo-card {
+            transition: all 0.2s ease;
+        }
+
+        .geo-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.06);
+        }
     </style>
     <!-- Page Wrapper -->
     <div class="page-wrapper">
@@ -126,6 +135,17 @@
                                         <i class="ti ti-users"></i>
                                         Users
                                     </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link d-flex align-items-center gap-2" data-bs-toggle="tab"
+                                        href="#project-smtp">
+                                        <i class="ti ti-mail"></i>SMTP
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link  d-flex align-items-center gap-2" data-bs-toggle="tab"
+                                        href="#project-geo">
+                                        <i class="ti ti-map-pin"></i>Geo Filter</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link  d-flex align-items-center gap-2" data-bs-toggle="tab"
@@ -329,96 +349,9 @@
                                     @endif
                                 </div>
 
-                                <div class="card-body">
+                                <div class="card-body" id="company-section">
 
-                                    @if ($company)
-                                        {{-- ✅ SHOW COMPANY DATA --}}
-                                        <div class="row g-4">
-
-                                            {{-- Logo --}}
-                                            <div class="col-md-4">
-                                                <div class="text-center p-4 border rounded bg-light-subtle h-100">
-
-                                                    @if ($company->logo)
-                                                        <img src="{{ asset('storage/' . $company->logo) }}"
-                                                            class="img-fluid rounded mb-3" style="max-height:120px;">
-                                                    @else
-                                                        <div class="text-muted py-4">
-                                                            <i class="ti ti-photo fs-1"></i>
-                                                            <div>No Logo</div>
-                                                        </div>
-                                                    @endif
-
-                                                    <h6 class="fw-semibold">
-                                                        {{ $company->company_name }}
-                                                    </h6>
-
-                                                    <small class="text-muted">
-                                                        {{ $company->email ?? '-' }}
-                                                    </small>
-
-                                                </div>
-                                            </div>
-
-                                            {{-- Details --}}
-                                            <div class="col-md-8">
-                                                <div class="row g-3">
-
-                                                    <div class="col-md-6">
-                                                        <div class="detail-box">
-                                                            <small>Contact Person</small>
-                                                            <div class="fw-semibold">
-                                                                {{ $company->contact_name ?? '-' }}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-md-6">
-                                                        <div class="detail-box">
-                                                            <small>Phone</small>
-                                                            <div class="fw-semibold">
-                                                                {{ $company->phone ?? '-' }}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-md-12">
-                                                        <div class="detail-box">
-                                                            <small>Address</small>
-                                                            <div class="fw-semibold">
-                                                                {{ $company->address_line1 ?? '' }}
-                                                                {{ $company->address_line2 ?? '' }},
-                                                                {{ $company->city ?? '' }},
-                                                                {{ $company->state ?? '' }},
-                                                                {{ $company->country ?? '' }}
-                                                                {{ $company->postal_code ?? '' }}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                    @else
-                                        {{-- ❌ NO COMPANY STATE --}}
-                                        <div class="text-center py-5">
-
-                                            <i class="ti ti-building fs-1 text-muted mb-3"></i>
-
-                                            <h6 class="fw-semibold">No Company Details Added</h6>
-
-                                            <p class="text-muted mb-3">
-                                                Add company information to manage billing, invoices, and integrations.
-                                            </p>
-
-                                            <button class="btn btn-success" data-bs-toggle="offcanvas"
-                                                data-bs-target="#companyCanvas">
-                                                <i class="ti ti-plus"></i> Add Company
-                                            </button>
-
-                                        </div>
-                                    @endif
+                                    @include('projects.partials.company', ['company' => $company])
 
                                 </div>
                             </div>
@@ -443,63 +376,16 @@
                                 <div class="card-body">
 
                                     @if ($project->users->count())
-                                        <div class="row g-4">
+                                        <div class="row g-4" id="user-card">
 
                                             @foreach ($project->users as $user)
                                                 @php $role = $user->getRoleNames()->first(); @endphp
 
-                                                <div class="col-md-4">
-
-                                                    <div
-                                                        class="user-card p-3 rounded-3 border bg-white h-100 position-relative">
-
-                                                        <!-- 🔹 Top Section -->
-                                                        <div class="d-flex align-items-center gap-3">
-
-                                                            <!-- Avatar -->
-                                                            <div class="avatar-lg">
-                                                                {{ strtoupper(substr($user->name, 0, 1)) }}
-                                                            </div>
-
-                                                            <!-- Info -->
-                                                            <div class="flex-grow-1">
-                                                                <h6 class="mb-0 fw-semibold">{{ $user->name }}</h6>
-                                                                <small class="text-muted">
-                                                                    {{ $user->email ?? 'No Email' }}
-                                                                </small>
-                                                            </div>
-
-                                                            <!-- Role Badge -->
-                                                            <span
-                                                                class="badge role-badge
-                                {{ $role === 'admin' ? 'bg-success' : 'bg-secondary' }}">
-                                                                {{ ucfirst($role ?? 'user') }}
-                                                            </span>
-                                                        </div>
-
-                                                        <!-- 🔹 Divider -->
-                                                        <hr class="my-3">
-
-                                                        <!-- 🔹 Actions -->
-                                                        <div class="d-flex justify-content-between align-items-center">
-
-                                                            <small class="text-muted">
-                                                                Added to project
-                                                            </small>
-
-                                                            <div class="d-flex gap-2">
-                                                                <button
-                                                                    data-url="{{ route('projects.users.remove', [$project->id, $user->id]) }}"
-                                                                    class="btn btn-sm btn-light border text-danger delete-btn">
-                                                                    <i class="ti ti-trash"></i>
-                                                                </button>
-                                                            </div>
-
-                                                        </div>
-
-                                                    </div>
-
-                                                </div>
+                                                @include('projects.partials.users-card', [
+                                                    'user' => $user,
+                                                    'projectId' => $project->id,
+                                                    'role' => $role,
+                                                ])
                                             @endforeach
 
                                         </div>
@@ -529,7 +415,109 @@
                             </div>
 
                         </div>
-                        <!-- ✅ HISTORY -->
+
+                        <div class="tab-pane fade" id="project-smtp">
+                            <div class="card border-0 shadow-sm">
+
+                                <!-- 🔹 Header -->
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0 fw-semibold">SMTP Settings</h5>
+
+                                    <button class="btn btn-sm btn-primary" data-bs-toggle="offcanvas"
+                                        data-bs-target="#smtpCanvas">
+                                        <i class="ti ti-plus"></i> Add SMTP
+                                    </button>
+                                </div>
+
+                                <!-- 🔹 Body -->
+                                <div class="card-body">
+
+                                    @if ($project->smtps->count())
+                                        <div class="row g-3" id="smtp-section">
+                                            @foreach ($project->smtps as $smtp)
+                                                @include('projects.partials.smtp-card', [
+                                                    'smtp' => $smtp,
+                                                    'projectId' => $project->id,
+                                                ])
+                                            @endforeach
+                                        </div>
+                                    @else
+                                        <!-- 🔹 Empty -->
+                                        <div class="text-center py-5">
+                                            <i class="ti ti-mail fs-1 text-muted"></i>
+                                            <p class="mt-2 text-muted">No SMTP configured</p>
+
+                                            <button class="btn btn-primary btn-sm" data-bs-toggle="offcanvas"
+                                                data-bs-target="#smtpCanvas">
+                                                <i class="ti ti-plus"></i> Add SMTP
+                                            </button>
+                                        </div>
+                                    @endif
+
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+                        <div class="tab-pane fade" id="project-geo">
+                            <div class="card border-0 shadow-sm">
+
+                                <!-- 🔹 Header -->
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0 fw-semibold">GEO Filter</h5>
+
+                                    @if ($project->geoFilter)
+                                        <button class="btn btn-sm btn-primary edit-form" data-bs-toggle="offcanvas"
+                                            data-bs-target="#geoCanvas" data-type="edit"
+                                            data-url="{{ route('projects.geo.store', $project->id) }}" data-method="POST"
+                                            data-data='@json($project->geoFilter)'
+                                            data-form="#geoForm">
+                                            <i class="ti ti-edit"></i> Edit Geo Filter
+                                        </button>
+                                    @else
+                                        <button class="btn btn-sm btn-success" data-bs-toggle="offcanvas"
+                                            data-bs-target="#geoCanvas" data-form="#geoForm">
+                                            <i class="ti ti-plus"></i> Add Geo Filter
+                                        </button>
+                                    @endif
+                                </div>
+                                <div class="card-body">
+
+                                    @if ($project->geoFilter)
+                                        @php $geo = $project->geoFilter; @endphp
+                                        <div id="geo-section">
+                                            @include('projects.partials.geo', ['geo' => $geo])
+                                        </div>
+
+                                    @else
+                                        <!-- 🔹 EMPTY STATE -->
+                                        <div class="text-center py-5">
+
+                                            <div class="mb-3">
+                                                <i class="ti ti-current-location fs-1 text-muted"></i>
+                                            </div>
+
+                                            <h6 class="fw-semibold">No Geo Filter Configured</h6>
+
+                                            <p class="text-muted small mb-3">
+                                                Restrict or filter users based on geographic radius.
+                                            </p>
+
+                                            <button class="btn btn-primary" data-bs-toggle="offcanvas"
+                                                data-bs-target="#geoCanvas">
+
+                                                <i class="ti ti-map"></i> Configure Geo Filter
+                                            </button>
+
+                                        </div>
+                                    @endif
+
+                                </div>
+                            </div>
+
+                        </div>
                         <div class="tab-pane" id="project-history">
                             <div class="card shadow-sm border-0">
 
@@ -643,22 +631,11 @@
                             </div>
                         </div>
 
-
-
                     </div>
                 </div>
             </div>
         </div>
-        {{-- For Test Only --}}
-        {{-- <div data-swr="company_1" data-url="/projects/10/company">
 
-            <div data-loading>Loading...</div>
-            <div data-error style="display:none;">Error loading</div>
-
-            <h5 data-bind="company_name"></h5>
-            <p data-bind="email"></p>
-
-        </div> --}}
         <x-offcanvas id="companyCanvas" title="Company Details" formId="companyForm">
 
             <form id="companyForm" class="ajax-form" method="POST"
@@ -801,7 +778,132 @@
 
         </x-offcanvas>
 
+
+        <x-offcanvas id="smtpCanvas" title="SMTP Settings" formId="smtpForm">
+
+            <form id="smtpForm" class="ajax-form" method="POST"
+                action="{{ route('projects.smtp.store', $project->id) }}">
+
+                @csrf
+                @php
+                    $config = [
+                        [
+                            'name' => 'type',
+                            'label' => 'Type',
+                            'type' => 'select',
+
+                            'options' => \App\Enums\SmtpType::options(), // ✅ direct use
+
+                            'disabledOptions' => $existingTypes ?? [],
+
+                            'required' => true,
+                            'col' => 6,
+                        ],
+
+                        [
+                            'name' => 'host',
+                            'label' => 'Host',
+                            'type' => 'text',
+                            'col' => 6,
+                            'required' => true,
+                        ],
+
+                        [
+                            'name' => 'port',
+                            'label' => 'Port',
+                            'type' => 'number',
+                            'col' => 6,
+                        ],
+
+                        [
+                            'name' => 'username',
+                            'label' => 'Username',
+                            'type' => 'text',
+                            'col' => 6,
+                        ],
+
+                        [
+                            'name' => 'password',
+                            'label' => 'Password',
+                            'type' => 'password',
+                            'col' => 6,
+                        ],
+
+                        [
+                            'name' => 'encryption',
+                            'label' => 'Encryption',
+                            'type' => 'select',
+                            'options' => [
+                                'tls' => 'TLS',
+                                'ssl' => 'SSL',
+                            ],
+                            'col' => 6,
+                        ],
+
+                        [
+                            'name' => 'from_email',
+                            'label' => 'From Email',
+                            'type' => 'email',
+                            'col' => 6,
+                        ],
+
+                        [
+                            'name' => 'from_name',
+                            'label' => 'From Name',
+                            'type' => 'text',
+                            'col' => 6,
+                        ],
+
+                        [
+                            'name' => 'is_active',
+                            'label' => 'Active Status',
+                            'type' => 'checkbox',
+                            'col' => 6,
+                        ],
+                    ];
+                @endphp
+
+                <x-form.fields :config="$config" />
+
+            </form>
+
+        </x-offcanvas>
+
+        <x-offcanvas id="geoCanvas" title="GEO Settings" formId="geoForm">
+
+            <form id="geoForm" class="ajax-form" method="POST"
+                action="{{ route('projects.geo.store', $project->id) }}">
+                @csrf
+                @php
+                    $config = [
+                        [
+                            'name' => 'latitude_range',
+                            'label' => 'Latitude Range',
+                            'type' => 'number',
+                            'placeholder'=>'e.g. 0.03 (≈ 3 km)',
+                            'col' => 6,
+                        ],
+                        [
+                            'name' => 'longitude_range',
+                            'label' => 'Longitude Range',
+                            'type' => 'number',
+                            'placeholder' => 'e.g. 0.03 (≈ 3 km)',
+                            'col' => 6,
+                        ],
+                        [
+                            'name' => 'status',
+                            'label' => 'Enable Geo Filter',
+                            'type' => 'checkbox',
+                            'col' => 12,
+                        ],
+                    ];
+                @endphp
+
+                <x-form.fields :config="$config" />
+
+
+            </form>
+
+        </x-offcanvas>
     </div>
-
-
 @endsection

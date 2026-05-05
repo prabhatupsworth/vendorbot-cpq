@@ -13,8 +13,8 @@
                 />
 
             @elseif ($field['type'] === 'select')
-
                 <x-form.select
+                    :id="$field['id'] ?? ''"
                     :label="$field['label']"
                     :name="$field['name']"
                     :options="$field['options'] ?? []"
@@ -22,6 +22,7 @@
                     :placeholder="$field['placeholder'] ?? ''"
                     :value="$field['value'] ?? null"
                     :multiple="$field['multiple'] ?? false"
+                    :disabledOptions="$field['disabledOptions'] ?? []"
                 />
 
             @elseif ($field['type'] === 'file')

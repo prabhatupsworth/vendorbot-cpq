@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-
+use Illuminate\Support\Facades\Hash;
 class ProfileController extends Controller
 {
     public function index()
@@ -51,5 +51,45 @@ class ProfileController extends Controller
     public function security()
     {
         return view('profile.security');
+    }
+
+
+
+    public function changePassword(Request $request)
+    {
+        // ✅ Validate
+        $validated = $request->validate([
+            'current_password' => ['required'],
+            'new_password' => ['required', 'min:6', 'confirmed'],
+        ]);
+
+        try {
+
+            $user = auth()->user();
+
+            // 🔐 Check current password
+            if (!Hash::check($validated['current_password'], $user->password)) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Current password is incorrect'
+                ], 422);
+            }
+
+            // 🔐 Update password
+            $user->update([
+                'password' => Hash::make($validated['new_password'])
+            ]);
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Password changed successfully'
+            ]);
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong'
+            ], 500);
+        }
     }
 }

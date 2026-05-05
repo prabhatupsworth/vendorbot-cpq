@@ -8,8 +8,6 @@
                  <div class="list-group list-group-flush settings-sidebar">
                      <a href="{{ route('profile') }}" class="fw-medium {{ request()->routeIs('profile') ? 'active' : '' }}">Profile</a>
                      <a href="{{ route('security') }}" class="fw-medium {{ request()->routeIs('security') ? 'active' : '' }}">Security</a>
-                     <a href="#" class="fw-medium">Notifications</a>
-                     <a href="#" class="fw-medium">Connected Apps</a>
                  </div>
              </div>
          </div>

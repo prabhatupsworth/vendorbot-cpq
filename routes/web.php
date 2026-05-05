@@ -10,6 +10,8 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Project\ProjectCompanyDetailController;
 use App\Http\Controllers\Project\ProjectController;
+use App\Http\Controllers\Project\ProjectGeoFilterController;
+use App\Http\Controllers\Project\ProjectSmtpController;
 use App\Http\Controllers\TestController;
 use Illuminate\Support\Facades\Route;
 
@@ -57,6 +59,8 @@ Route::middleware('auth')->group(function () {
 
 
     Route::get('/security', [ProfileController::class, 'security'])->name('security');
+    Route::post('/change-password', [ProfileController::class, 'changePassword'])
+    ->name('change.password');
     // Logout
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
@@ -104,6 +108,8 @@ Route::middleware('auth')->group(function () {
             Route::middleware('permission:pipedrive.create')->group(function () {
                 Route::post('/', [PipedriveController::class, 'store'])
                     ->name('store');
+                Route::get('/{account}/pipelines', [PipedriveController::class, 'pipelines'])->name('pipelines');
+
             });
 
             Route::middleware('permission:pipedrive.edit')->group(function () {
@@ -171,13 +177,27 @@ Route::middleware('auth')->group(function () {
         });
 
         Route::prefix('{project}/users')->name('users.')->group(function () {
-             Route::post('/add-users', [ProjectController::class, 'add_user'])
+            Route::post('/add-users', [ProjectController::class, 'add_user'])
                 ->name('add');
             Route::delete('/{user}/user-remove', [ProjectController::class, 'remove_user'])
-            ->name('remove');
+                ->name('remove');
         });
 
+        Route::prefix('{project}/smtp')->name('smtp.')->group(function () {
 
+            Route::get('/', [ProjectSmtpController::class, 'index'])->name('index');
+            Route::post('/store', [ProjectSmtpController::class, 'store'])->name('store');
+            Route::get('/{id}', [ProjectSmtpController::class, 'show'])->name('show');
+            Route::put('/{id}', [ProjectSmtpController::class, 'update'])->name('update');
+            Route::delete('/{id}', [ProjectSmtpController::class, 'destroy'])->name('delete');
+        });
+
+        Route::prefix('{project}/geo-filter')->name('geo.')->group(function () {
+
+            // Route::get('/', [ProjectGeoFilterController::class, 'show'])->name('show');
+            Route::post('/store', [ProjectGeoFilterController::class, 'store'])->name('store');
+
+        });
     });
     /*
     |--------------------------------------------------------------------------

@@ -8,6 +8,7 @@ use App\Models\ActivityLog;
 use App\Models\Invoice\InvoiceAccount;
 use App\Models\PipeDrive\PipedriveAccount;
 use App\Models\Project\Project;
+use App\Models\Project\Smtp;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -20,7 +21,6 @@ class ProjectController extends Controller
     public function index()
     {
         $projects = Project::latest()->paginate(10);
-
         // get all pipedrive accounts and invoice accounts for dropdowns
         $pipedriveAccounts = PipedriveAccount::pluck('account_name', 'id');
         $invoiceAccounts =   InvoiceAccount::pluck('type', 'id');
@@ -37,12 +37,13 @@ class ProjectController extends Controller
 
             $project = Project::create([
                 'name' => $validated['name'],
-                'slug' => Str::slug($validated['name']) . '-' . time(),
+                'slug' => Str::slug($validated['name']),
                 'website_url' => $validated['website_url'] ?? null,
                 'event_name' => $validated['event_name'] ?? null,
                 'flow_type' => $validated['flow_type'],
                 'invoice_enabled' => $request->boolean('invoice_enabled'),
                 'pipedrive_account_id' => $validated['pipedrive_account_id'] ?? null,
+                'pipeline_id' => $validated['pipeline_id'] ?? null,
                 'invoice_account_id' => $validated['invoice_account_id'] ?? null,
                 'created_by' => Auth::id(),
             ]);
@@ -65,7 +66,7 @@ class ProjectController extends Controller
     }
 
     // ✅ EDIT (for modal or page)
-    public function edit($id)
+    public function edit(int $id)
     {
         try {
             $project = Project::findOrFail($id);
@@ -77,7 +78,7 @@ class ProjectController extends Controller
     }
 
     // ✅ UPDATE
-    public function update(ProjectRequest $request, $id)
+    public function update(ProjectRequest $request, int $id)
     {
         $validated = $request->validated();
         try {
@@ -85,13 +86,14 @@ class ProjectController extends Controller
 
             $project->update([
                 'name' => $validated['name'],
-                'slug' => Str::slug($validated['name']) . '-' . time(),
                 'website_url' => $validated['website_url'] ?? null,
                 'event_name' => $validated['event_name'] ?? null,
                 'flow_type' => $validated['flow_type'],
                 'invoice_enabled' => $request->boolean('invoice_enabled'),
                 'pipedrive_account_id' => $validated['pipedrive_account_id'] ?? null,
+                'pipeline_id' => $validated['pipeline_id'] ?? null,
                 'invoice_account_id' => $validated['invoice_account_id'] ?? null,
+
             ]);
             activityLog([
                 'module' => 'projects',
@@ -112,7 +114,7 @@ class ProjectController extends Controller
     }
 
     // ✅ DELETE (Soft Delete)
-    public function destroy($id)
+    public function destroy(int $id)
     {
         try {
             $project = Project::findOrFail($id);
@@ -135,11 +137,14 @@ class ProjectController extends Controller
     }
 
     // ✅ SHOW (for project details page)
-    public function show($id)
+    public function show(int $id)
     {
         try {
-            $project = Project::with(['pipedriveAccount:id,account_name', 'invoiceAccount:id,type', 'companyDetails', 'users:id,name'])->findOrFail($id);
+            $project = Project::with(['pipedriveAccount:id,account_name', 'invoiceAccount:id,type', 'companyDetails', 'users:id,name', 'geoFilter'])->findOrFail($id);
             $allUsers = User::pluck('name', 'id')->toArray();
+            $existingTypes = Smtp::where('project_id', $project->id)
+                ->pluck('type') // already string
+                ->toArray();
 
             $activityLog = ActivityLog::with('user:id,name')
                 ->where('module', 'projects')
@@ -148,7 +153,7 @@ class ProjectController extends Controller
                 ->limit(5)
                 ->get();
             // return response()->json(['project' => $project, 'activityLog' => $activityLog]);
-            return view('projects.show', compact('project', 'activityLog', 'allUsers'));
+            return view('projects.show', compact('project', 'activityLog', 'allUsers', 'existingTypes'));
         } catch (\Exception $e) {
 
             Log::error('Project Show Error: ' . $e->getMessage());
@@ -157,7 +162,7 @@ class ProjectController extends Controller
         }
     }
 
-    public function add_user(Request $request, $projectId)
+    public function add_user(Request $request, int $projectId)
     {
         $validated = $request->validate([
             'user_ids' => 'required|array',
@@ -169,13 +174,38 @@ class ProjectController extends Controller
         // 🔥 Just attach (no role)
         $project->users()->syncWithoutDetaching($validated['user_ids']);
 
+        $users = User::whereIn('id', $validated['user_ids'])->get();
+
+        $html = '';
+
+        foreach ($users as $user) {
+            $role = $user->getRoleNames()->first();
+            $html .= view('projects.partials.users-card', [
+                'user' => $user,
+                'projectId' => $projectId,
+                'role' => $role
+            ])->render();
+        }
+
+        activityLog([
+            'module' => 'projects',
+            'action' => 'added',
+            'record_id' => $project->id,
+            'performed_at' => now(),
+            'status' => 'success',
+            'message' => 'Users added successfully.',
+        ]);
+
         return response()->json([
             'status' => true,
-            'message' => 'Users added successfully'
+            'action' => 'append',
+            'target' => '#user-card',
+            'message' => 'Users added successfully',
+            'html' => $html
         ]);
     }
 
-    public function remove_user($projectId, $userId)
+    public function remove_user(int $projectId, int $userId)
     {
         try {
             $project = Project::findOrFail($projectId);
@@ -183,9 +213,21 @@ class ProjectController extends Controller
             // 🔥 detach user from project
             $project->users()->detach($userId);
 
+            activityLog([
+                'module' => 'projects',
+                'action' => 'added',
+                'record_id' => $project->id,
+                'performed_at' => now(),
+                'status' => 'success',
+                'message' => 'User removed successfully.',
+            ]);
+
             return response()->json([
                 'status' => true,
-                'message' => 'User removed successfully'
+                'action' => 'delete',
+                'target' => '.user-card',
+                'id' => $userId,
+                'message' => 'User removed successfully',
             ]);
         } catch (\Exception $e) {
 

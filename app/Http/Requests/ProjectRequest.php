@@ -20,6 +20,7 @@ class ProjectRequest extends FormRequest
             'flow_type' => 'required|in:simple,full',
             'invoice_enabled' => 'nullable|boolean',
             'pipedrive_account_id' => 'nullable|exists:pipedrive_accounts,id',
+            'pipeline_id' => 'nullable|exists:pipedrive_pipelines,id',
             'invoice_account_id' => 'nullable|exists:invoice_accounts,id',
         ];
     }

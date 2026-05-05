@@ -4,6 +4,7 @@ namespace App\Models\Project;
 
 use App\Models\Invoice\InvoiceAccount;
 use App\Models\PipeDrive\PipedriveAccount;
+use App\Models\PipeDrive\PipedrivePipeline;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -18,11 +19,13 @@ class Project extends Model
         'uid',
         'name',
         'slug',
+        'is_active',
         'website_url',
         'event_name',
         'flow_type',
         'invoice_enabled',
         'pipedrive_account_id',
+        'pipeline_id',
         'invoice_account_id',
         'pipedrive_sync_status',
         'plugin_connected',
@@ -44,6 +47,11 @@ class Project extends Model
     public function pipedriveAccount()
     {
         return $this->belongsTo(PipedriveAccount::class, 'pipedrive_account_id');
+    }
+
+    public function pipeline()
+    {
+        return $this->belongsTo(PipedrivePipeline::class, 'pipeline_id');
     }
 
     public function invoiceAccount()
@@ -72,5 +80,15 @@ class Project extends Model
     {
         return $this->belongsToMany(User::class, 'project_users')
             ->withTimestamps();
+    }
+
+    public function smtps()
+    {
+        return $this->hasMany(Smtp::class);
+    }
+
+    public function geoFilter()
+    {
+        return $this->hasOne(GeoFilter::class);
     }
 }

@@ -10,11 +10,9 @@ use Illuminate\Support\Facades\Log;
 
 class ProjectCompanyDetailController extends Controller
 {
-    public function store(StoreProjectCompanyRequest $request, $projectId)
+    public function store(StoreProjectCompanyRequest $request, int $projectId)
     {
-        // dd($request->all(), $request->file('logo'));
         $validated = $request->validated();
-        // dd($request->all());
         try {
 
             $logoPath = null;
@@ -33,6 +31,12 @@ class ProjectCompanyDetailController extends Controller
 
             return response()->json([
                 'status' => true,
+                'action' => 'replace',
+                'target' => '#company-section',
+                'company'=>$company,
+                'html' => view('projects.partials.company', [
+                    'company' => $company,
+                ])->render(),
                 'message' => 'Company saved successfully',
                 'data' => $company
             ]);
@@ -45,7 +49,7 @@ class ProjectCompanyDetailController extends Controller
     }
 
     // ✅ SHOW (for view modal)
-    public function show($project_id)
+    public function show(int $project_id)
     {
         $company = ProjectCompanyDetail::where('project_id', $project_id)->first();
 
@@ -53,7 +57,7 @@ class ProjectCompanyDetailController extends Controller
     }
 
     // ✅ DELETE LOGO (optional)
-    public function deleteLogo($id)
+    public function deleteLogo(int $id)
     {
         try {
             $company = ProjectCompanyDetail::findOrFail($id);

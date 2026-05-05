@@ -46,172 +46,21 @@
                                                         <div class="d-flex align-items-center justify-content-between mb-1">
                                                             <h6 class="fw-semibold">Password</h6>
                                                         </div>
-                                                        <p>Last Changed 03 Jan 2023, 09:00 AM</p>
+                                                        <p>
+                                                            Last Changed
+                                                            {{ auth()->user()->updated_at?->format('d M Y, h:i A') ?? 'Never' }}
+                                                        </p>
                                                     </div>
                                                     <div>
-                                                        <a href="javascript:void(0)" class="btn btn-light"
-                                                            data-bs-toggle="modal" data-bs-target="#change_password">
+                                                        <button class="btn btn-light" data-bs-toggle="offcanvas"
+                                                            data-bs-target="#changePassCanvas">
                                                             Change Password
-                                                        </a>
+                                                        </button>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-lg-4 col-md-6 d-flex">
-                                            <div class="card border shadow-none flex-fill mb-3">
-                                                <div class="card-body d-flex justify-content-between flex-column">
-                                                    <div class="mb-3">
-                                                        <div class="d-flex align-items-center justify-content-between mb-1">
-                                                            <h6 class="fw-semibold">Two Factor</h6>
-                                                            <div class="form-check form-switch">
-                                                                <input class="form-check-input" type="checkbox"
-                                                                    role="switch" checked>
-                                                            </div>
-                                                        </div>
-                                                        <p>Receive codes via SMS or email every time you login</p>
-                                                    </div>
-                                                    <div>
-                                                        <a href="javascript:void(0)" class="btn btn-primary"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#delete_two_factor">Delete Account</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-4 col-md-6 d-flex">
-                                            <div class="card border shadow-none flex-fill mb-3">
-                                                <div class="card-body d-flex justify-content-between flex-column">
-                                                    <div class="mb-3">
-                                                        <div class="d-flex align-items-center justify-content-between mb-1">
-                                                            <h6 class="fw-semibold">Google Authenticator</h6>
-                                                            <div class="form-check form-switch">
-                                                                <input class="form-check-input" type="checkbox"
-                                                                    role="switch" checked>
-                                                            </div>
-                                                        </div>
-                                                        <p>Google Authenticator adds an extra layer of security to
-                                                            your online accounts by adding a second step of
-                                                            verification when you sign in.</p>
-                                                    </div>
-                                                    <div>
-                                                        <span class="badge badge-soft-success">Connected</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-4 col-md-6 d-flex">
-                                            <div class="card border shadow-none flex-fill mb-3">
-                                                <div class="card-body d-flex justify-content-between flex-column">
-                                                    <div class="mb-3">
-                                                        <div
-                                                            class="d-flex align-items-center justify-content-between mb-1">
-                                                            <h6 class="fw-semibold">Phone Number Verification<i
-                                                                    class="ti ti-square-rounded-check-filled text-success ms-1"></i>
-                                                            </h6>
-                                                        </div>
-                                                        <p>Verified Mobile Number : <span
-                                                                class="text-gray-9">+99264710583</span></p>
-                                                    </div>
-                                                    <div class="d-flex align-items-center">
-                                                        <a href="javascript:void(0)" class="btn btn-light me-3"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#change_phone_number">Change</a>
-                                                        <a href="javascript:void(0)"
-                                                            class="link-danger fw-semibold">Remove</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-4 col-md-6 d-flex">
-                                            <div class="card border shadow-none flex-fill mb-3">
-                                                <div class="card-body d-flex justify-content-between flex-column">
-                                                    <div class="mb-3">
-                                                        <div
-                                                            class="d-flex align-items-center justify-content-between mb-1">
-                                                            <h6 class="fw-semibold">Email Verification<i
-                                                                    class="ti ti-square-rounded-check-filled text-success ms-1"></i>
-                                                            </h6>
-                                                        </div>
-                                                        <p>Verified Email : <span>info@example.com</span></p>
-                                                    </div>
-                                                    <div class="d-flex align-items-center">
-                                                        <a href="javascript:void(0)" class="btn btn-light me-3"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#change_email">Change</a>
-                                                        <a href="javascript:void(0)"
-                                                            class="link-danger fw-semibold">Remove</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-4 col-md-6 d-flex">
-                                            <div class="card border shadow-none flex-fill mb-3">
-                                                <div class="card-body d-flex justify-content-between flex-column">
-                                                    <div class="mb-3">
-                                                        <div
-                                                            class="d-flex align-items-center justify-content-between mb-1">
-                                                            <h6 class="fw-semibold">Device Management</h6>
-                                                        </div>
-                                                        <p>Last Changed 17 Feb 2023, 11.00 AM</p>
-                                                    </div>
-                                                    <div class="d-flex align-items-center">
-                                                        <a href="javascript:void(0)" class="btn btn-light">Manage</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-4 col-md-6 d-flex">
-                                            <div class="card border shadow-none flex-fill mb-3">
-                                                <div class="card-body d-flex justify-content-between flex-column">
-                                                    <div class="mb-3">
-                                                        <div
-                                                            class="d-flex align-items-center justify-content-between mb-1">
-                                                            <h6 class="fw-semibold">Account Activity</h6>
-                                                        </div>
-                                                        <p>Last Changed 22 Feb 2023, 01:20 PM</p>
-                                                    </div>
-                                                    <div class="d-flex align-items-center">
-                                                        <a href="javascript:void(0)" class="btn btn-light">View</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-4 col-md-6 d-flex">
-                                            <div class="card border shadow-none flex-fill mb-3">
-                                                <div class="card-body d-flex justify-content-between flex-column">
-                                                    <div class="mb-3">
-                                                        <div
-                                                            class="d-flex align-items-center justify-content-between mb-1">
-                                                            <h6 class="fw-semibold">Deactive Account</h6>
-                                                        </div>
-                                                        <p>Last Changed 04 Mar 2023, 08:40 AM</p>
-                                                    </div>
-                                                    <div class="d-flex align-items-center">
-                                                        <a href="javascript:void(0)" class="btn btn-light"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#deactive_account">Deactive</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-4 col-md-6 d-flex">
-                                            <div class="card border shadow-none flex-fill mb-3">
-                                                <div class="card-body d-flex justify-content-between flex-column">
-                                                    <div class="mb-3">
-                                                        <div
-                                                            class="d-flex align-items-center justify-content-between mb-1">
-                                                            <h6 class="fw-semibold">Delete Account</h6>
-                                                        </div>
-                                                        <p>Last Changed 13 Mar 2023, 02:40 PM</p>
-                                                    </div>
-                                                    <div class="d-flex align-items-center">
-                                                        <a href="javascript:void(0)" class="btn btn-primary"
-                                                            data-bs-toggle="modal" data-bs-target="#delete_account">Delete
-                                                            Account</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -223,5 +72,47 @@
                 </div>
             </div>
         </div>
+
+        <x-offcanvas id="changePassCanvas" title="Change Password" formId="changePassForm">
+
+            <form id="changePassForm" class="ajax-form" method="POST" action="{{ route('change.password') }}">
+                @csrf
+                @php
+                    $config = [
+                        [
+                            'name' => 'current_password',
+                            'label' => 'Current Password',
+                            'type' => 'password',
+                            'placeholder' => 'Enter current password',
+                            'required' => true,
+                            'col' => 12,
+                        ],
+
+                        [
+                            'name' => 'new_password',
+                            'label' => 'New Password',
+                            'type' => 'password',
+                            'placeholder' => 'Enter new password',
+                            'required' => true,
+                            'col' => 12,
+                        ],
+
+                        [
+                            'name' => 'new_password_confirmation',
+                            'label' => 'Confirm New Password',
+                            'type' => 'password',
+                            'placeholder' => 'Confirm new password',
+                            'required' => true,
+                            'col' => 12,
+                        ],
+                    ];
+                @endphp
+
+                <x-form.fields :config="$config" />
+
+
+            </form>
+
+        </x-offcanvas>
     </div>
 @endsection
