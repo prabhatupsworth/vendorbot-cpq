@@ -22,6 +22,7 @@ return new class extends Migration
                 ->default('default');
 
             $table->boolean('is_active')->default(true);
+            $table->boolean('connected')->default(false);
 
             $table->string('host');
             $table->integer('port')->default(587);

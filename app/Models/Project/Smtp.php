@@ -19,6 +19,7 @@ class Smtp extends Model
         'project_id',
         'type',
         'is_active',
+        'connected',
         'host',
         'port',
         'username',

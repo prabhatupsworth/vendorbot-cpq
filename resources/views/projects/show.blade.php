@@ -86,7 +86,7 @@
                                 <div class="text-muted small">
                                     {{ $project->name }}
                                     <span class="mx-2">•</span>
-                                    {{ $project->slug }}
+                                    {{ $project->website_url }}
                                 </div>
                             </div>
 
@@ -206,6 +206,19 @@
                                                     <small class="text-muted">Pipedrive</small>
                                                     <div class="fw-semibold">
                                                         {{ $project?->pipedriveAccount?->account_name ?? '-' }}
+                                                    </div>
+                                                    {{-- 🔥 Pipeline --}}
+                                                    <div class="d-flex align-items-center gap-2">
+
+                                                        <span class="badge bg-info-subtle text-info border">
+                                                            <i class="ti ti-git-branch me-1"></i>
+                                                            Pipeline
+                                                        </span>
+
+                                                        <span class="fw-medium">
+                                                            {{ $project?->pipeline?->name ?? 'No Pipeline Selected' }}
+                                                        </span>
+
                                                     </div>
                                                 </div>
                                             </div>
@@ -423,7 +436,7 @@
                                 <div class="card-header d-flex justify-content-between align-items-center">
                                     <h5 class="mb-0 fw-semibold">SMTP Settings</h5>
 
-                                    <button class="btn btn-sm btn-primary" data-bs-toggle="offcanvas"
+                                    <button class="btn btn-sm btn-primary create-form" data-bs-toggle="offcanvas"
                                         data-bs-target="#smtpCanvas">
                                         <i class="ti ti-plus"></i> Add SMTP
                                     </button>
@@ -447,7 +460,7 @@
                                             <i class="ti ti-mail fs-1 text-muted"></i>
                                             <p class="mt-2 text-muted">No SMTP configured</p>
 
-                                            <button class="btn btn-primary btn-sm" data-bs-toggle="offcanvas"
+                                            <button class="btn btn-primary btn-sm create-form" data-bs-toggle="offcanvas"
                                                 data-bs-target="#smtpCanvas">
                                                 <i class="ti ti-plus"></i> Add SMTP
                                             </button>
@@ -472,8 +485,7 @@
                                         <button class="btn btn-sm btn-primary edit-form" data-bs-toggle="offcanvas"
                                             data-bs-target="#geoCanvas" data-type="edit"
                                             data-url="{{ route('projects.geo.store', $project->id) }}" data-method="POST"
-                                            data-data='@json($project->geoFilter)'
-                                            data-form="#geoForm">
+                                            data-data='@json($project->geoFilter)' data-form="#geoForm">
                                             <i class="ti ti-edit"></i> Edit Geo Filter
                                         </button>
                                     @else
@@ -490,7 +502,6 @@
                                         <div id="geo-section">
                                             @include('projects.partials.geo', ['geo' => $geo])
                                         </div>
-
                                     @else
                                         <!-- 🔹 EMPTY STATE -->
                                         <div class="text-center py-5">
@@ -622,9 +633,10 @@
 
                                     {{-- Load More --}}
                                     <div class="text-center mt-3">
-                                        <button id="load_more" class="btn btn-outline-primary px-4">
+                                        <a href="{{ route('history.module', ['module' => 'projects', 'recordId' => $project->id]) }}"
+                                            class="btn btn-outline-primary px-4">
                                             Load More
-                                        </button>
+                                        </a>
                                     </div>
 
                                 </div>
@@ -880,7 +892,7 @@
                             'name' => 'latitude_range',
                             'label' => 'Latitude Range',
                             'type' => 'number',
-                            'placeholder'=>'e.g. 0.03 (≈ 3 km)',
+                            'placeholder' => 'e.g. 0.03 (≈ 3 km)',
                             'col' => 6,
                         ],
                         [
@@ -905,5 +917,100 @@
             </form>
 
         </x-offcanvas>
+
+        {{-- Test Smtp canvas --}}
+        <x-offcanvas id="smtpTestCanvas" title="Test SMTP" formId="smtpTestForm">
+
+            <form id="smtpTestForm" class="ajax-form" method="POST" action="#">
+
+                @csrf
+
+                {{-- 🔥 SMTP ID --}}
+                <input type="hidden" name="smtp_id" id="smtp_test_id">
+
+                @php
+                    $config = [
+                        [
+                            'name' => 'to_email',
+                            'label' => 'Recipient Email',
+                            'type' => 'email',
+                            'placeholder' => 'Enter recipient email',
+                            'required' => true,
+                            'col' => 12,
+                        ],
+
+                        [
+                            'name' => 'subject',
+                            'label' => 'Subject',
+                            'type' => 'text',
+                            'placeholder' => 'SMTP Test Mail',
+                            'required' => true,
+                            'col' => 12,
+                        ],
+
+                        [
+                            'name' => 'message',
+                            'label' => 'Message',
+                            'type' => 'textarea',
+                            'placeholder' => 'Write test email content...',
+                            'required' => true,
+                            'col' => 12,
+                        ],
+                    ];
+                @endphp
+
+                <x-form.fields :config="$config" />
+
+            </form>
+
+        </x-offcanvas>
     </div>
+
+    @push('scripts')
+        <script>
+            // 🔥 CREATE
+            $(document).on("click", ".create-form", function() {
+
+                let form = $("#smtpForm");
+
+                // enable type select
+                form.find('[name="type"]').prop("disabled", false);
+
+                // remove hidden type input
+                form.find('input[type="hidden"][name="type"]').remove();
+
+                // reset form
+                form[0].reset();
+
+                // reset select2
+                form.find('select').trigger('change');
+            });
+
+
+            // 🔥 EDIT
+            $(document).on("click", ".edit-form", function() {
+
+                let btn = $(this);
+
+                let form = $(btn.data("form"));
+
+                let data = btn.data("data");
+
+                // disable only type select
+                form.find('[name="type"]').prop("disabled", true);
+
+                // remove old hidden input
+                form.find('input[type="hidden"][name="type"]').remove();
+
+                // hidden input so disabled select value submits
+                form.append(`
+            <input
+                type="hidden"
+                name="type"
+                value="${data.type}"
+            >
+        `);
+            });
+        </script>
+    @endpush
 @endsection

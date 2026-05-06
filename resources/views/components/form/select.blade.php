@@ -7,6 +7,7 @@
     'value' => null,
     'multiple' => false,
     'disabledOptions' => [],
+    'disabled' => false,
 ])
 
 @php
@@ -41,7 +42,7 @@
 
     {{-- 🔹 Select --}}
     <select id="{{ $id }}" name="{{ $name }}" class="form-select {{ $multiple ? 'select2' : '' }}"
-        {{ $multiple ? 'multiple' : '' }}>
+        {{ $multiple ? 'multiple' : '' }}  {{ $disabled ? 'disabled' : '' }}>
 
         {{-- 🔹 Placeholder --}}
         @unless ($multiple)

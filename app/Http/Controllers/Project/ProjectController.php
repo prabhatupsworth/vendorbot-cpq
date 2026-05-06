@@ -18,14 +18,43 @@ use Illuminate\Support\Facades\Log;
 class ProjectController extends Controller
 {
     // ✅ LIST
-    public function index()
-    {
-        $projects = Project::latest()->paginate(10);
-        // get all pipedrive accounts and invoice accounts for dropdowns
-        $pipedriveAccounts = PipedriveAccount::pluck('account_name', 'id');
-        $invoiceAccounts =   InvoiceAccount::pluck('type', 'id');
+    // public function index()
+    // {
+    //     $projects = Project::latest()->paginate(10);
+    //     $pipedriveAccounts = PipedriveAccount::pluck('account_name', 'id');
+    //     $invoiceAccounts =   InvoiceAccount::pluck('type', 'id');
 
-        return view('projects.index', compact('projects', 'pipedriveAccounts', 'invoiceAccounts'));
+    //     return view('projects.index', compact('projects', 'pipedriveAccounts', 'invoiceAccounts'));
+    // }
+
+    public function index(Request $request)
+    {
+        $query = Project::query();
+
+        // 🔍 Search
+        if ($request->filled('search')) {
+
+            $search = $request->search;
+
+            $query->where(function ($q) use ($search) {
+
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('website_url', 'like', "%{$search}%")
+                    ->orWhere('event_name', 'like', "%{$search}%");
+            });
+        }
+
+        $projects = $query->latest()->paginate(10)->withQueryString();
+
+        $pipedriveAccounts = PipedriveAccount::pluck('account_name', 'id');
+
+        $invoiceAccounts = InvoiceAccount::pluck('type', 'id');
+
+        return view('projects.index', compact(
+            'projects',
+            'pipedriveAccounts',
+            'invoiceAccounts'
+        ));
     }
 
     // ✅ STORE
@@ -56,6 +85,7 @@ class ProjectController extends Controller
                 'status' => 'success',
                 'message' => 'Project created successfully.',
             ]);
+
             return redirect()->back()->with('success', 'Project created successfully');
         } catch (\Exception $e) {
 
@@ -104,7 +134,17 @@ class ProjectController extends Controller
                 'message' => 'Project updated successfully.',
             ]);
 
-            return redirect()->back()->with('success', 'Project updated successfully');
+            // return redirect()->back()->with('success', 'Project updated successfully');
+            return response()->json([
+                'status' => true,
+                'action' => 'update',
+                'target' => '.project-list',
+                'id' => $project->id,
+                'message' => 'Project updated successfully',
+                'html' => view('projects.partials.list', [
+                    'project' => $project,
+                ])->render(),
+            ]);
         } catch (\Exception $e) {
 
             Log::error('Project Update Error: ' . $e->getMessage());
@@ -127,7 +167,14 @@ class ProjectController extends Controller
                 'status' => 'success',
                 'message' => 'Project deleted successfully.',
             ]);
-            return redirect()->back()->with('success', 'Project deleted successfully');
+            // return redirect()->back()->with('success', 'Project deleted successfully');
+            return response()->json([
+                'status' => true,
+                'action' => 'delete',
+                'target' => '.project-list',
+                'id'     => $id,
+                'message' => 'Project deleted successfully'
+            ]);
         } catch (\Exception $e) {
 
             Log::error('Project Delete Error: ' . $e->getMessage());

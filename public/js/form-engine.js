@@ -1,37 +1,3 @@
-// $(document).on("click", ".edit-form", function () {
-
-//     let btn = $(this);
-//     let form = $(btn.data("form"));
-//     form[0].reset();
-
-//     form.attr("action", btn.data("url"));
-
-//     form.find("input[name=_method]").remove();
-
-//     if (btn.data("method")) {
-//         form.append(`<input type="hidden" name="_method" value="${btn.data("method")}">`);
-//     }
-
-//     // 🔥 THIS IS THE MAGIC
-//     let data = btn.data("data");
-//     if (data) {
-//         Object.keys(data).forEach(key => {
-//             let input = form.find(`[name="${key}"]`);
-
-//             if (!input.length) return;
-
-//             if (input.is("select")) {
-//                 input.val(data[key]).trigger("change");
-//             } else if (input.attr("type") === "checkbox") {
-//                 input.prop("checked", !!data[key]);
-//             } else {
-//                 input.val(data[key] ?? "");
-//             }
-//         });
-//     }
-
-// });
-
 
 $(document).on("click", ".edit-form", function () {
 
@@ -50,7 +16,6 @@ $(document).on("click", ".edit-form", function () {
     let data = btn.data("data");
 
     if (data) {
-
         // 🔥 STEP 1: store pipeline_id BEFORE triggering change
         form.find('#pipelineSelect').data('selected', data.pipeline_id);
 
@@ -61,7 +26,7 @@ $(document).on("click", ".edit-form", function () {
 
         // 🔥 STEP 3: fill remaining fields (EXCLUDE pipeline_id)
         Object.keys(data).forEach(key => {
-
+            console.log(data[key]);
             if (key === "pipeline_id" || key === "pipedrive_account_id") return;
 
             let input = form.find(`[name="${key}"]`);
@@ -84,8 +49,9 @@ $(document).on("submit", ".ajax-form", function (e) {
     e.preventDefault();
 
     let form = $(this);
-    let btn = form.find(".js-submit-btn");
-
+    // let btn = form.find(".js-submit-btn");
+    let btn = $(`.js-submit-btn[data-form="${form.attr('id')}"]`);
+    let originalBtnText = btn.html();
     // reset errors
     form.find(".is-invalid").removeClass("is-invalid");
     form.find(".invalid-feedback").text("");
@@ -130,7 +96,7 @@ $(document).on("submit", ".ajax-form", function (e) {
         error: function (xhr) {
             if (xhr.status === 422) {
                 let errors = xhr.responseJSON.errors;
-
+                btn.prop("disabled", false);
                 Object.keys(errors).forEach(field => {
                     let input = form.find(`[name="${field}"]`);
                     input.addClass("is-invalid");
@@ -143,6 +109,12 @@ $(document).on("submit", ".ajax-form", function (e) {
                     text: xhr.responseJSON?.message || 'Something went wrong'
                 });
             }
+        },
+        complete: function () {
+
+            // ALWAYS reset button
+            btn.prop("disabled", false)
+                .html(originalBtnText);
         }
     });
 });

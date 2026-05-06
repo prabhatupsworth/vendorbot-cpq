@@ -187,6 +187,7 @@ Route::middleware('auth')->group(function () {
 
             Route::get('/', [ProjectSmtpController::class, 'index'])->name('index');
             Route::post('/store', [ProjectSmtpController::class, 'store'])->name('store');
+            Route::post('/test/{id}', [ProjectSmtpController::class, 'testSmtp'])->name('test');
             Route::get('/{id}', [ProjectSmtpController::class, 'show'])->name('show');
             Route::put('/{id}', [ProjectSmtpController::class, 'update'])->name('update');
             Route::delete('/{id}', [ProjectSmtpController::class, 'destroy'])->name('delete');

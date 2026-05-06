@@ -13,23 +13,39 @@ use Spatie\Permission\PermissionRegistrar;
 class UserController extends Controller
 {
     // 🔹 List Users
-    public function index()
+    public function index(Request $request)
     {
         $roles = Role::all();
 
-        if (auth()->user()->hasRole('super_admin')) {
-            // Super admin can see all users
-            $users = \App\Models\User::with('roles')->get();
-        } else {
-            // Others cannot see super admin
-            $users = \App\Models\User::whereDoesntHave('roles', function ($q) {
+        // 🔍 search keyword
+        $search = $request->search;
+
+        // 🔥 base query
+        $query = \App\Models\User::with('roles');
+
+        // 🔥 hide super admin for non super admin users
+        if (!auth()->user()->hasRole('super_admin')) {
+
+            $query->whereDoesntHave('roles', function ($q) {
                 $q->where('name', 'super_admin');
-            })->with('roles')->get();
+            });
         }
+
+        // 🔥 search filter
+        if (!empty($search)) {
+
+            $query->where(function ($q) use ($search) {
+
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        // 🔥 get users
+        $users = $query->latest()->get();
 
         return view('users.index', compact('users', 'roles'));
     }
-
     // 🔹 Show Create Form
     public function create()
     {

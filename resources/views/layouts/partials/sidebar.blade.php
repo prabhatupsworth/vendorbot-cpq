@@ -4,8 +4,10 @@
             <ul>
                 <li class="clinicdropdown">
                     <a href="{{ route('profile') }}">
-                        <img src="{{ asset('template/assets/img/profiles/avatar-14.jpg') }}" class="img-fluid"
-                            alt="Profile">
+                        <img src="{{ auth()->user()->profile_image
+                            ? asset('storage/' . auth()->user()->profile_image)
+                            : asset('template/assets/img/profiles/avatar-14.jpg') }}"
+                            class="img-fluid" alt="Profile">
                         <div class="user-names">
                             <h5>{{ auth()->user()->name }}</h5>
                             <h6>{{ ucwords(str_replace('_', ' ', $authRole)) }}</h6>
@@ -44,14 +46,14 @@
                         @endcan
                     </ul>
                 </li>
-                  <li>
+                <li>
                     <h6 class="submenu-hdr">CRM</h6>
                     <ul>
                         @can('projects.view')
-                        <li><a href="{{ route('projects.index') }}"
-                                class="{{ request()->routeIs('projects.*') ? 'active' : '' }}"><i
-                                    class="ti ti-briefcase"></i><span>Projects</span></a>
-                        </li>
+                            <li><a href="{{ route('projects.index') }}"
+                                    class="{{ request()->routeIs('projects.*') ? 'active' : '' }}"><i
+                                        class="ti ti-briefcase"></i><span>Projects</span></a>
+                            </li>
                         @endcan
                     </ul>
                 </li>
@@ -66,15 +68,15 @@
                                     class="menu-arrow"></span>
                             </a>
                             <ul style="display: none;">
-                                 @can('pipedrive.view')
-                                <li><a href="{{ route('settings.pipedrive.index') }}"
-                                        class="{{ request()->routeIs('settings.pipedrive.index') ? 'active' : '' }}">Pipedrive</a>
-                                </li>
+                                @can('pipedrive.view')
+                                    <li><a href="{{ route('settings.pipedrive.index') }}"
+                                            class="{{ request()->routeIs('settings.pipedrive.index') ? 'active' : '' }}">Pipedrive</a>
+                                    </li>
                                 @endcan
-                                 @can('lexware.view')
-                                <li><a href="{{ route('settings.invoice.lexware.index') }}"
-                                        class="{{ request()->routeIs('settings.invoice.lexware.index') ? 'active' : '' }}">Lexware</a>
-                                </li>
+                                @can('lexware.view')
+                                    <li><a href="{{ route('settings.invoice.lexware.index') }}"
+                                            class="{{ request()->routeIs('settings.invoice.lexware.index') ? 'active' : '' }}">Lexware</a>
+                                    </li>
                                 @endcan
 
                             </ul>

@@ -5,11 +5,26 @@
         <!-- 🔹 Top -->
         <div class="d-flex justify-content-between align-items-center mb-2">
 
-            <span class="badge bg-primary text-uppercase">
-                {{ $smtp->type }}
-            </span>
-
+            <div>
+                <span class="badge bg-primary text-uppercase">
+                    {{ $smtp->type }}
+                </span>
+                @if ($smtp->connected)
+                    <span class="badge bg-success">
+                        Connected
+                    </span>
+                @else
+                    <span class="badge bg-danger">
+                        Not Connected
+                    </span>
+                @endif
+            </div>
             <div class="d-flex gap-2">
+                <button class="btn btn-sm btn-light border text-info edit-form" data-bs-toggle="offcanvas"
+                    data-bs-target="#smtpTestCanvas" data-form="#smtpTestForm" data-method="POST"
+                    data-url="{{ route('projects.smtp.test', [$projectId, $smtp->id]) }}">
+                    <i class="ti ti-mail-forward"></i>
+                </button>
                 <button class="btn btn-sm btn-light border edit-form" data-type="edit" data-bs-toggle="offcanvas"
                     data-bs-target="#smtpCanvas" data-data='@json($smtp)' data-form="#smtpForm"
                     data-method="PUT" data-url="{{ route('projects.smtp.update', [$projectId, $smtp->id]) }}">
@@ -46,7 +61,6 @@
                 <strong>{{ $smtp->from_name }}</strong><br>
                 <span class="text-muted">{{ $smtp->from_email }}</span>
             </div>
-
             @if ($smtp->is_active)
                 <span class="badge bg-success">Active</span>
             @else

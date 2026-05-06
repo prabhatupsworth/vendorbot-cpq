@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rules\Enum;
 use App\Enums\SmtpType;
+use Illuminate\Support\Facades\Mail;
 
 class ProjectSmtpController extends Controller
 {
@@ -166,12 +167,12 @@ class ProjectSmtpController extends Controller
             $smtp->delete();
 
             return response()->json([
-            'status' => true,
-            'action' => 'delete',
-            'target' => '.smtp-item',
-            'id'     => $id,
-            'message'=> 'SMTP deleted successfully'
-        ]);
+                'status' => true,
+                'action' => 'delete',
+                'target' => '.smtp-item',
+                'id'     => $id,
+                'message' => 'SMTP deleted successfully'
+            ]);
         } catch (\Exception $e) {
 
             Log::error('SMTP Delete Error: ' . $e->getMessage());
@@ -179,6 +180,90 @@ class ProjectSmtpController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => 'Failed to delete SMTP'
+            ], 500);
+        }
+    }
+
+
+
+    public function testSmtp(Request $request, int $projectId, int $id)
+    {
+        // ✅ validate form
+        $validated = $request->validate([
+            'to_email' => ['required', 'email'],
+            'subject'  => ['required', 'string', 'max:255'],
+            'message'  => ['required', 'string'],
+        ]);
+
+        $smtp = null;
+
+        try {
+
+            // 🔥 get smtp
+            $smtp = Smtp::where('project_id', $projectId)
+                ->findOrFail($id);
+
+            // 🔥 dynamic smtp config
+            config([
+
+                'mail.default' => 'smtp',
+
+                'mail.mailers.smtp.transport' => 'smtp',
+
+                'mail.mailers.smtp.host' => $smtp->host,
+
+                'mail.mailers.smtp.port' => $smtp->port,
+
+                'mail.mailers.smtp.username' => $smtp->username,
+
+                'mail.mailers.smtp.password' => $smtp->password,
+
+                'mail.mailers.smtp.encryption' => $smtp->encryption,
+
+                'mail.from.address' => $smtp->from_email,
+
+                'mail.from.name' => $smtp->from_name,
+            ]);
+
+            // 🔥 send test mail
+            Mail::raw($validated['message'], function ($mail) use ($validated) {
+
+                $mail->to($validated['to_email'])
+                    ->subject($validated['subject']);
+            });
+
+            // ✅ connected success
+            $smtp->update([
+                'connected' => true,
+            ]);
+
+            return response()->json([
+                'status' => true,
+                'action' => 'update',
+                'target' => '.smtp-item',
+                'id' => $smtp->id,
+                'message' => 'SMTP test mail sent successfully',
+                'html' => view('projects.partials.smtp-card', [
+                    'smtp' => $smtp,
+                    'projectId' => $projectId
+                ])->render(),
+            ]);
+
+        } catch (\Exception $e) {
+
+            // ✅ safe update
+            if ($smtp) {
+
+                $smtp->update([
+                    'connected' => false,
+                ]);
+            }
+
+            Log::error('SMTP Test Error: ' . $e->getMessage());
+
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
             ], 500);
         }
     }

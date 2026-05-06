@@ -15,7 +15,7 @@
                             </div>
                             <div class="col-4 text-end">
                                 <div class="head-icons">
-                                    <a href="manage-users.html" data-bs-toggle="tooltip" data-bs-placement="top"
+                                    <a href="{{route('users.index')}}" data-bs-toggle="tooltip" data-bs-placement="top"
                                         data-bs-original-title="Refresh"><i class="ti ti-refresh-dot"></i></a>
                                     <a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top"
                                         data-bs-original-title="Collapse" id="collapse-header"><i
@@ -34,7 +34,7 @@
                                 <div class="col-sm-4">
                                     <div class="icon-form mb-3 mb-sm-0">
                                         <span class="form-icon"><i class="ti ti-search"></i></span>
-                                        <input type="text" class="form-control" placeholder="Search User">
+                                        <input id="userSearch" type="text" class="form-control" placeholder="Search User">
                                     </div>
                                 </div>
                                 <div class="col-sm-8">
@@ -382,5 +382,32 @@
 
             });
         </script>
+
+         <script>
+            let searchTimer;
+
+            $('#userSearch').on('keyup', function() {
+
+                clearTimeout(searchTimer);
+
+                let value = $(this).val();
+
+                searchTimer = setTimeout(() => {
+
+                    let url = new URL(window.location.href);
+
+                    if (value) {
+                        url.searchParams.set('search', value);
+                    } else {
+                        url.searchParams.delete('search');
+                    }
+
+                    window.location.href = url;
+
+                }, 500);
+
+            });
+        </script>
+
     @endpush
 @endsection
