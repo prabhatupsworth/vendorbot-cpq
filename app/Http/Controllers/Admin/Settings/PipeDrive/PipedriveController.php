@@ -330,30 +330,130 @@ class PipedriveController extends Controller
         $account = PipedriveAccount::find($id);
 
         if (!$account) {
-            return back()->with('error', 'Account not found');
+
+            return response()->json([
+                'status' => false,
+                'message' => 'Account not found'
+            ], 404);
         }
 
         try {
-            // 👉 Example API call
-            // $response = Http::get("{$account->base_url}/api/v1/fields", [
-            //     'api_token' => $account->api_key
-            // ]);
 
-            // 👉 Simulate sync
-            PipedriveField::create([
-                'pipedrive_account_id' => $account->id,
-                'field_key' => 'test_field_' . rand(100, 999), // unique
-                'name' => 'Test Field',
-                'field_type' => 'text',
-            ]);
+            /*
+        |--------------------------------------------------------------------------
+        | Example Real API Response
+        |--------------------------------------------------------------------------
+        */
 
+            $fields = [
+
+                [
+                    "field_name" => "AR.-Datum",
+                    "field_code" => "851db45c30a1a559bb3dc81b5bf31c13d344af84",
+                    "field_type" => "date",
+                    "options" => null,
+                    "subfields" => null,
+                    "is_custom_field" => true,
+                ],
+
+                [
+                    "field_name" => "Rechnung AR Wert",
+                    "field_code" => "4f4a189d97153697ec8aa5d8a8d4ccdf60d8b40c",
+                    "field_type" => "monetary",
+                    "options" => null,
+                    "subfields" => json_encode([
+                        [
+                            "field_code" => "value",
+                            "field_name" => "Money Value",
+                            "field_type" => "double"
+                        ],
+                        [
+                            "field_code" => "currency",
+                            "field_name" => "Currency",
+                            "field_type" => "varchar"
+                        ]
+                    ]),
+                    "is_custom_field" => true,
+                ],
+
+                [
+                    "field_name" => "Chatbot-Konvertierungs-URL",
+                    "field_code" => "b527c7c3d24d3b0de2c83a41eb3aff115c65c64f",
+                    "field_type" => "text",
+                    "options" => null,
+                    "subfields" => null,
+                    "is_custom_field" => true,
+                ],
+
+                [
+                    "field_name" => "Recherche Fremdleistung*",
+                    "field_code" => "6fe22d2326a0b57270a5dc45065cad615d326697",
+                    "field_type" => "enum",
+                    "options" => json_encode([
+                        [
+                            "id" => 34,
+                            "label" => "0 - keine Recherche"
+                        ],
+                        [
+                            "id" => 35,
+                            "label" => "1 - Recherche einfach"
+                        ],
+                        [
+                            "id" => 36,
+                            "label" => "2 - Recherche komplex"
+                        ]
+                    ]),
+                    "subfields" => null,
+                    "is_custom_field" => true,
+                ],
+
+            ];
+
+            /*
+        |--------------------------------------------------------------------------
+        | Save Fields
+        |--------------------------------------------------------------------------
+        */
+
+            foreach ($fields as $field) {
+
+                PipedriveField::updateOrCreate(
+
+                    [
+                        'pipedrive_account_id' => $account->id,
+                        'field_key' => $field['field_code'],
+                    ],
+
+                    [
+                        'name' => $field['field_name'],
+
+                        'field_type' => $field['field_type'],
+
+                        'options' => $field['options'],
+
+                        'subfields' => $field['subfields'],
+
+                        'is_custom_field' => $field['is_custom_field'],
+                    ]
+                );
+            }
+
+            /*
+        |--------------------------------------------------------------------------
+        | Update Sync Status
+        |--------------------------------------------------------------------------
+        */
 
             $account->update([
-                'sync_fields' => 1
+                'sync_fields' => true
             ]);
 
-            sleep(1);
-            // 🔥 LOG
+            /*
+        |--------------------------------------------------------------------------
+        | Activity Log
+        |--------------------------------------------------------------------------
+        */
+
             activityLog([
                 'module' => 'pipedrive',
                 'record_id' => $account->id,
@@ -362,8 +462,10 @@ class PipedriveController extends Controller
                 'message' => 'Fields synced successfully'
             ]);
 
-            // return back()->with('success', 'Fields synced successfully');
-            return response()->json(['message' => 'Fields synced successfully']);
+            return response()->json([
+                'status' => true,
+                'message' => 'Fields synced successfully'
+            ]);
         } catch (\Exception $e) {
 
             activityLog([
@@ -374,8 +476,10 @@ class PipedriveController extends Controller
                 'message' => $e->getMessage()
             ]);
 
-            // return back()->with('error', 'Failed to sync fields');
-            return response()->json(['error' => 'Failed to sync fields'], 500);
+            return response()->json([
+                'status' => false,
+                'message' => 'Failed to sync fields'
+            ], 500);
         }
     }
 

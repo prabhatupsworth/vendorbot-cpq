@@ -54,7 +54,7 @@ class RoleController extends Controller
             ->with('success', 'Role created successfully');
     }
 
-    public function edit($id)
+    public function edit(int $id)
     {
         $role = Role::findOrFail($id);
         $permissions = Permission::all()->groupBy('module');
@@ -63,7 +63,7 @@ class RoleController extends Controller
         return view('admin.roles.edit', compact('role', 'permissions', 'rolePermissions'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, int $id)
     {
         $request->validate([
             'name' => 'required|unique:roles,name,' . $id
@@ -81,7 +81,7 @@ class RoleController extends Controller
     }
 
 
-    public function permissions($id)
+    public function permissions(int $id)
     {
         $role = Role::findOrFail($id);
 
@@ -97,7 +97,7 @@ class RoleController extends Controller
         return view('admin.roles.permissions', compact('role', 'modules', 'rolePermissions'));
     }
 
-    public function permissionData($id)
+    public function permissionData(int $id)
     {
         $role = Role::findOrFail($id);
 
@@ -127,7 +127,7 @@ class RoleController extends Controller
     }
 
 
-    public function togglePermission(Request $request, $id)
+    public function togglePermission(Request $request, int $id)
     {
         $role = Role::findOrFail($id);
 

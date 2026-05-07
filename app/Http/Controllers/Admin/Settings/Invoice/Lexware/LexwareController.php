@@ -53,7 +53,7 @@ class LexwareController extends Controller
     {
         $request->validate([
             'type' => 'required|in:lexware,manual,other',
-            'api_key' => 'required|string',
+            'api_key' => 'nullable|string',
             'base_url' => 'required|url',
             'currency' => 'nullable|string|max:3',
         ]);
@@ -79,7 +79,7 @@ class LexwareController extends Controller
         return redirect()->back()->with('success', 'Account updated successfully.');
     }
 
-    public function connect($id)
+    public function connect(int $id)
     {
         // Logic to connect to Lexware using the provided ID
         // This could involve redirecting to an OAuth flow or similar

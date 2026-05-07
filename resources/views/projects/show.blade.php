@@ -63,8 +63,9 @@
                     </div>
                     <div class="col-sm-8 text-sm-end">
                         <div class="head-icons">
-                            <a href="profile.html" data-bs-toggle="tooltip" data-bs-placement="top"
-                                data-bs-original-title="Refresh"><i class="ti ti-refresh-dot"></i></a>
+                            <a href="{{ route('projects.show', $project->id) }}" data-bs-toggle="tooltip"
+                                data-bs-placement="top" data-bs-original-title="Refresh"><i
+                                    class="ti ti-refresh-dot"></i></a>
                             <a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top"
                                 data-bs-original-title="Collapse" id="collapse-header"><i class="ti ti-chevrons-up"></i></a>
                         </div>
@@ -147,6 +148,18 @@
                                         href="#project-geo">
                                         <i class="ti ti-map-pin"></i>Geo Filter</a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link  d-flex align-items-center gap-2" data-bs-toggle="tab"
+                                        href="#project-field-mapping">
+                                        <i class="ti ti-arrows-exchange"></i>Field Mapping</a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link  d-flex align-items-center gap-2" data-bs-toggle="tab"
+                                        href="#project-automation">
+                                        <i class="ti ti-arrows-exchange"></i>Stage Mapping</a>
+                                </li>
+
                                 <li class="nav-item">
                                     <a class="nav-link  d-flex align-items-center gap-2" data-bs-toggle="tab"
                                         href="#project-history">
@@ -529,6 +542,225 @@
                             </div>
 
                         </div>
+
+
+                        <div class="tab-pane fade" id="project-field-mapping">
+
+                            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+
+                                <!-- Header -->
+                                <div
+                                    class="card-header bg-white py-3 px-4 d-flex justify-content-between align-items-center border-bottom">
+
+                                    <div>
+
+                                        <h5 class="fw-bold mb-1">
+                                            Field Mapping
+                                        </h5>
+
+                                        <small class="text-muted">
+                                            Map Pipedrive fields with your internal system fields.
+                                        </small>
+
+                                    </div>
+
+                                    <button class="btn btn-primary d-flex align-items-center gap-2 px-3"
+                                        data-bs-toggle="offcanvas" data-bs-target="#fieldMappingCanvas">
+
+                                        <i class="ti ti-plus"></i>
+
+                                        Add Mapping
+
+                                    </button>
+
+                                </div>
+
+                                <!-- Body -->
+                                <div class="card-body p-0">
+
+                                    @if ($project->fieldMappings->count())
+                                        <div class="table-responsive">
+
+                                            <table class="table align-middle table-hover mb-0">
+
+                                                <thead class="table-light">
+
+                                                    <tr>
+                                                        <th>
+                                                            System Field
+                                                        </th>
+
+                                                        <th>
+                                                            Pipedrive Field
+                                                        </th>
+
+                                                        <th width="150" class="text-end pe-4">
+                                                            Actions
+                                                        </th>
+
+                                                    </tr>
+
+                                                </thead>
+
+                                                <tbody>
+
+                                                    @foreach ($project->fieldMappings as $key => $mapping)
+
+                                                       @include('projects.partials.field-mapping',['projectId'=>$project->id,'mapping'=>$mapping])
+
+                                                    @endforeach
+
+                                                </tbody>
+
+                                            </table>
+
+                                        </div>
+                                    @else
+                                        <!-- Empty State -->
+
+                                        <div class="text-center py-5 px-4">
+
+                                            <div class="mx-auto mb-4 rounded-circle bg-light d-flex align-items-center justify-content-center"
+                                                style="width:90px;height:90px;">
+
+                                                <i class="ti ti-arrows-exchange fs-1 text-primary"></i>
+
+                                            </div>
+
+                                            <h4 class="fw-bold mb-2">
+
+                                                No Field Mappings Found
+
+                                            </h4>
+
+                                            <p class="text-muted mb-4 mx-auto" style="max-width:500px;">
+
+                                                Create mappings between your internal system fields
+                                                and Pipedrive fields to sync and normalize data properly.
+
+                                            </p>
+
+                                            <button class="btn btn-primary px-4" data-bs-toggle="offcanvas"
+                                                data-bs-target="#fieldMappingCanvas">
+
+                                                <i class="ti ti-plus me-1"></i>
+
+                                                Create First Mapping
+
+                                            </button>
+
+                                        </div>
+                                    @endif
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="tab-pane fade" id="project-automation">
+
+                            <div class="card border-0 shadow-sm">
+
+                                <!-- Header -->
+                                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+
+                                    <div>
+                                        <h5 class="fw-semibold mb-1">
+                                            Stage Actions
+                                        </h5>
+
+                                        <small class="text-muted">
+                                            Configure actions for each pipeline stage.
+                                        </small>
+                                    </div>
+
+                                    <button class="btn btn-primary" data-bs-toggle="offcanvas"
+                                        data-bs-target="#automationCanvas">
+
+                                        <i class="ti ti-plus me-1"></i>
+                                        Add Stage Action
+
+                                    </button>
+
+                                </div>
+
+                                <!-- Body -->
+                                <div class="card-body">
+
+                                    @if ($project->stageActions->count())
+                                        <div class="table-responsive">
+
+                                            <table class="table align-middle table-hover mb-0">
+
+                                                <thead class="table-light">
+
+                                                    <tr>
+                                                        <th>Pipeline Stage</th>
+                                                        <th>Trigger</th>
+                                                        <th>Action Type</th>
+                                                        <th>Status</th>
+                                                        <th class="text-end">Actions</th>
+                                                    </tr>
+
+                                                </thead>
+
+                                                <tbody id="satege-mapping">
+
+                                                    @foreach ($project->stageActions as $key => $automation)
+                                                        @include('projects.partials.stage-mapping', [
+                                                            'projectId' => $project->id,
+                                                            'automation' => $automation,
+                                                        ])
+                                                    @endforeach
+
+                                                </tbody>
+
+                                            </table>
+
+                                        </div>
+                                    @else
+                                        <!-- Empty State -->
+
+                                        <div class="text-center py-5">
+
+                                            <div class="mx-auto mb-4 rounded-circle bg-light d-flex align-items-center justify-content-center"
+                                                style="width:90px;height:90px;">
+
+                                                <i class="ti ti-git-branch fs-1 text-primary"></i>
+
+                                            </div>
+
+                                            <h4 class="fw-bold mb-2">
+                                                No Stage Actions Created
+                                            </h4>
+
+                                            <p class="text-muted mb-4 mx-auto" style="max-width:500px;">
+
+                                                Create automations that trigger actions whenever
+                                                a deal enters a selected pipeline stage.
+
+                                            </p>
+
+                                            <button class="btn btn-primary px-4" data-bs-toggle="offcanvas"
+                                                data-bs-target="#automationCanvas">
+
+                                                <i class="ti ti-plus me-1"></i>
+
+                                                Create Stage Action
+
+                                            </button>
+
+                                        </div>
+                                    @endif
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
                         <div class="tab-pane" id="project-history">
                             <div class="card shadow-sm border-0">
 
@@ -960,6 +1192,83 @@
                 @endphp
 
                 <x-form.fields :config="$config" />
+
+            </form>
+
+        </x-offcanvas>
+
+        {{-- field mapping --}}
+
+        <x-offcanvas id="fieldMappingCanvas" title="Field Mapping" formId="fieldMappingForm">
+
+            <form id="fieldMappingForm" class="ajax-form" method="POST"
+                action="{{ route('projects.field-mappings.store', $project->id) }}">
+
+                @csrf
+
+                @php
+
+                    $config = [
+                        [
+                            'name' => 'system_field',
+                            'label' => 'System Field',
+                            'type' => 'select',
+                            'options' => $systemFields ?? [],
+                            'required' => true,
+                            'col' => 12,
+                        ],
+                        [
+                            'name' => 'pipedrive_field_key',
+                            'label' => 'Pipedrive Field',
+                            'type' => 'select',
+                            'options' => $pipedriveFields ?? [],
+                            'required' => true,
+                            'col' => 12,
+                        ],
+                    ];
+
+                @endphp
+
+                <x-form.fields :config="$config" />
+
+            </form>
+
+        </x-offcanvas>
+
+        <x-offcanvas id="automationCanvas" title="Add Stage Action" formId="stageMappingForm">
+
+            <form id="stageMappingForm" class="ajax-form" method="POST"
+                action="{{ route('projects.stages.store', $project->id) }}">
+
+                @csrf
+
+                @php
+
+                    $config = [
+                        [
+                            'name' => 'action_type',
+                            'label' => 'Action',
+                            'type' => 'select',
+                            'options' => $actions ?? [],
+                            'required' => true,
+                            'col' => 12,
+                        ],
+                        [
+                            'name' => 'stage_id',
+                            'label' => 'Stage',
+                            'type' => 'select',
+                            'options' => $stages ?? [],
+                            'required' => true,
+                            'col' => 12,
+                        ],
+                    ];
+
+                @endphp
+
+                <x-form.fields :config="$config" />
+
+                <!-- 🔥 Dynamic Config -->
+                <div id="action-config-wrapper"></div>
 
             </form>
 

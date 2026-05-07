@@ -10,8 +10,10 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Project\ProjectCompanyDetailController;
 use App\Http\Controllers\Project\ProjectController;
+use App\Http\Controllers\Project\ProjectFieldMappingController;
 use App\Http\Controllers\Project\ProjectGeoFilterController;
 use App\Http\Controllers\Project\ProjectSmtpController;
+use App\Http\Controllers\Project\ProjectStageActionController;
 use App\Http\Controllers\TestController;
 use Illuminate\Support\Facades\Route;
 
@@ -60,7 +62,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/security', [ProfileController::class, 'security'])->name('security');
     Route::post('/change-password', [ProfileController::class, 'changePassword'])
-    ->name('change.password');
+        ->name('change.password');
     // Logout
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
@@ -109,7 +111,6 @@ Route::middleware('auth')->group(function () {
                 Route::post('/', [PipedriveController::class, 'store'])
                     ->name('store');
                 Route::get('/{account}/pipelines', [PipedriveController::class, 'pipelines'])->name('pipelines');
-
             });
 
             Route::middleware('permission:pipedrive.edit')->group(function () {
@@ -197,9 +198,44 @@ Route::middleware('auth')->group(function () {
 
             // Route::get('/', [ProjectGeoFilterController::class, 'show'])->name('show');
             Route::post('/store', [ProjectGeoFilterController::class, 'store'])->name('store');
-
         });
+
+        Route::prefix('{project}/field-mappings')
+            ->name('field-mappings.')
+            ->group(function () {
+
+                Route::post('/store', [
+                    ProjectFieldMappingController::class,
+                    'store'
+                ])->name('store');
+
+                Route::delete('/{id}', [
+                    ProjectFieldMappingController::class,
+                    'destroy'
+                ])->name('delete');
+            });
+        Route::prefix('{project}/stages')
+            ->name('stages.')
+            ->group(function () {
+
+                Route::post('/store', [
+                    ProjectStageActionController::class,
+                    'store'
+                ])->name('store');
+
+                 Route::put('/{id}', [
+                    ProjectStageActionController::class,
+                    'update'
+                ])->name('update');
+
+                Route::delete('/{id}', [
+                    ProjectStageActionController::class,
+                    'destroy'
+                ])->name('delete');
+            });
     });
+
+
     /*
     |--------------------------------------------------------------------------
     | Role Module (Super Admin Only)

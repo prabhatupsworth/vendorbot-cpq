@@ -91,4 +91,14 @@ class Project extends Model
     {
         return $this->hasOne(GeoFilter::class);
     }
+
+    public function fieldMappings()
+    {
+        return $this->hasMany(FieldMapping::class);
+    }
+
+    public function stageActions()
+    {
+        return $this->hasMany(StageAction::class);
+    }
 }

@@ -7,6 +7,9 @@ use App\Http\Requests\ProjectRequest;
 use App\Models\ActivityLog;
 use App\Models\Invoice\InvoiceAccount;
 use App\Models\PipeDrive\PipedriveAccount;
+use App\Models\PipeDrive\PipedriveField;
+use App\Models\PipeDrive\PipedriveStage;
+use App\Models\Project\Action;
 use App\Models\Project\Project;
 use App\Models\Project\Smtp;
 use App\Models\User;
@@ -17,15 +20,6 @@ use Illuminate\Support\Facades\Log;
 
 class ProjectController extends Controller
 {
-    // ✅ LIST
-    // public function index()
-    // {
-    //     $projects = Project::latest()->paginate(10);
-    //     $pipedriveAccounts = PipedriveAccount::pluck('account_name', 'id');
-    //     $invoiceAccounts =   InvoiceAccount::pluck('type', 'id');
-
-    //     return view('projects.index', compact('projects', 'pipedriveAccounts', 'invoiceAccounts'));
-    // }
 
     public function index(Request $request)
     {
@@ -184,28 +178,157 @@ class ProjectController extends Controller
     }
 
     // ✅ SHOW (for project details page)
+    // public function show(int $id)
+    // {
+    //     try {
+    //         $project = Project::with(['pipedriveAccount:id,account_name', 'invoiceAccount:id,type', 'companyDetails', 'users:id,name', 'geoFilter'])->findOrFail($id);
+    //         $allUsers = User::pluck('name', 'id')->toArray();
+    //         $existingTypes = Smtp::where('project_id', $project->id)
+    //             ->pluck('type') // already string
+    //             ->toArray();
+
+    //         $pipedriveFields = PipedriveField::pluck(
+    //             'name',
+    //             'field_key'
+    //         );
+
+    //         $systemFields = config('system_fields');
+
+
+    //         $activityLog = ActivityLog::with('user:id,name')
+    //             ->where('module', 'projects')
+    //             ->where('record_id', $id)
+    //             ->latest() // or orderBy('performed_at', 'desc')
+    //             ->limit(5)
+    //             ->get();
+    //         // return response()->json(['project' => $project, 'activityLog' => $activityLog]);
+    //         return view('projects.show', compact(
+    //             'project',
+    //             'activityLog',
+    //             'allUsers',
+    //             'existingTypes',
+    //             'pipedriveFields',
+    //             'systemFields'
+    //         ));
+    //     } catch (\Exception $e) {
+
+    //         Log::error('Project Show Error: ' . $e->getMessage());
+
+    //         return response()->json(['error' => 'Project not found'], 404);
+    //     }
+    // }
+
     public function show(int $id)
     {
         try {
-            $project = Project::with(['pipedriveAccount:id,account_name', 'invoiceAccount:id,type', 'companyDetails', 'users:id,name', 'geoFilter'])->findOrFail($id);
+
+            $project = Project::with([
+                'pipedriveAccount:id,account_name',
+                'invoiceAccount:id,type',
+                'companyDetails',
+                'users:id,name',
+                'geoFilter'
+            ])->findOrFail($id);
+
+            $stages = $project->pipeline
+                ?->stages()
+                ->where(
+                    'pipedrive_account_id',
+                    $project->pipedrive_account_id
+                )
+                ->orderBy('stage_id')
+                ->pluck(
+                    'name',
+                    'stage_id'
+                );
+
+            $actions = Action::pluck(
+                'action_name',
+                'type_key'
+            );
+
+            /*
+        |--------------------------------------------------------------------------
+        | Users
+        |--------------------------------------------------------------------------
+        */
+
             $allUsers = User::pluck('name', 'id')->toArray();
+
+            /*
+        |--------------------------------------------------------------------------
+        | SMTP Existing Types
+        |--------------------------------------------------------------------------
+        */
+
             $existingTypes = Smtp::where('project_id', $project->id)
-                ->pluck('type') // already string
+                ->pluck('type')
                 ->toArray();
+
+            /*
+        |--------------------------------------------------------------------------
+        | ONLY PROJECT ACCOUNT FIELDS
+        |--------------------------------------------------------------------------
+        */
+
+            $pipedriveFields = PipedriveField::where(
+                'pipedrive_account_id',
+                $project->pipedrive_account_id
+            )
+                ->orderBy('name')
+                ->pluck(
+                    'name',
+                    'field_key'
+                );
+
+            /*
+        |--------------------------------------------------------------------------
+        | ONLY PROJECT ACCOUNT STAGES
+        |--------------------------------------------------------------------------
+        */
+
+            /*
+        |--------------------------------------------------------------------------
+        | System Fields
+        |--------------------------------------------------------------------------
+        */
+
+            $systemFields = config('system_fields');
+
+            /*
+        |--------------------------------------------------------------------------
+        | Activity Log
+        |--------------------------------------------------------------------------
+        */
 
             $activityLog = ActivityLog::with('user:id,name')
                 ->where('module', 'projects')
                 ->where('record_id', $id)
-                ->latest() // or orderBy('performed_at', 'desc')
+                ->latest()
                 ->limit(5)
                 ->get();
-            // return response()->json(['project' => $project, 'activityLog' => $activityLog]);
-            return view('projects.show', compact('project', 'activityLog', 'allUsers', 'existingTypes'));
+
+            return view('projects.show', compact(
+
+                'project',
+                'actions',
+                'stages',
+                'activityLog',
+                'allUsers',
+                'existingTypes',
+                'pipedriveFields',
+                'systemFields',
+
+            ));
         } catch (\Exception $e) {
 
-            Log::error('Project Show Error: ' . $e->getMessage());
+            Log::error(
+                'Project Show Error: ' . $e->getMessage()
+            );
 
-            return response()->json(['error' => 'Project not found'], 404);
+            return response()->json([
+                'error' => 'Project not found'
+            ], 404);
         }
     }
 

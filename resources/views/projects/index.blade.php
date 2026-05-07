@@ -66,10 +66,6 @@
                                             <th>Invoice Enabled</th>
                                             <th>Pipedrive Account</th>
                                             <th>Invoice Account</th>
-                                            {{-- <th>Pipedrive Sync Status</th>
-                                            <th>Plugin Connected At</th>
-                                            <th>Plugin Last Ping At</th>
-                                            <th>Plugin Connected</th> --}}
                                             <th>Created At</th>
                                             <th class="text-end">Actions</th>
                                         </tr>
@@ -81,7 +77,6 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <!-- /Projects List -->
 
                         </div>
                     </div>

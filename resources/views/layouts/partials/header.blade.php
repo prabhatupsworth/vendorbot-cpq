@@ -347,15 +347,19 @@
         <a href="javascript:void(0);" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
             aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
         <div class="dropdown-menu">
-            <a class="dropdown-item" href="index.html">
+            <a class="dropdown-item" href="{{ route('dashboard') }}">
                 <i class="ti ti-layout-2"></i> Dashboard
             </a>
-            <a class="dropdown-item" href="profile.html">
+            <a class="dropdown-item" href="{{ route('profile') }}">
                 <i class="ti ti-user-pin"></i> My Profile
             </a>
-            <a class="dropdown-item" href="login.html">
+            <a class="dropdown-item" href="{{ route('logout') }}"
+                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                 <i class="ti ti-lock"></i> Logout
             </a>
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            @csrf
+                        </form>
         </div>
     </div>
     <!-- /Mobile Menu -->
