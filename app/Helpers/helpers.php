@@ -1,5 +1,7 @@
 <?php
 
+use Nwidart\Modules\Facades\Module;
+
 if (!function_exists('user_status_badge')) {
     function user_status_badge($status)
     {
@@ -11,25 +13,36 @@ if (!function_exists('user_status_badge')) {
     }
 }
 
-if (!function_exists('activityLog')) {
-    function activityLog(array $data)
+// if (!function_exists('activityLog')) {
+//     function activityLog(array $data)
+//     {
+//         \App\Models\ActivityLog::create([
+//             'user_id' => auth()->id(),
+
+//             'module' => $data['module'] ?? null,
+//             'record_id' => $data['record_id'] ?? null,
+
+//             'action' => $data['action'] ?? null,
+//             'status' => $data['status'] ?? null,
+
+//             'message' => $data['message'] ?? null,
+//             'meta' => $data['meta'] ?? null,
+
+//             'ip_address' => request()->ip(),
+//             'user_agent' => request()->userAgent(),
+
+//             'performed_at' => now(),
+//         ]);
+//     }
+// }
+
+
+
+
+if (!function_exists('moduleEnabled')) {
+
+    function moduleEnabled(string $module): bool
     {
-        \App\Models\ActivityLog::create([
-            'user_id' => auth()->id(),
-
-            'module' => $data['module'] ?? null,
-            'record_id' => $data['record_id'] ?? null,
-
-            'action' => $data['action'] ?? null,
-            'status' => $data['status'] ?? null,
-
-            'message' => $data['message'] ?? null,
-            'meta' => $data['meta'] ?? null,
-
-            'ip_address' => request()->ip(),
-            'user_agent' => request()->userAgent(),
-
-            'performed_at' => now(),
-        ]);
+        return Module::isEnabled($module);
     }
 }

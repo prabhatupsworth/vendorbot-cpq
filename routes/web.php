@@ -2,19 +2,10 @@
 
 use App\Http\Controllers\ActivityLog\ActivityLogController;
 use App\Http\Controllers\Admin\Role\RoleController;
-use App\Http\Controllers\Admin\Settings\Invoice\Lexware\LexwareController;
-use App\Http\Controllers\Admin\Settings\PipeDrive\PipedriveController;
 use App\Http\Controllers\Admin\User\UserController;
 use App\Http\Controllers\Profile\ProfileController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Dashboard\DashboardController;
-use App\Http\Controllers\Project\ProjectCompanyDetailController;
-use App\Http\Controllers\Project\ProjectController;
-use App\Http\Controllers\Project\ProjectFieldMappingController;
-use App\Http\Controllers\Project\ProjectGeoFilterController;
-use App\Http\Controllers\Project\ProjectSmtpController;
-use App\Http\Controllers\Project\ProjectStageActionController;
-use App\Http\Controllers\TestController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,13 +13,6 @@ use Illuminate\Support\Facades\Route;
 | Guest Routes (Not Logged In)
 |--------------------------------------------------------------------------
 */
-
-Route::get('/test', [TestController::class, 'index'])->name('test.index');
-Route::get('/test/list', [TestController::class, 'list'])->name('test.list');
-Route::get('/test/{id}', [TestController::class, 'edit'])->name('test.edit');
-Route::post('/test', [TestController::class, 'store'])->name('test.store');
-Route::put('/test/{id}', [TestController::class, 'update'])->name('test.update');
-Route::delete('/test/{id}', [TestController::class, 'destroy'])->name('test.destroy');
 
 Route::middleware('guest')->group(function () {
 
@@ -98,143 +82,6 @@ Route::middleware('auth')->group(function () {
 
         Route::delete('/{id}', [UserController::class, 'destroy'])->name('users.destroy');
     });
-
-    Route::prefix('settings/pipedrive')
-        ->name('settings.pipedrive.')
-        ->middleware('permission:pipedrive.view')
-        ->group(function () {
-
-            Route::get('/', [PipedriveController::class, 'index'])
-                ->name('index');
-
-            Route::middleware('permission:pipedrive.create')->group(function () {
-                Route::post('/', [PipedriveController::class, 'store'])
-                    ->name('store');
-                Route::get('/{account}/pipelines', [PipedriveController::class, 'pipelines'])->name('pipelines');
-            });
-
-            Route::middleware('permission:pipedrive.edit')->group(function () {
-                Route::post('/{id}/update', [PipedriveController::class, 'update'])
-                    ->name('update');
-            });
-
-            Route::middleware('permission:pipedrive.edit')->group(function () {
-                Route::get('/connect/{id}', [PipedriveController::class, 'connect'])
-                    ->name('connect');
-
-                Route::get('/{id}/details', [PipedriveController::class, 'details'])
-                    ->name('details');
-
-                Route::post('/{id}/sync-stages', [PipedriveController::class, 'syncStages'])
-                    ->name('sync.stages');
-
-                Route::post('/{id}/sync-fields', [PipedriveController::class, 'syncFields'])
-                    ->name('sync.fields');
-            });
-        });
-
-    Route::prefix('settings/invoice/lexware')
-        ->name('settings.invoice.lexware.')
-        ->middleware('permission:lexware.view')
-        ->group(function () {
-
-            Route::get('/', [LexwareController::class, 'index'])->name('index');
-
-            Route::get('/{id}/edit', [LexwareController::class, 'edit'])->name('edit');
-
-            Route::post('/store', [LexwareController::class, 'store'])
-                ->middleware('permission:lexware.create')
-                ->name('store');
-
-            Route::post('/{id}/update', [LexwareController::class, 'update'])
-                ->middleware('permission:lexware.edit')
-                ->name('update');
-
-            Route::get('/connect/{id}', [LexwareController::class, 'connect'])->name('connect');
-
-            Route::get('/{id}/details', [LexwareController::class, 'details'])->name('details');
-        });
-    Route::prefix('projects')->name('projects.')->group(function () {
-        Route::get('/', [ProjectController::class, 'index'])->name('index');
-        Route::post('/store', [ProjectController::class, 'store'])->name('store');
-        Route::get('/{id}/edit', [ProjectController::class, 'edit'])->name('edit');
-        Route::put('/{id}/update', [ProjectController::class, 'update'])->name('update');
-        Route::get('/{id}', [ProjectController::class, 'show'])->name('show');
-        Route::delete('/{id}', [ProjectController::class, 'destroy'])->name('destroy');
-
-        Route::prefix('{project}/company')->name('company.')->group(function () {
-
-            // store / update (same)
-            Route::post('/store', [ProjectCompanyDetailController::class, 'store'])
-                ->name('store');
-
-            // get company data
-            Route::get('/', [ProjectCompanyDetailController::class, 'show'])
-                ->name('show');
-
-            // delete logo (optional)
-            Route::delete('/logo/{id}', [ProjectCompanyDetailController::class, 'deleteLogo'])
-                ->name('logo.delete');
-        });
-
-        Route::prefix('{project}/users')->name('users.')->group(function () {
-            Route::post('/add-users', [ProjectController::class, 'add_user'])
-                ->name('add');
-            Route::delete('/{user}/user-remove', [ProjectController::class, 'remove_user'])
-                ->name('remove');
-        });
-
-        Route::prefix('{project}/smtp')->name('smtp.')->group(function () {
-
-            Route::get('/', [ProjectSmtpController::class, 'index'])->name('index');
-            Route::post('/store', [ProjectSmtpController::class, 'store'])->name('store');
-            Route::post('/test/{id}', [ProjectSmtpController::class, 'testSmtp'])->name('test');
-            Route::get('/{id}', [ProjectSmtpController::class, 'show'])->name('show');
-            Route::put('/{id}', [ProjectSmtpController::class, 'update'])->name('update');
-            Route::delete('/{id}', [ProjectSmtpController::class, 'destroy'])->name('delete');
-        });
-
-        Route::prefix('{project}/geo-filter')->name('geo.')->group(function () {
-
-            // Route::get('/', [ProjectGeoFilterController::class, 'show'])->name('show');
-            Route::post('/store', [ProjectGeoFilterController::class, 'store'])->name('store');
-        });
-
-        Route::prefix('{project}/field-mappings')
-            ->name('field-mappings.')
-            ->group(function () {
-
-                Route::post('/store', [
-                    ProjectFieldMappingController::class,
-                    'store'
-                ])->name('store');
-
-                Route::delete('/{id}', [
-                    ProjectFieldMappingController::class,
-                    'destroy'
-                ])->name('delete');
-            });
-        Route::prefix('{project}/stages')
-            ->name('stages.')
-            ->group(function () {
-
-                Route::post('/store', [
-                    ProjectStageActionController::class,
-                    'store'
-                ])->name('store');
-
-                 Route::put('/{id}', [
-                    ProjectStageActionController::class,
-                    'update'
-                ])->name('update');
-
-                Route::delete('/{id}', [
-                    ProjectStageActionController::class,
-                    'destroy'
-                ])->name('delete');
-            });
-    });
-
 
     /*
     |--------------------------------------------------------------------------

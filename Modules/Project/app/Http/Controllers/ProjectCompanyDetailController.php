@@ -1,0 +1,82 @@
+<?php
+
+namespace Modules\Project\Http\Controllers;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
+use Modules\Project\Http\Requests\Project\StoreProjectCompanyRequest;
+use Modules\Project\Models\ProjectCompanyDetail;
+use App\Traits\ActivityLogTrait;
+
+
+class ProjectCompanyDetailController extends Controller
+{
+    use ActivityLogTrait;
+    public function store(StoreProjectCompanyRequest $request, int $projectId)
+    {
+        $validated = $request->validated();
+        try {
+
+            $logoPath = null;
+
+            if ($request->hasFile('logo')) {
+                $logoPath = $request->file('logo')->store('company_logos', 'public');
+            }
+
+            $company =  ProjectCompanyDetail::updateOrCreate(
+                ['project_id' => $projectId],
+                array_merge($validated, [
+                    'logo' => $logoPath
+                        ?? ProjectCompanyDetail::where('project_id', $projectId)->value('logo')
+                ])
+            );
+
+            return response()->json([
+                'status' => true,
+                'action' => 'replace',
+                'target' => '#company-section',
+                'company' => $company,
+                'html' => view('project::partials.company', [
+                    'company' => $company,
+                ])->render(),
+                'message' => 'Company saved successfully',
+                'data' => $company
+            ]);
+        } catch (\Exception $e) {
+
+            Log::error('Project Store Error: ' . $e->getMessage());
+
+            return redirect()->back()->withInput()->with('error', 'Something went wrong while creating project');
+        }
+    }
+
+    // ✅ SHOW (for view modal)
+    public function show(int $project_id)
+    {
+        $company = ProjectCompanyDetail::where('project_id', $project_id)->first();
+
+        return response()->json($company);
+    }
+
+    // ✅ DELETE LOGO (optional)
+    public function deleteLogo(int $id)
+    {
+        try {
+            $company = ProjectCompanyDetail::findOrFail($id);
+
+            if ($company->logo && Storage::disk('public')->exists($company->logo)) {
+                Storage::disk('public')->delete($company->logo);
+            }
+
+            $company->update(['logo' => null]);
+
+            return back()->with('success', 'Logo removed successfully');
+        } catch (\Exception $e) {
+
+            Log::error('Delete Logo Error: ' . $e->getMessage());
+
+            return back()->with('error', 'Failed to delete logo');
+        }
+    }
+}

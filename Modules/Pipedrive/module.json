@@ -1,0 +1,11 @@
+{
+    "name": "Pipedrive",
+    "alias": "pipedrive",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\Pipedrive\\Providers\\PipedriveServiceProvider"
+    ],
+    "files": []
+}

@@ -50,73 +50,16 @@
                     <h6 class="submenu-hdr">PROJECTS</h6>
                     <ul>
                         @can('projects.view')
-                            <li><a href="{{ route('projects.index') }}"
-                                    class="{{ request()->routeIs('projects.*') ? 'active' : '' }}"><i
-                                        class="ti ti-briefcase"></i><span>Projects</span></a>
-                            </li>
+                            @if (moduleEnabled('Invoice') && Route::has('projects.index'))
+                                <li><a href="{{ route('projects.index') }}"
+                                        class="{{ request()->routeIs('projects.*') ? 'active' : '' }}"><i
+                                            class="ti ti-briefcase"></i><span>Projects</span></a>
+                                </li>
+                            @endif
                         @endcan
                     </ul>
                 </li>
-                {{-- <li>
-                    <h6 class="submenu-hdr">Products</h6>
 
-                    <ul>
-
-                        <li class="submenu">
-
-                            <a href="javascript:void(0);"
-                                class="{{ request()->routeIs('products.*') ? 'subdrop active' : '' }}">
-
-                                <i class="ti ti-package"></i>
-
-                                <span>Product Management</span>
-
-                                <span class="menu-arrow"></span>
-
-                            </a>
-
-                            <ul style="{{ request()->routeIs('products.*') ? 'display: block;' : 'display: none;' }}">
-
-                                <li>
-
-                                    <a href="{{ route('products.categories.index') }}"
-                                        class="{{ request()->routeIs('products.categories.*') ? 'active' : '' }}">
-
-                                        Categories
-
-                                    </a>
-
-                                </li>
-
-                                <li>
-
-                                    <a href="{{ route('products.tabs.index') }}"
-                                        class="{{ request()->routeIs('products.tabs.*') ? 'active' : '' }}">
-
-                                        Category Tabs
-
-                                    </a>
-
-                                </li>
-
-                                <li>
-
-                                    <a href="{{ route('products.items.index') }}"
-                                        class="{{ request()->routeIs('products.items.*') ? 'active' : '' }}">
-
-                                        Products
-
-                                    </a>
-
-                                </li>
-
-                            </ul>
-
-                        </li>
-
-                    </ul>
-
-                </li> --}}
                 <li>
                     <h6 class="submenu-hdr">Settings</h6>
                     <ul>
@@ -129,14 +72,28 @@
                             </a>
                             <ul style="display: none;">
                                 @can('pipedrive.view')
-                                    <li><a href="{{ route('settings.pipedrive.index') }}"
-                                            class="{{ request()->routeIs('settings.pipedrive.index') ? 'active' : '' }}">Pipedrive</a>
-                                    </li>
+                                    @if (moduleEnabled('Pipedrive') && Route::has('settings.pipedrive.index'))
+                                        <li><a href="{{ route('settings.pipedrive.index') }}"
+                                                class="{{ request()->routeIs('settings.pipedrive.index') ? 'active' : '' }}">Pipedrive</a>
+                                        </li>
+                                    @endif
                                 @endcan
+
                                 @can('lexware.view')
-                                    <li><a href="{{ route('settings.invoice.lexware.index') }}"
-                                            class="{{ request()->routeIs('settings.invoice.lexware.index') ? 'active' : '' }}">Lexware</a>
-                                    </li>
+
+                                    @if (moduleEnabled('Invoice') && Route::has('settings.invoice.lexware.index'))
+                                        <li>
+
+                                            <a href="{{ route('settings.invoice.lexware.index') }}"
+                                                class="{{ request()->routeIs('settings.invoice.lexware.index') ? 'active' : '' }}">
+
+                                                Lexware
+
+                                            </a>
+
+                                        </li>
+                                    @endif
+
                                 @endcan
 
                             </ul>
