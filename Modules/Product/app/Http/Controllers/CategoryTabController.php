@@ -6,28 +6,25 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Modules\Product\Models\Product;
+use Modules\Product\Models\CategoryTab;
 use Throwable;
 
-class ProductController extends Controller
+class CategoryTabController extends Controller
 {
     public function index()
     {
         try {
 
-            $products = Product::with([
-                'category',
-                'tab',
-            ])
+            $tabs = CategoryTab::with('category')
                 ->latest()
                 ->paginate(20);
 
-            return view('product::products.index', compact('products'));
+            return view('product::tabs.index', compact('tabs'));
         } catch (Throwable $e) {
 
             report($e);
 
-            return back()->with('error', 'Unable to load products.');
+            return back()->with('error', 'Unable to load tabs.');
         }
     }
 
@@ -37,33 +34,26 @@ class ProductController extends Controller
         try {
 
             $validated = $request->validate([
-                'project_id' => ['required', 'exists:projects,id'],
                 'category_id' => ['required', 'exists:categories,id'],
-                'tab_id' => ['nullable', 'exists:category_tabs,id'],
                 'name' => ['required', 'string', 'max:255'],
                 'description' => ['nullable', 'string'],
-                'price' => ['required', 'numeric'],
-                'cost' => ['nullable', 'numeric'],
+                'sort_order' => ['nullable', 'integer'],
             ]);
 
             DB::beginTransaction();
 
-            Product::create([
+            CategoryTab::create([
                 ...$validated,
-                'discount_type' => $request->discount_type,
-                'discount_value' => $request->discount_value ?? 0,
                 'is_default' => $request->boolean('is_default'),
-                'is_pro' => $request->boolean('is_pro'),
-                'show_only' => $request->boolean('show_only'),
                 'active' => $request->boolean('active', true),
-                'is_sync_backend' => $request->boolean('is_sync_backend'),
                 'created_by' => Auth::id(),
             ]);
 
             DB::commit();
+
             return redirect()
-                ->route('products.index')
-                ->with('success', 'Product created successfully.');
+                ->route('tabs.index')
+                ->with('success', 'Tab created successfully.');
         } catch (Throwable $e) {
 
             DB::rollBack();
@@ -72,7 +62,7 @@ class ProductController extends Controller
 
             return back()
                 ->withInput()
-                ->with('error', 'Failed to create product.');
+                ->with('error', 'Failed to create tab.');
         }
     }
 }

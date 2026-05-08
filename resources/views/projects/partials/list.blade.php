@@ -1,6 +1,6 @@
 <tr class="project-list" data-id={{ $project->id }}>
     <td>{{ $project->name }}</td>
-    <td><span class="badge bg-outline-success">{{ $project->event_name }}</span></td>
+    <td><span class="badge bg-outline-primary">{{ $project->event_name }}</span></td>
     <td><span class="badge bg-outline-info">{{ $project->flow_type }}</span></td>
     <td>
 

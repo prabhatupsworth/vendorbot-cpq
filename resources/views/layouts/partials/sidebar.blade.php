@@ -47,7 +47,7 @@
                     </ul>
                 </li>
                 <li>
-                    <h6 class="submenu-hdr">CRM</h6>
+                    <h6 class="submenu-hdr">PROJECTS</h6>
                     <ul>
                         @can('projects.view')
                             <li><a href="{{ route('projects.index') }}"
@@ -57,6 +57,66 @@
                         @endcan
                     </ul>
                 </li>
+                {{-- <li>
+                    <h6 class="submenu-hdr">Products</h6>
+
+                    <ul>
+
+                        <li class="submenu">
+
+                            <a href="javascript:void(0);"
+                                class="{{ request()->routeIs('products.*') ? 'subdrop active' : '' }}">
+
+                                <i class="ti ti-package"></i>
+
+                                <span>Product Management</span>
+
+                                <span class="menu-arrow"></span>
+
+                            </a>
+
+                            <ul style="{{ request()->routeIs('products.*') ? 'display: block;' : 'display: none;' }}">
+
+                                <li>
+
+                                    <a href="{{ route('products.categories.index') }}"
+                                        class="{{ request()->routeIs('products.categories.*') ? 'active' : '' }}">
+
+                                        Categories
+
+                                    </a>
+
+                                </li>
+
+                                <li>
+
+                                    <a href="{{ route('products.tabs.index') }}"
+                                        class="{{ request()->routeIs('products.tabs.*') ? 'active' : '' }}">
+
+                                        Category Tabs
+
+                                    </a>
+
+                                </li>
+
+                                <li>
+
+                                    <a href="{{ route('products.items.index') }}"
+                                        class="{{ request()->routeIs('products.items.*') ? 'active' : '' }}">
+
+                                        Products
+
+                                    </a>
+
+                                </li>
+
+                            </ul>
+
+                        </li>
+
+                    </ul>
+
+                </li> --}}
                 <li>
                     <h6 class="submenu-hdr">Settings</h6>
                     <ul>

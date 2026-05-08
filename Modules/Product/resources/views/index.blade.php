@@ -1,5 +1,6 @@
-<x-product::layouts.master>
-    <h1>Hello World</h1>
+@extends('layouts.app')
 
-    <p>Module: {!! config('product.name') !!}</p>
-</x-product::layouts.master>
+@section('content')
+    <h2>Product Module</h2>
+
+@endsection
