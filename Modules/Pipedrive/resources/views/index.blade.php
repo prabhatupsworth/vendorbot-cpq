@@ -162,10 +162,11 @@
                         <!-- API KEY -->
                         <div class="col-md-12">
                             <div class="mb-3">
-                                <label class="col-form-label">API Key <span class="text-danger">*</span></label>
+                                <label class="col-form-label">API Key <span class="text-danger"
+                                        id="api_required_label">*</span></label>
                                 <div class="icon-form-end">
                                     <span class="form-icon"><i class="ti ti-eye-off"></i></span>
-                                    <input type="password" name="api_key"
+                                    <input id="apiKey" type="password" name="api_key"
                                         class="form-control @error('api_key') is-invalid @enderror"
                                         value="{{ old('api_key') }}" required>
                                 </div>
@@ -496,6 +497,11 @@
                 // 👉 Fill values
                 document.querySelector('#account_name').value = btn.dataset.name;
                 document.querySelector('#base_url').value = btn.dataset.url;
+
+                const apiKey = document.querySelector('#apiKey');
+                const apiKeyLabel = document.querySelector("#api_required_label");
+                if (apiKeyLabel) apiKeyLabel.remove();
+                if (apiKey) apiKey.removeAttribute('required');
 
             });
         </script>

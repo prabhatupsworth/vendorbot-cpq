@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Modules\Project\Http\Controllers\DashboardController;
 use Modules\Project\Http\Controllers\ProjectController;
 use Modules\Project\Http\Controllers\ProjectCompanyDetailController;
 use Modules\Project\Http\Controllers\ProjectFieldMappingController;
@@ -17,6 +18,12 @@ Route::prefix('projects')
         | Project CRUD
         |--------------------------------------------------------------------------
         */
+
+        Route::controller(DashboardController::class)->group(
+            function(){
+                Route::get('/dashboard','index');
+            }
+        );
 
         Route::controller(ProjectController::class)
             ->group(function () {

@@ -3,16 +3,17 @@
 namespace Modules\Product\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\Project\Project;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Modules\Product\Http\Requests\StoreCategoryRequest;
 use Modules\Product\Models\Category;
 use Throwable;
+use App\Traits\ActivityLogTrait;
+use Modules\Project\Models\Project;
 
 class CategoryController extends Controller
 {
+    use ActivityLogTrait;
     /**
      * Display categories.
      */

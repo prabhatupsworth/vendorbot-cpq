@@ -84,7 +84,7 @@ class ProjectController extends Controller
 
             return redirect()->back()->with('success', 'Project created successfully');
         } catch (\Exception $e) {
-
+            dd($e);
             Log::error('Project Store Error: ' . $e->getMessage());
 
             return redirect()->back()->withInput()->with('error', 'Something went wrong while creating project');

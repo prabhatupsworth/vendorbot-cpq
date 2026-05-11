@@ -141,7 +141,7 @@
                         <!-- API KEY -->
                         <div class="col-md-12">
                             <div class="mb-3">
-                                <label class="col-form-label">API Key <span class="text-danger">*</span></label>
+                                <label class="col-form-label">API Key <span class="text-danger" id="invoice_api_key_label">*</span></label>
                                 <div class="icon-form-end">
                                     <span class="form-icon"><i class="ti ti-eye-off"></i></span>
                                     <input type="password" name="api_key"
@@ -305,7 +305,9 @@
                         success: function(response) {
                             $('#lexwareForm').attr('action', '/settings/invoice/lexware/' +
                                 settingId + '/update');
-                            // $('#lexwareForm input[name="api_key"]').val(response.api_key);
+
+                            $("#lexwareForm #invoice_api_key_label").remove();
+                            $('#lexwareForm input[name="api_key"]').removeAttr('required');
                             $('#lexwareForm input[name="base_url"]').val(response.base_url);
                             $('#lexwareForm select[name="currency"]').val(response.currency);
                             $('#submitBtn').text('Update');

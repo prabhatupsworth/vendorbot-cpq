@@ -48,7 +48,7 @@ class ProductController extends Controller
 
             DB::beginTransaction();
 
-            Product::create([
+            $product = Product::create([
                 ...$validated,
                 'discount_type' => $request->discount_type,
                 'discount_value' => $request->discount_value ?? 0,

@@ -13,6 +13,7 @@ use Modules\Pipedrive\Models\PipedriveField;
 use Modules\Pipedrive\Models\PipedrivePipeline;
 use Modules\Pipedrive\Models\PipedriveStage;
 use App\Traits\ActivityLogTrait;
+use Modules\Pipedrive\Http\Requests\UpdatePipedriveRequest;
 
 class PipedriveController extends Controller
 {
@@ -83,68 +84,193 @@ class PipedriveController extends Controller
         }
     }
 
-    public function update(Request $request, int $id)
-    {
+    // public function update(Request $request, int $id)
+    // {
+    //     $account = PipedriveAccount::find($id);
+
+    //     if (!$account) {
+    //         return back()->with('error', 'Account not found');
+    //     }
+
+    //     try {
+    //         // ✅ VALIDATION
+    //         $validated = $request->validate([
+    //             'account_name' => 'required|string|max:255',
+    //             'api_key'      => 'required|string|min:10',
+    //             'base_url'     => 'required|url',
+    //         ], [
+    //             'account_name.required' => 'Account name is required',
+    //             'api_key.required'      => 'API key is required',
+    //             'base_url.required'     => 'Base URL is required',
+    //             'base_url.url'          => 'Enter a valid URL (https://example.pipedrive.com)',
+    //         ]);
+
+    //         DB::beginTransaction();
+
+    //         // ✅ UPDATE RECORD
+    //         $account->update([
+    //             'account_name' => $validated['account_name'],
+    //             'api_key'      => $validated['api_key'],
+    //             'base_url'     => rtrim($validated['base_url'], '/'),
+    //         ]);
+
+    //         DB::commit();
+
+    //         // 🔥 ACTIVITY LOG (SUCCESS)
+    //         $this->activityLog([
+    //             'module' => 'pipedrive',
+    //             'record_id' => $account->id,
+    //             'action' => 'update',
+    //             'status' => 'success',
+    //             'message' => 'Pipedrive account updated successfully',
+    //             'meta' => [
+    //                 'account_name' => $account->account_name,
+    //                 'base_url' => $account->base_url
+    //             ]
+    //         ]);
+
+    //         return redirect()->back()
+    //             ->with('success', 'Pipedrive account updated successfully!');
+    //     } catch (\Exception $e) {
+    //         DB::rollBack();
+
+    //         // 🔥 ACTIVITY LOG (FAILED)
+    //         $this->activityLog([
+    //             'module' => 'pipedrive',
+    //             'record_id' => $account->id,
+    //             'action' => 'update',
+    //             'status' => 'failed',
+    //             'message' => $e->getMessage(),
+    //         ]);
+
+    //         return back()
+    //             ->withInput()
+    //             ->with('error', 'Something went wrong. Please try again.');
+    //     }
+    // }
+
+    public function update(
+        UpdatePipedriveRequest $request,
+        int $id
+    ) {
         $account = PipedriveAccount::find($id);
 
         if (!$account) {
-            return back()->with('error', 'Account not found');
+
+            return back()->with(
+                'error',
+                'Account not found'
+            );
         }
 
         try {
-            // ✅ VALIDATION
-            $validated = $request->validate([
-                'account_name' => 'required|string|max:255',
-                'api_key'      => 'required|string|min:10',
-                'base_url'     => 'required|url',
-            ], [
-                'account_name.required' => 'Account name is required',
-                'api_key.required'      => 'API key is required',
-                'base_url.required'     => 'Base URL is required',
-                'base_url.url'          => 'Enter a valid URL (https://example.pipedrive.com)',
-            ]);
 
             DB::beginTransaction();
 
-            // ✅ UPDATE RECORD
-            $account->update([
-                'account_name' => $validated['account_name'],
-                'api_key'      => $validated['api_key'],
-                'base_url'     => rtrim($validated['base_url'], '/'),
-            ]);
+            /*
+        |--------------------------------------------------------------------------
+        | Validated Data
+        |--------------------------------------------------------------------------
+        */
+
+            $validated = $request->validated();
+
+            /*
+        |--------------------------------------------------------------------------
+        | Keep Old API Key
+        |--------------------------------------------------------------------------
+        */
+
+            if (empty($validated['api_key'])) {
+
+                unset($validated['api_key']);
+            }
+
+            /*
+        |--------------------------------------------------------------------------
+        | Clean Base URL
+        |--------------------------------------------------------------------------
+        */
+
+            $validated['base_url'] = rtrim(
+                $validated['base_url'],
+                '/'
+            );
+
+            /*
+        |--------------------------------------------------------------------------
+        | Update Account
+        |--------------------------------------------------------------------------
+        */
+
+            $account->update($validated);
 
             DB::commit();
 
-            // 🔥 ACTIVITY LOG (SUCCESS)
+            /*
+        |--------------------------------------------------------------------------
+        | Activity Log
+        |--------------------------------------------------------------------------
+        */
+
             $this->activityLog([
+
                 'module' => 'pipedrive',
+
                 'record_id' => $account->id,
+
                 'action' => 'update',
+
                 'status' => 'success',
+
                 'message' => 'Pipedrive account updated successfully',
+
                 'meta' => [
+
                     'account_name' => $account->account_name,
-                    'base_url' => $account->base_url
+
+                    'base_url' => $account->base_url,
+
                 ]
+
             ]);
 
-            return redirect()->back()
-                ->with('success', 'Pipedrive account updated successfully!');
+            return redirect()
+                ->back()
+                ->with(
+                    'success',
+                    'Pipedrive account updated successfully!'
+                );
         } catch (\Exception $e) {
+
             DB::rollBack();
 
-            // 🔥 ACTIVITY LOG (FAILED)
+            /*
+        |--------------------------------------------------------------------------
+        | Activity Log
+        |--------------------------------------------------------------------------
+        */
+
             $this->activityLog([
+
                 'module' => 'pipedrive',
-                'record_id' => $account->id,
+
+                'record_id' => $account->id ?? null,
+
                 'action' => 'update',
+
                 'status' => 'failed',
+
                 'message' => $e->getMessage(),
+
             ]);
 
             return back()
                 ->withInput()
-                ->with('error', 'Something went wrong. Please try again.');
+                ->with(
+                    'error',
+                    'Something went wrong. Please try again.'
+                );
         }
     }
 
