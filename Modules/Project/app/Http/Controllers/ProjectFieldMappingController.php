@@ -15,10 +15,8 @@ class ProjectFieldMappingController extends Controller
     /**
      * Store mapping
      */
-    public function store(
-        Request $request,
-        int $projectId
-    ) {
+    public function store(Request $request, int $projectId)
+    {
         $validated = $request->validate([
 
             'pipedrive_field_key' => 'required|string',
@@ -98,7 +96,7 @@ class ProjectFieldMappingController extends Controller
                     ? 'append'
                     : 'update',
 
-                'target' => '.field-mappling-list',
+                'target' => '#field-mappling-list',
 
                 'id' => $field->id,
 

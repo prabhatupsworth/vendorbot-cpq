@@ -26,7 +26,6 @@ $(document).on("click", ".edit-form", function () {
 
         // 🔥 STEP 3: fill remaining fields (EXCLUDE pipeline_id)
         Object.keys(data).forEach(key => {
-            console.log(data[key]);
             if (key === "pipeline_id" || key === "pipedrive_account_id") return;
 
             let input = form.find(`[name="${key}"]`);

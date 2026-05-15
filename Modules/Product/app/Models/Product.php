@@ -2,13 +2,17 @@
 
 namespace Modules\Product\Models;
 
-use App\Models\Project\Project;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Modules\Project\Models\Project;
+use App\Traits\BelongsToProject;
 
 class Product extends Model
 {
     use SoftDeletes;
+
+    use BelongsToProject;
 
     protected $fillable = [
         'project_id',
@@ -85,5 +89,13 @@ class Product extends Model
 
         return $this->price -
             (($this->price * $this->discount_value) / 100);
+    }
+
+    public function scrapCategories()
+    {
+        return $this->belongsToMany(
+            ScrapCategory::class,
+            'product_scrap_categories'
+        );
     }
 }

@@ -10,9 +10,32 @@ use Spatie\Permission\Models\Permission;
 
 class RoleController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $roles = Role::all();
+        $query = Role::query();
+
+        // Search filter
+        if ($request->filled('search')) {
+
+            $query->where('name', 'LIKE', '%' . $request->search . '%');
+        }
+
+        // execute query AFTER search
+        $roles = $query->latest()->get();
+
+        // AJAX response
+        if ($request->ajax()) {
+
+            $html = view(
+                'admin.roles.partials.table',
+                compact('roles')
+            )->render();
+
+            return response()->json([
+                'html' => $html
+            ]);
+        }
+
         return view('admin.roles.index', compact('roles'));
     }
     public function getRoles()
@@ -54,6 +77,7 @@ class RoleController extends Controller
             ->with('success', 'Role created successfully');
     }
 
+
     public function edit(int $id)
     {
         $role = Role::findOrFail($id);
@@ -80,6 +104,18 @@ class RoleController extends Controller
             ->with('success', 'Role updated successfully');
     }
 
+    // RoleController.php
+
+    public function destroy(int $id)
+    {
+        $role = Role::findOrFail($id);
+
+        $role->delete();
+
+        return redirect()
+            ->back()
+            ->with('success', 'Role deleted successfully');
+    }
 
     public function permissions(int $id)
     {

@@ -2,9 +2,9 @@
 
 namespace Modules\Product\Models;
 
-use App\Models\Project\Project;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Modules\Project\Models\Project;
 
 class Category extends Model
 {

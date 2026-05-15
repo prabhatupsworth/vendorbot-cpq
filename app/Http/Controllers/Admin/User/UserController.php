@@ -17,34 +17,52 @@ class UserController extends Controller
     {
         $roles = Role::all();
 
-        // 🔍 search keyword
+        // search value
         $search = $request->search;
 
-        // 🔥 base query
-        $query = \App\Models\User::with('roles');
+        // base query
+        $query = User::with('roles');
 
-        // 🔥 hide super admin for non super admin users
+        // hide super admin for non-super-admin users
         if (!auth()->user()->hasRole('super_admin')) {
 
             $query->whereDoesntHave('roles', function ($q) {
+
                 $q->where('name', 'super_admin');
             });
         }
 
-        // 🔥 search filter
+        // search filter
         if (!empty($search)) {
 
             $query->where(function ($q) use ($search) {
 
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%");
+                $q->where('name', 'LIKE', "%{$search}%")
+                    ->orWhere('email', 'LIKE', "%{$search}%");
             });
         }
 
-        // 🔥 get users
+        // users list
         $users = $query->latest()->get();
 
-        return view('users.index', compact('users', 'roles'));
+        // AJAX response
+        if ($request->ajax()) {
+
+            $html = view(
+                'users.partials.table',
+                compact('users')
+            )->render();
+
+            return response()->json([
+                'html' => $html
+            ]);
+        }
+
+        // normal page load
+        return view(
+            'users.index',
+            compact('users', 'roles')
+        );
     }
     // 🔹 Show Create Form
     public function create()

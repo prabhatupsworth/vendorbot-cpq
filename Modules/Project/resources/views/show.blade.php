@@ -458,27 +458,41 @@
                                 <!-- 🔹 Body -->
                                 <div class="card-body">
 
-                                    @if ($project->smtps->count())
-                                        <div class="row g-3" id="smtp-section">
-                                            @foreach ($project->smtps as $smtp)
-                                                @include('project::partials.smtp-card', [
-                                                    'smtp' => $smtp,
-                                                    'projectId' => $project->id,
-                                                ])
-                                            @endforeach
-                                        </div>
-                                    @else
-                                        <!-- 🔹 Empty -->
-                                        <div class="text-center py-5">
-                                            <i class="ti ti-mail fs-1 text-muted"></i>
-                                            <p class="mt-2 text-muted">No SMTP configured</p>
+                                    <!-- ALWAYS EXIST -->
+                                    <div id="smtp-section">
 
-                                            <button class="btn btn-primary btn-sm create-form" data-bs-toggle="offcanvas"
-                                                data-bs-target="#smtpCanvas">
-                                                <i class="ti ti-plus"></i> Add SMTP
-                                            </button>
-                                        </div>
-                                    @endif
+                                        @if ($project->smtps->count())
+                                            <div class="row g-3">
+
+                                                @foreach ($project->smtps as $smtp)
+                                                    @include('project::partials.smtp-card', [
+                                                        'smtp' => $smtp,
+                                                        'projectId' => $project->id,
+                                                    ])
+                                                @endforeach
+
+                                            </div>
+                                        @else
+                                            <!-- 🔹 Empty -->
+                                            <div class="text-center py-5 smtp-empty-state">
+
+                                                <i class="ti ti-mail fs-1 text-muted"></i>
+
+                                                <p class="mt-2 text-muted">
+                                                    No SMTP configured
+                                                </p>
+
+                                                <button class="btn btn-primary btn-sm create-form"
+                                                    data-bs-toggle="offcanvas" data-bs-target="#smtpCanvas">
+
+                                                    <i class="ti ti-plus"></i> Add SMTP
+
+                                                </button>
+
+                                            </div>
+                                        @endif
+
+                                    </div>
 
                                 </div>
 
@@ -510,33 +524,37 @@
                                 </div>
                                 <div class="card-body">
 
-                                    @if ($project->geoFilter)
-                                        @php $geo = $project->geoFilter; @endphp
-                                        <div id="geo-section">
+                                    <!-- ALWAYS KEEP THIS -->
+                                    <div id="geo-section">
+
+                                        @if ($project->geoFilter)
+                                            @php $geo = $project->geoFilter; @endphp
+
                                             @include('project::partials.geo', ['geo' => $geo])
-                                        </div>
-                                    @else
-                                        <!-- 🔹 EMPTY STATE -->
-                                        <div class="text-center py-5">
+                                        @else
+                                            <!-- 🔹 EMPTY STATE -->
+                                            <div class="text-center py-5 geo-empty-state">
 
-                                            <div class="mb-3">
-                                                <i class="ti ti-current-location fs-1 text-muted"></i>
+                                                <div class="mb-3">
+                                                    <i class="ti ti-current-location fs-1 text-muted"></i>
+                                                </div>
+
+                                                <h6 class="fw-semibold">No Geo Filter Configured</h6>
+
+                                                <p class="text-muted small mb-3">
+                                                    Restrict or filter users based on geographic radius.
+                                                </p>
+
+                                                <button class="btn btn-primary" data-bs-toggle="offcanvas"
+                                                    data-bs-target="#geoCanvas">
+
+                                                    <i class="ti ti-map"></i> Configure Geo Filter
+                                                </button>
+
                                             </div>
+                                        @endif
 
-                                            <h6 class="fw-semibold">No Geo Filter Configured</h6>
-
-                                            <p class="text-muted small mb-3">
-                                                Restrict or filter users based on geographic radius.
-                                            </p>
-
-                                            <button class="btn btn-primary" data-bs-toggle="offcanvas"
-                                                data-bs-target="#geoCanvas">
-
-                                                <i class="ti ti-map"></i> Configure Geo Filter
-                                            </button>
-
-                                        </div>
-                                    @endif
+                                    </div>
 
                                 </div>
                             </div>
@@ -602,12 +620,13 @@
 
                                                 </thead>
 
-                                                <tbody>
+                                                <tbody id="field-mappling-list">
 
                                                     @foreach ($project->fieldMappings as $key => $mapping)
-
-                                                       @include('project::partials.field-mapping',['projectId'=>$project->id,'mapping'=>$mapping])
-
+                                                        @include('project::partials.field-mapping', [
+                                                            'projectId' => $project->id,
+                                                            'mapping' => $mapping,
+                                                        ])
                                                     @endforeach
 
                                                 </tbody>

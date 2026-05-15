@@ -70,10 +70,16 @@
                                             <th class="text-end">Actions</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    {{-- <tbody>
                                         @foreach ($projects as $project)
                                             @include('project::partials.list', ['project' => $project])
                                         @endforeach
+                                    </tbody> --}}
+
+                                    <tbody id="project-table-body">
+
+                                        @include('project::partials.table')
+
                                     </tbody>
                                 </table>
                             </div>
@@ -165,6 +171,7 @@
                         'type' => 'checkbox',
                         'col' => 12,
                     ],
+
                 ];
             @endphp
 
@@ -213,6 +220,7 @@
 
             });
         </script>
+
         <script>
             let searchTimer;
 
@@ -220,19 +228,68 @@
 
                 clearTimeout(searchTimer);
 
-                let value = $(this).val();
+                let search = $(this).val();
 
                 searchTimer = setTimeout(() => {
 
-                    let url = new URL(window.location.href);
+                    $.ajax({
 
-                    if (value) {
-                        url.searchParams.set('search', value);
-                    } else {
-                        url.searchParams.delete('search');
-                    }
+                        url: "{{ route('projects.index') }}",
 
-                    window.location.href = url;
+                        type: "GET",
+
+                        data: {
+                            search: search
+                        },
+
+                        beforeSend: function() {
+
+                            $('#project-table-body').html(`
+
+                        <tr>
+
+                            <td colspan="8"
+                                class="text-center py-5">
+
+                                <div class="spinner-border spinner-border-sm text-primary me-2"></div>
+
+                                Loading Projects...
+
+                            </td>
+
+                        </tr>
+
+                    `);
+
+                        },
+
+                        success: function(response) {
+
+                            $('#project-table-body')
+                                .html(response.html);
+
+                        },
+
+                        error: function() {
+
+                            $('#project-table-body').html(`
+
+                        <tr>
+
+                            <td colspan="8"
+                                class="text-center text-danger py-5">
+
+                                Failed to load data
+
+                            </td>
+
+                        </tr>
+
+                    `);
+
+                        }
+
+                    });
 
                 }, 500);
 

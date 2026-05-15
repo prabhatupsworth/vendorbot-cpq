@@ -29,21 +29,27 @@ Route::prefix('projects')
             ->group(function () {
 
                 Route::get('/', 'index')
+                    ->middleware('permission:projects.view')
                     ->name('index');
 
                 Route::post('/store', 'store')
+                    ->middleware('permission:projects.create')
                     ->name('store');
 
                 Route::get('/{project}/edit', 'edit')
+                ->middleware('permission:projects.edit')
                     ->name('edit');
 
                 Route::put('/{project}/update', 'update')
+                ->middleware('permission:projects.edit')
                     ->name('update');
 
                 Route::get('/{project}', 'show')
+                ->middleware('permission:projects.view')
                     ->name('show');
 
                 Route::delete('/{project}', 'destroy')
+                ->middleware('permission:projects.delete')
                     ->name('destroy');
             });
 

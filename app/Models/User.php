@@ -7,6 +7,7 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Modules\Project\Models\Project;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
@@ -26,6 +27,7 @@ class User extends Authenticatable
         'password',
         'status',
         'profile_image',
+        'current_project_id'
     ];
 
     /**
@@ -49,5 +51,21 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function currentProject()
+    {
+        return $this->belongsTo(
+            Project::class,
+            'current_project_id'
+        );
+    }
+
+    public function projects()
+    {
+        return $this->belongsToMany(
+            Project::class,
+            'project_users'
+        );
     }
 }

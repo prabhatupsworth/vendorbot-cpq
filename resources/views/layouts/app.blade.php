@@ -59,6 +59,9 @@
     <!-- Main CSS -->
     <link rel="stylesheet" href="{{ asset('template/assets/css/style.css') }}">
 
+    <link rel="stylesheet" href="https://unpkg.com/multiple-select@2.3.0/dist/multiple-select.min.css">
+
+
 </head>
 
 <body>
@@ -120,7 +123,7 @@
     <!-- Custom Json Js -->
     <script src="{{ asset('template/assets/js/jsonscript.js') }}"></script>
 
-
+    <script src="https://unpkg.com/multiple-select@2.3.0/dist/multiple-select.min.js"></script>
     <!--- Custom Js -->
     <script src="{{ asset('template/assets/js/script.js') }}"></script>
 

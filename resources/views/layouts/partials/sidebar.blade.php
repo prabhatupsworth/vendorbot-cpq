@@ -61,6 +61,59 @@
                 </li>
 
                 <li>
+                    <h6 class="submenu-hdr">Products</h6>
+
+                    <ul>
+
+                        <li class="submenu">
+
+                            <a href="javascript:void(0);"
+                                class="{{ request()->routeIs('products.*') ? 'subdrop active' : '' }}">
+
+                                <i class="ti ti-package"></i>
+
+                                <span>Product Management</span>
+
+                                <span class="menu-arrow"></span>
+
+                            </a>
+
+                            <ul style="{{ request()->routeIs('products.*') ? 'display: block;' : 'display: none;' }}">
+
+                                {{-- Products --}}
+
+                                @can('products.view')
+                                    <li>
+
+                                        <a href="{{ route('products.index') }}"
+                                            class="{{ request()->routeIs('products.*') ? 'active' : '' }}">
+
+                                            Products
+
+                                        </a>
+
+                                    </li>
+                                @endcan
+                                @can('products.create')
+                                    <li>
+
+                                        <a href="{{ route('products.create') }}"
+                                            class="{{ request()->routeIs('products.*') ? 'active' : '' }}">
+
+                                            New Product
+
+                                        </a>
+
+                                    </li>
+                                @endcan
+                            </ul>
+
+                        </li>
+
+                    </ul>
+
+                </li>
+                <li>
                     <h6 class="submenu-hdr">Settings</h6>
                     <ul>
 

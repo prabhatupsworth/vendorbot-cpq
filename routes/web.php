@@ -6,6 +6,8 @@ use App\Http\Controllers\Admin\User\UserController;
 use App\Http\Controllers\Profile\ProfileController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Dashboard\DashboardController;
+use App\Http\Controllers\ProjectSwitcherController;
+
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -39,6 +41,7 @@ Route::middleware('auth')->group(function () {
     // Dashboard
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
+    Route::post('/switch-project',[ProjectSwitcherController::class, 'switch'])->name('projects.switch');
 
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
     Route::post('/profile/update', [ProfileController::class, 'updateProfile'])->name('profile.update');
@@ -97,8 +100,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/', [RoleController::class, 'store'])->name('roles.store');
 
         Route::get('/{id}/edit', [RoleController::class, 'edit'])->name('roles.edit');
-        Route::post('/{id}', [RoleController::class, 'update'])->name('roles.update');
-
+        Route::put('/{id}', [RoleController::class, 'update'])->name('roles.update');
+        Route::delete('/{id}', [RoleController::class, 'destroy'])->name('roles.destroy');
 
         Route::get('/{id}/permissions', [RoleController::class, 'permissions'])
             ->name('roles.permissions');

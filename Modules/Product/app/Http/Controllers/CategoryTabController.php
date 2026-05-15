@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Modules\Product\Models\Category;
 use Modules\Product\Models\CategoryTab;
 use Throwable;
+use Illuminate\Support\Facades\Validator;
 
 class CategoryTabController extends Controller
 {
@@ -18,8 +20,10 @@ class CategoryTabController extends Controller
             $tabs = CategoryTab::with('category')
                 ->latest()
                 ->paginate(20);
-
-            return view('product::tabs.index', compact('tabs'));
+            $categories = Category::where('active', true)
+                ->pluck('name', 'id')
+                ->toArray();
+            return view('product::tabs.index', compact('tabs', 'categories'));
         } catch (Throwable $e) {
 
             report($e);
@@ -33,36 +37,78 @@ class CategoryTabController extends Controller
     {
         try {
 
-            $validated = $request->validate([
-                'category_id' => ['required', 'exists:categories,id'],
-                'name' => ['required', 'string', 'max:255'],
-                'description' => ['nullable', 'string'],
-                'sort_order' => ['nullable', 'integer'],
+            $validator = Validator::make($request->all(), [
+
+                'category_id' => [
+                    'required',
+                    'exists:categories,id'
+                ],
+
+                'name' => [
+                    'required',
+                    'string',
+                    'max:255'
+                ],
+                // 'sort_order' => [
+                //     'nullable',
+                //     'integer'
+                // ],
+
             ]);
+
+            // 🔥 Validation Error Response
+            if ($validator->fails()) {
+
+                return response()->json([
+
+                    'status' => false,
+
+                    'message' => 'Validation failed.',
+
+                    'errors' => $validator->errors(),
+
+                ], 422);
+            }
 
             DB::beginTransaction();
 
             CategoryTab::create([
-                ...$validated,
+
+                ...$validator->validated(),
+
                 'is_default' => $request->boolean('is_default'),
+
                 'active' => $request->boolean('active', true),
-                'created_by' => Auth::id(),
             ]);
 
             DB::commit();
 
-            return redirect()
-                ->route('tabs.index')
-                ->with('success', 'Tab created successfully.');
+            return response()->json([
+
+                'status' => true,
+
+                'message' => 'Tab created successfully.',
+
+                'redirect' => route('products.tabs.index'),
+
+            ]);
         } catch (Throwable $e) {
 
             DB::rollBack();
 
             report($e);
 
-            return back()
-                ->withInput()
-                ->with('error', 'Failed to create tab.');
+            return response()->json([
+
+                'status' => false,
+
+                'message' => 'Failed to create tab.',
+
+                'error' => config('app.debug')
+                    ? $e->getMessage()
+                    : null,
+
+            ], 500);
         }
     }
 }

@@ -23,36 +23,164 @@ class ProjectController extends Controller
 {
     use ActivityLogTrait;
 
+    // public function index(Request $request)
+    // {
+    //     $query = Project::query();
+
+    //     // 🔍 Search
+    //     if ($request->filled('search')) {
+
+    //         $search = $request->search;
+
+    //         $query->where(function ($q) use ($search) {
+
+    //             $q->where('name', 'like', "%{$search}%")
+    //                 ->orWhere('website_url', 'like', "%{$search}%")
+    //                 ->orWhere('event_name', 'like', "%{$search}%");
+    //         });
+    //     }
+    //     $projects = $query->latest()->paginate(10)->withQueryString();
+
+    //     $pipedriveAccounts = PipedriveAccount::pluck('account_name', 'id');
+
+    //     $invoiceAccounts = InvoiceAccount::pluck('type', 'id');
+
+    //     return view('project::index', compact(
+    //         'projects',
+    //         'pipedriveAccounts',
+    //         'invoiceAccounts'
+    //     ));
+    // }
+
+    // public function index(Request $request)
+    // {
+    //     $query = Project::query();
+
+    //     // search
+    //     if ($request->filled('search')) {
+
+    //         $search = $request->search;
+
+    //         $query->where(function ($q) use ($search) {
+
+    //             $q->where('name', 'like', "%{$search}%")
+    //                 ->orWhere('website_url', 'like', "%{$search}%")
+    //                 ->orWhere('event_name', 'like', "%{$search}%");
+    //         });
+    //     }
+
+    //     // relations optimization
+    //     $projects = $query
+    //         ->with([
+    //             'pipedriveAccount',
+    //             'invoiceAccount'
+    //         ])
+    //         ->latest()
+    //         ->paginate(10)
+    //         ->withQueryString();
+
+    //     // ajax response
+    //     if ($request->ajax()) {
+
+    //         $html = view(
+    //             'project::partials.table',
+    //             compact('projects')
+    //         )->render();
+
+    //         return response()->json([
+    //             'html' => $html
+    //         ]);
+    //     }
+
+    //     $pipedriveAccounts = PipedriveAccount::pluck('account_name', 'id');
+
+    //     $invoiceAccounts = InvoiceAccount::pluck('type', 'id');
+
+    //     return view(
+    //         'project::index',
+    //         compact(
+    //             'projects',
+    //             'pipedriveAccounts',
+    //             'invoiceAccounts'
+    //         )
+    //     );
+    // }
+
     public function index(Request $request)
-    {
-        $query = Project::query();
+{
+    $query = Project::query();
 
-        // 🔍 Search
-        if ($request->filled('search')) {
+    // 🔥 role based visibility
+    if (!auth()->user()->hasRole('super_admin')) {
 
-            $search = $request->search;
+        $query->whereHas('users', function ($q) {
 
-            $query->where(function ($q) use ($search) {
+            $q->where(
+                'users.id',
+                auth()->id()
+            );
 
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('website_url', 'like', "%{$search}%")
-                    ->orWhere('event_name', 'like', "%{$search}%");
-            });
-        }
+        });
 
-        $projects = $query->latest()->paginate(10)->withQueryString();
+    }
 
-        $pipedriveAccounts = PipedriveAccount::pluck('account_name', 'id');
+    // 🔍 search
+    if ($request->filled('search')) {
 
-        $invoiceAccounts = InvoiceAccount::pluck('type', 'id');
+        $search = $request->search;
 
-        return view('project::index', compact(
+        $query->where(function ($q) use ($search) {
+
+            $q->where('name', 'like', "%{$search}%")
+              ->orWhere('website_url', 'like', "%{$search}%")
+              ->orWhere('event_name', 'like', "%{$search}%");
+
+        });
+
+    }
+
+    $projects = $query
+        ->with([
+            'pipedriveAccount',
+            'invoiceAccount'
+        ])
+        ->latest()
+        ->paginate(10)
+        ->withQueryString();
+
+    // ajax
+    if ($request->ajax()) {
+
+        $html = view(
+            'project::partials.table',
+            compact('projects')
+        )->render();
+
+        return response()->json([
+            'html' => $html
+        ]);
+
+    }
+
+    $pipedriveAccounts = PipedriveAccount::pluck(
+        'account_name',
+        'id'
+    );
+
+    $invoiceAccounts = InvoiceAccount::pluck(
+        'type',
+        'id'
+    );
+
+    return view(
+        'project::index',
+        compact(
             'projects',
             'pipedriveAccounts',
             'invoiceAccounts'
-        ));
-    }
-
+        )
+    );
+}
     // ✅ STORE
     public function store(ProjectRequest $request)
     {
@@ -73,7 +201,7 @@ class ProjectController extends Controller
                 'created_by' => Auth::id(),
             ]);
 
-           $this->activityLog([
+            $this->activityLog([
                 'module' => 'projects',
                 'action' => 'created',
                 'record_id' => $project->id,
@@ -82,9 +210,16 @@ class ProjectController extends Controller
                 'message' => 'Project created successfully.',
             ]);
 
-            return redirect()->back()->with('success', 'Project created successfully');
+            return response()->json([
+                'status' => true,
+                'action' => 'prepend',
+                'target' => '#project-table-body',
+                'message' => 'Project created successfully',
+                'html' => view('project::partials.list', [
+                    'project' => $project,
+                ])->render(),
+            ]);
         } catch (\Exception $e) {
-            dd($e);
             Log::error('Project Store Error: ' . $e->getMessage());
 
             return redirect()->back()->withInput()->with('error', 'Something went wrong while creating project');

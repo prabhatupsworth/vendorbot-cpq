@@ -46,7 +46,7 @@
                 </div>
             </li>
             <!-- /Search -->
-
+            <x-project-switcher />
             <!-- Nav List -->
             <li class="nav-item nav-list">
                 <ul class="nav">
@@ -311,10 +311,10 @@
                     <span class="user-info">
                         <span class="user-letter">
                             {{-- <img src="{{ asset('template/assets/img/profiles/avatar-20.jpg') }}" alt="Profile"> --}}
-                             <img src="{{ auth()->user()->profile_image
-                            ? asset('storage/' . auth()->user()->profile_image)
-                            : asset('template/assets/img/profiles/avatar-20.jpg') }}"
-                            class="img-fluid" alt="Profile">
+                            <img src="{{ auth()->user()->profile_image
+                                ? asset('storage/' . auth()->user()->profile_image)
+                                : asset('template/assets/img/profiles/avatar-20.jpg') }}"
+                                class="img-fluid" alt="Profile">
                         </span>
                         <span class="badge badge-success rounded-pill"></span>
                     </span>
@@ -358,8 +358,8 @@
                 <i class="ti ti-lock"></i> Logout
             </a>
             <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                            @csrf
-                        </form>
+                @csrf
+            </form>
         </div>
     </div>
     <!-- /Mobile Menu -->

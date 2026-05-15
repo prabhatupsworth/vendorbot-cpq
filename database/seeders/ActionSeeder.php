@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Project\Action;
 use Illuminate\Database\Seeder;
+use Modules\Project\Models\Action;
 
 class ActionSeeder extends Seeder
 {

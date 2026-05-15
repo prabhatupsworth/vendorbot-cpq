@@ -20,16 +20,6 @@ return new class extends Migration
                 ->constrained('projects')
                 ->cascadeOnDelete();
 
-            $table->foreignId('category_id')
-                ->nullable()
-                ->constrained('categories')
-                ->nullOnDelete();
-
-            $table->foreignId('tab_id')
-                ->nullable()
-                ->constrained('category_tabs')
-                ->nullOnDelete();
-
             // Product Info
             $table->string('name');
 
@@ -80,7 +70,7 @@ return new class extends Migration
             $table->softDeletes();
 
             // Indexes
-            $table->index(['project_id', 'category_id']);
+            $table->index(['project_id']);
 
             $table->index(['active', 'is_default']);
 
