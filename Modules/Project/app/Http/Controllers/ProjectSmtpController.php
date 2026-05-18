@@ -8,7 +8,7 @@ use App\Traits\ActivityLogTrait;
 
 use Modules\Project\Services\SmtpService;
 
-use Modules\Project\Repositories\SmtpRepository;
+use Modules\Project\Interfaces\SmtpRepositoryInterface;
 
 use Modules\Project\Http\Requests\SMTP\TestSmtpRequest;
 use Modules\Project\Http\Requests\SMTP\StoreSmtpRequest;
@@ -20,7 +20,7 @@ class ProjectSmtpController extends Controller
 
     public function __construct(
 
-        protected SmtpRepository $smtpRepository,
+        protected SmtpRepositoryInterface $smtpRepository,
 
         protected SmtpService $smtpService
 

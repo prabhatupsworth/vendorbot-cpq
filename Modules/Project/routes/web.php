@@ -8,6 +8,7 @@ use Modules\Project\Http\Controllers\ProjectFieldMappingController;
 use Modules\Project\Http\Controllers\ProjectGeoFilterController;
 use Modules\Project\Http\Controllers\ProjectSmtpController;
 use Modules\Project\Http\Controllers\ProjectStageActionController;
+use Modules\Project\Http\Controllers\ProjectUserController;
 
 Route::prefix('projects')
     ->name('projects.')
@@ -20,8 +21,8 @@ Route::prefix('projects')
         */
 
         Route::controller(DashboardController::class)->group(
-            function(){
-                Route::get('/dashboard','index');
+            function () {
+                Route::get('/dashboard', 'index');
             }
         );
 
@@ -37,19 +38,19 @@ Route::prefix('projects')
                     ->name('store');
 
                 Route::get('/{project}/edit', 'edit')
-                ->middleware('permission:projects.edit')
+                    ->middleware('permission:projects.edit')
                     ->name('edit');
 
                 Route::put('/{project}/update', 'update')
-                ->middleware('permission:projects.edit')
+                    ->middleware('permission:projects.edit')
                     ->name('update');
 
                 Route::get('/{project}', 'show')
-                ->middleware('permission:projects.view')
+                    ->middleware('permission:projects.view')
                     ->name('show');
 
                 Route::delete('/{project}', 'destroy')
-                ->middleware('permission:projects.delete')
+                    ->middleware('permission:projects.delete')
                     ->name('destroy');
             });
 
@@ -82,7 +83,7 @@ Route::prefix('projects')
 
         Route::prefix('{project}/users')
             ->name('users.')
-            ->controller(ProjectController::class)
+            ->controller(ProjectUserController::class)
             ->group(function () {
 
                 Route::post('/add', 'add_user')

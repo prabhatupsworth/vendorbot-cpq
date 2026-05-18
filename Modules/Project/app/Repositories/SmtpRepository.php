@@ -2,9 +2,10 @@
 
 namespace Modules\Project\Repositories;
 
+use Modules\Project\Interfaces\SmtpRepositoryInterface;
 use Modules\Project\Models\Smtp;
 
-class SmtpRepository
+class SmtpRepository implements SmtpRepositoryInterface
 {
     public function getAll(int $projectId)
     {

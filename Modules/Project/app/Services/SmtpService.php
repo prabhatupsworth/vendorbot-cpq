@@ -130,12 +130,11 @@ class SmtpService
                 'message' => 'SMTP connected successfully'
 
             ];
-
         } catch (\Exception $e) {
 
             Log::error(
                 'SMTP Test Error: '
-                . $e->getMessage()
+                    . $e->getMessage()
             );
 
             if ($smtp) {

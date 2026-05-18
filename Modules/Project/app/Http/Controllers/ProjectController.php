@@ -23,164 +23,77 @@ class ProjectController extends Controller
 {
     use ActivityLogTrait;
 
-    // public function index(Request $request)
-    // {
-    //     $query = Project::query();
-
-    //     // 🔍 Search
-    //     if ($request->filled('search')) {
-
-    //         $search = $request->search;
-
-    //         $query->where(function ($q) use ($search) {
-
-    //             $q->where('name', 'like', "%{$search}%")
-    //                 ->orWhere('website_url', 'like', "%{$search}%")
-    //                 ->orWhere('event_name', 'like', "%{$search}%");
-    //         });
-    //     }
-    //     $projects = $query->latest()->paginate(10)->withQueryString();
-
-    //     $pipedriveAccounts = PipedriveAccount::pluck('account_name', 'id');
-
-    //     $invoiceAccounts = InvoiceAccount::pluck('type', 'id');
-
-    //     return view('project::index', compact(
-    //         'projects',
-    //         'pipedriveAccounts',
-    //         'invoiceAccounts'
-    //     ));
-    // }
-
-    // public function index(Request $request)
-    // {
-    //     $query = Project::query();
-
-    //     // search
-    //     if ($request->filled('search')) {
-
-    //         $search = $request->search;
-
-    //         $query->where(function ($q) use ($search) {
-
-    //             $q->where('name', 'like', "%{$search}%")
-    //                 ->orWhere('website_url', 'like', "%{$search}%")
-    //                 ->orWhere('event_name', 'like', "%{$search}%");
-    //         });
-    //     }
-
-    //     // relations optimization
-    //     $projects = $query
-    //         ->with([
-    //             'pipedriveAccount',
-    //             'invoiceAccount'
-    //         ])
-    //         ->latest()
-    //         ->paginate(10)
-    //         ->withQueryString();
-
-    //     // ajax response
-    //     if ($request->ajax()) {
-
-    //         $html = view(
-    //             'project::partials.table',
-    //             compact('projects')
-    //         )->render();
-
-    //         return response()->json([
-    //             'html' => $html
-    //         ]);
-    //     }
-
-    //     $pipedriveAccounts = PipedriveAccount::pluck('account_name', 'id');
-
-    //     $invoiceAccounts = InvoiceAccount::pluck('type', 'id');
-
-    //     return view(
-    //         'project::index',
-    //         compact(
-    //             'projects',
-    //             'pipedriveAccounts',
-    //             'invoiceAccounts'
-    //         )
-    //     );
-    // }
 
     public function index(Request $request)
-{
-    $query = Project::query();
+    {
+        $query = Project::query();
 
-    // 🔥 role based visibility
-    if (!auth()->user()->hasRole('super_admin')) {
+        // 🔥 role based visibility
+        if (!auth()->user()->hasRole('super_admin')) {
 
-        $query->whereHas('users', function ($q) {
+            $query->whereHas('users', function ($q) {
 
-            $q->where(
-                'users.id',
-                auth()->id()
-            );
+                $q->where(
+                    'users.id',
+                    auth()->id()
+                );
+            });
+        }
 
-        });
+        // 🔍 search
+        if ($request->filled('search')) {
 
+            $search = $request->search;
+
+            $query->where(function ($q) use ($search) {
+
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('website_url', 'like', "%{$search}%")
+                    ->orWhere('event_name', 'like', "%{$search}%");
+            });
+        }
+
+        $projects = $query
+            ->with([
+                'pipedriveAccount',
+                'invoiceAccount'
+            ])
+            ->latest()
+            ->paginate(10)
+            ->withQueryString();
+
+        // ajax
+        if ($request->ajax()) {
+
+            $html = view(
+                'project::partials.table',
+                compact('projects')
+            )->render();
+
+            return response()->json([
+                'html' => $html
+            ]);
+        }
+
+        $pipedriveAccounts = PipedriveAccount::pluck(
+            'account_name',
+            'id'
+        );
+
+        $invoiceAccounts = InvoiceAccount::pluck(
+            'type',
+            'id'
+        );
+
+        return view(
+            'project::index',
+            compact(
+                'projects',
+                'pipedriveAccounts',
+                'invoiceAccounts'
+            )
+        );
     }
-
-    // 🔍 search
-    if ($request->filled('search')) {
-
-        $search = $request->search;
-
-        $query->where(function ($q) use ($search) {
-
-            $q->where('name', 'like', "%{$search}%")
-              ->orWhere('website_url', 'like', "%{$search}%")
-              ->orWhere('event_name', 'like', "%{$search}%");
-
-        });
-
-    }
-
-    $projects = $query
-        ->with([
-            'pipedriveAccount',
-            'invoiceAccount'
-        ])
-        ->latest()
-        ->paginate(10)
-        ->withQueryString();
-
-    // ajax
-    if ($request->ajax()) {
-
-        $html = view(
-            'project::partials.table',
-            compact('projects')
-        )->render();
-
-        return response()->json([
-            'html' => $html
-        ]);
-
-    }
-
-    $pipedriveAccounts = PipedriveAccount::pluck(
-        'account_name',
-        'id'
-    );
-
-    $invoiceAccounts = InvoiceAccount::pluck(
-        'type',
-        'id'
-    );
-
-    return view(
-        'project::index',
-        compact(
-            'projects',
-            'pipedriveAccounts',
-            'invoiceAccounts'
-        )
-    );
-}
     // ✅ STORE
     public function store(ProjectRequest $request)
     {
@@ -426,82 +339,6 @@ class ProjectController extends Controller
             return response()->json([
                 'error' => 'Project not found'
             ], 404);
-        }
-    }
-
-    public function add_user(Request $request, int $projectId)
-    {
-        $validated = $request->validate([
-            'user_ids' => 'required|array',
-            'user_ids.*' => 'exists:users,id'
-        ]);
-
-        $project = Project::findOrFail($projectId);
-
-        // 🔥 Just attach (no role)
-        $project->users()->syncWithoutDetaching($validated['user_ids']);
-
-        $users = User::whereIn('id', $validated['user_ids'])->get();
-
-        $html = '';
-
-        foreach ($users as $user) {
-            $role = $user->getRoleNames()->first();
-            $html .= view('project::partials.users-card', [
-                'user' => $user,
-                'projectId' => $projectId,
-                'role' => $role
-            ])->render();
-        }
-
-        $this->activityLog([
-            'module' => 'projects',
-            'action' => 'added',
-            'record_id' => $project->id,
-            'performed_at' => now(),
-            'status' => 'success',
-            'message' => 'Users added successfully.',
-        ]);
-
-        return response()->json([
-            'status' => true,
-            'action' => 'append',
-            'target' => '#user-card',
-            'message' => 'Users added successfully',
-            'html' => $html
-        ]);
-    }
-
-    public function remove_user(int $projectId, int $userId)
-    {
-        try {
-            $project = Project::findOrFail($projectId);
-
-            // 🔥 detach user from project
-            $project->users()->detach($userId);
-
-            $this->activityLog([
-                'module' => 'projects',
-                'action' => 'added',
-                'record_id' => $project->id,
-                'performed_at' => now(),
-                'status' => 'success',
-                'message' => 'User removed successfully.',
-            ]);
-
-            return response()->json([
-                'status' => true,
-                'action' => 'delete',
-                'target' => '.user-card',
-                'id' => $userId,
-                'message' => 'User removed successfully',
-            ]);
-        } catch (\Exception $e) {
-
-            return response()->json([
-                'status' => false,
-                'message' => 'Something went wrong'
-            ], 500);
         }
     }
 }
