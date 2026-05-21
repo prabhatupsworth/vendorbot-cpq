@@ -32,7 +32,7 @@ class AuthController extends Controller
         if (Auth::attempt($credentials,$remember)) {
             $request->session()->regenerate();
 
-            return redirect()->route('profile')->with('success', 'Logged in successfully');
+            return redirect()->route('dashboard')->with('success', 'Logged in successfully');
         }
 
         return back()->withErrors([
