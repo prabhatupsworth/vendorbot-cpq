@@ -1,7 +1,10 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
+use Nwidart\Modules\Facades\Module;
+
 if (!function_exists('user_status_badge')) {
-    function user_status_badge($status)
+    function user_status_badge(int|string|null $status): string
     {
         return match ($status) {
             1 => '<span class="badge bg-success">Active</span>',
@@ -11,25 +14,21 @@ if (!function_exists('user_status_badge')) {
     }
 }
 
-if (!function_exists('activityLog')) {
-    function activityLog(array $data)
+
+if (!function_exists('moduleEnabled')) {
+
+    function moduleEnabled(string $module): bool
     {
-        \App\Models\ActivityLog::create([
-            'user_id' => auth()->id(),
+        return Module::isEnabled($module);
+    }
+}
 
-            'module' => $data['module'] ?? null,
-            'record_id' => $data['record_id'] ?? null,
 
-            'action' => $data['action'] ?? null,
-            'status' => $data['status'] ?? null,
+if (! function_exists('current_project_id')) {
 
-            'message' => $data['message'] ?? null,
-            'meta' => $data['meta'] ?? null,
-
-            'ip_address' => request()->ip(),
-            'user_agent' => request()->userAgent(),
-
-            'performed_at' => now(),
-        ]);
+    function current_project_id()
+    {
+        return
+            Auth::user()?->current_project_id;
     }
 }

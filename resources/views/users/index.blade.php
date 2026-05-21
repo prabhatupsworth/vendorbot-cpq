@@ -15,7 +15,7 @@
                             </div>
                             <div class="col-4 text-end">
                                 <div class="head-icons">
-                                    <a href="{{route('users.index')}}" data-bs-toggle="tooltip" data-bs-placement="top"
+                                    <a href="{{ route('users.index') }}" data-bs-toggle="tooltip" data-bs-placement="top"
                                         data-bs-original-title="Refresh"><i class="ti ti-refresh-dot"></i></a>
                                     <a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top"
                                         data-bs-original-title="Collapse" id="collapse-header"><i
@@ -34,7 +34,8 @@
                                 <div class="col-sm-4">
                                     <div class="icon-form mb-3 mb-sm-0">
                                         <span class="form-icon"><i class="ti ti-search"></i></span>
-                                        <input id="userSearch" type="text" class="form-control" placeholder="Search User">
+                                        <input id="userSearch" type="text" class="form-control"
+                                            placeholder="Search User">
                                     </div>
                                 </div>
                                 <div class="col-sm-8">
@@ -56,6 +57,7 @@
                                 <table class="table">
                                     <thead class="thead-light">
                                         <tr>
+                                            <th width="60">#</th>
                                             <th>Name</th>
                                             <th>Email</th>
                                             <th>Created</th>
@@ -63,51 +65,8 @@
                                             <th class="text-end">Action</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        @foreach ($users as $user)
-                                            <tr>
-                                                <td>{{ $user->name }}</td>
-                                                <td>{{ $user->email }}</td>
-                                                <td>{{ $user->created_at->format('d M Y') }}</td>
-                                                <td>
-                                                    {!! user_status_badge($user->status) !!}
-                                                </td>
-                                                <td class="text-end">
-                                                    <div class="dropdown table-action">
-
-                                                        <!-- TOGGLE -->
-                                                        <a href="javascript:void(0);" class="action-icon"
-                                                            data-bs-toggle="dropdown" data-bs-display="static">
-                                                            <i class="fa fa-ellipsis-v"></i>
-                                                        </a>
-
-                                                        <!-- MENU -->
-                                                        <div class="dropdown-menu dropdown-menu-end">
-
-                                                            <!-- EDIT -->
-                                                            @can('users.edit')
-                                                                <a href="javascript:void(0);"
-                                                                    class="dropdown-item d-flex align-items-center edit-btn"
-                                                                    data-id="{{ $user->id }}" data-bs-toggle="offcanvas"
-                                                                    data-bs-target="#offcanvas_edit">
-                                                                    <i class="ti ti-edit text-primary me-2"></i> Edit
-                                                                </a>
-                                                            @endcan
-
-                                                            @can('users.delete')
-                                                                <!-- DELETE -->
-                                                                <a href="javascript:void(0);"
-                                                                    class="dropdown-item d-flex align-items-center delete-btn"
-                                                                    data-id="{{ $user->id }}" data-bs-toggle="modal"
-                                                                    data-bs-target="#delete_contact">
-                                                                    <i class="ti ti-trash text-danger me-2"></i> Delete
-                                                                </a>
-                                                            @endcan
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        @endforeach
+                                    <tbody id="user-table-body">
+                                        @include('users.partials.table')
                                     </tbody>
                                 </table>
                             </div>
@@ -180,12 +139,19 @@
                             <label class="col-form-label">Role <span class="text-danger">*</span></label>
                             <select name="role" class="select" required>
                                 <option value="">Select Role</option>
-                                @foreach ($roles as $role)
-                                    <option value="{{ $role->name }}">
-                                        {{ $role->name }}
-                                    </option>
+                                 @foreach ($roles as $role)
+                                    @if ($role->name !== 'super_admin' || auth()->user()->hasRole('super_admin'))
+                                        <option value="{{ $role->name }}">
+
+                                            {{ ucwords(str_replace('_', ' ', $role->name)) }}
+
+                                        </option>
+                                    @endif
                                 @endforeach
+
                             </select>
+
+
                         </div>
                     </div>
 
@@ -261,11 +227,17 @@
                         <div class="mb-3">
                             <label class="col-form-label">Role</label>
                             <select name="role" id="edit_role" class="select">
+
                                 @foreach ($roles as $role)
-                                    <option value="{{ $role->name }}">
-                                        {{ $role->name }}
-                                    </option>
+                                    @if ($role->name !== 'super_admin' || auth()->user()->hasRole('super_admin'))
+                                        <option value="{{ $role->name }}">
+
+                                            {{ ucwords(str_replace('_', ' ', $role->name)) }}
+
+                                        </option>
+                                    @endif
                                 @endforeach
+
                             </select>
                         </div>
                     </div>
@@ -369,7 +341,34 @@
                 });
             });
         </script>
+        <script>
+            $(document).on('click', '.edit-btn', function() {
 
+                let id = $(this).data('id');
+
+                // set form action dynamically
+                $('#editUserForm').attr('action', '/users/' + id);
+
+                // fetch user data
+                $.get('/users/' + id + '/edit', function(data) {
+                    console.log(data);
+                    $('#edit_name').val(data.name);
+                    $('#edit_email').val(data.email);
+                    $('#edit_role').val(data.role);
+
+
+                    if (data.status == 1) {
+                        $('#edit_active').prop('checked', true);
+                    } else {
+                        $('#edit_inactive').prop('checked', true);
+                    }
+
+                    // 🔥 IMPORTANT (this is the missing part)
+                    setImagePreview('edit_profile_image', data.profile_image_url);
+
+                });
+            });
+        </script>
         <script>
             $(document).on('click', '.delete-btn', function() {
 
@@ -383,31 +382,50 @@
             });
         </script>
 
-         <script>
+        <script>
             let searchTimer;
 
             $('#userSearch').on('keyup', function() {
 
                 clearTimeout(searchTimer);
 
-                let value = $(this).val();
+                let search = $(this).val();
 
                 searchTimer = setTimeout(() => {
 
-                    let url = new URL(window.location.href);
+                    $.ajax({
 
-                    if (value) {
-                        url.searchParams.set('search', value);
-                    } else {
-                        url.searchParams.delete('search');
-                    }
+                        url: "{{ route('users.index') }}",
 
-                    window.location.href = url;
+                        type: "GET",
+
+                        data: {
+                            search: search
+                        },
+
+                        beforeSend: function() {
+
+                            $('#user-table-body').html(`
+                        <tr>
+                            <td colspan="6" class="text-center py-4">
+                                Loading...
+                            </td>
+                        </tr>
+                    `);
+
+                        },
+
+                        success: function(response) {
+
+                            $('#user-table-body').html(response.html);
+
+                        }
+
+                    });
 
                 }, 500);
 
             });
         </script>
-
     @endpush
 @endsection

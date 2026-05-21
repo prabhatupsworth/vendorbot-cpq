@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
+use Modules\Project\Models\Project;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -20,12 +21,20 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-         View::composer('*', function ($view) {
+        View::composer('*', function ($view) {
 
-        if (auth()->check()) {
-            $role = auth()->user()->getRoleNames()->first();
-            $view->with('authRole', $role);
-        }
-    });
+            if (auth()->check()) {
+                $role = auth()->user()->getRoleNames()->first();
+                $view->with('authRole', $role);
+
+                $headerProjects = Project::orderBy('name')
+                    ->get();
+
+                $view->with(
+                    'headerProjects',
+                    $headerProjects
+                );
+            }
+        });
     }
 }

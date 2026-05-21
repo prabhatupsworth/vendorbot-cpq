@@ -14,7 +14,7 @@
                             </div>
                             <div class="col-4 text-end">
                                 <div class="head-icons">
-                                    <a href="security.html" data-bs-toggle="tooltip" data-bs-placement="top"
+                                    <a href="{{route('security')}}" data-bs-toggle="tooltip" data-bs-placement="top"
                                         data-bs-original-title="Refresh"><i class="ti ti-refresh-dot"></i></a>
                                     <a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top"
                                         data-bs-original-title="Collapse" id="collapse-header"><i

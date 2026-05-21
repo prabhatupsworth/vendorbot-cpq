@@ -14,7 +14,7 @@
                             </div>
                             <div class="col-sm-8 text-sm-end">
                                 <div class="head-icons">
-                                    <a href="profile.html" data-bs-toggle="tooltip" data-bs-placement="top"
+                                    <a href="{{route('profile')}}" data-bs-toggle="tooltip" data-bs-placement="top"
                                         data-bs-original-title="Refresh"><i class="ti ti-refresh-dot"></i></a>
                                     <a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top"
                                         data-bs-original-title="Collapse" id="collapse-header"><i
