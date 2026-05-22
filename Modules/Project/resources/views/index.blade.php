@@ -166,12 +166,49 @@
                         'col' => 6,
                     ],
                     [
+                        'name' => 'currency_code',
+                        'label' => 'Currency',
+                        'type' => 'select',
+                        'options' => $currencies ?? [],
+                        'required' => true,
+                        'col' => 6,
+                    ],
+
+                    [
+                        'name' => 'language_code',
+                        'label' => 'Language',
+                        'type' => 'select',
+                        'options' => $languages ?? [],
+                        'required' => true,
+                        'col' => 6,
+                    ],
+
+                    [
+                        'name' => 'vat',
+                        'label' => 'VAT (%)',
+                        'type' => 'number',
+                        'placeholder' => 'Enter VAT percentage',
+                        'value' => 0,
+                        'col' => 6,
+                    ],
+
+                    [
+                        'name' => 'vat_status',
+                        'label' => 'VAT Status',
+                        'type' => 'select',
+                        'options' => [
+                            0 => 'Excluded',
+                            1 => 'Included',
+                        ],
+                        'value' => 0,
+                        'col' => 6,
+                    ],
+                     [
                         'name' => 'invoice_enabled',
                         'label' => 'Invoice Enabled',
                         'type' => 'checkbox',
                         'col' => 12,
                     ],
-
                 ];
             @endphp
 

@@ -4,6 +4,8 @@ namespace Modules\Project\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\ActivityLog;
+use App\Models\Currency;
+use App\Models\Language;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -85,10 +87,16 @@ class ProjectController extends Controller
             'id'
         );
 
+        $currencies = Currency::pluck('name', 'code')->toArray();
+
+        $languages = Language::pluck('name', 'code')->toArray();
+
         return view(
             'project::index',
             compact(
                 'projects',
+                'currencies',
+                'languages',
                 'pipedriveAccounts',
                 'invoiceAccounts'
             )
@@ -106,6 +114,10 @@ class ProjectController extends Controller
                 'slug' => Str::slug($validated['name']),
                 'website_url' => $validated['website_url'] ?? null,
                 'event_name' => $validated['event_name'] ?? null,
+                'currency_code' => $validated['currency_code'] ?? null,
+                'language_code' => $validated['language_code'] ?? null,
+                'vat' => $validated['vat'] ?? 0,
+                'vat_status' => $validated['vat_status'] ?? 0,
                 'flow_type' => $validated['flow_type'],
                 'invoice_enabled' => $request->boolean('invoice_enabled'),
                 'pipedrive_account_id' => $validated['pipedrive_account_id'] ?? null,
@@ -162,6 +174,10 @@ class ProjectController extends Controller
                 'name' => $validated['name'],
                 'website_url' => $validated['website_url'] ?? null,
                 'event_name' => $validated['event_name'] ?? null,
+                 'currency_code' => $validated['currency_code'] ?? null,
+                'language_code' => $validated['language_code'] ?? null,
+                'vat' => $validated['vat'] ?? 0,
+                'vat_status' => $validated['vat_status'] ?? 0,
                 'flow_type' => $validated['flow_type'],
                 'invoice_enabled' => $request->boolean('invoice_enabled'),
                 'pipedrive_account_id' => $validated['pipedrive_account_id'] ?? null,
