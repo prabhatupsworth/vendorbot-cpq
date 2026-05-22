@@ -2,6 +2,8 @@
 
 namespace Modules\Project\Models;
 
+use App\Models\Currency;
+use App\Models\Language;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -31,6 +33,10 @@ class Project extends Model
         'plugin_connected_at',
         'plugin_last_ping_at',
         'created_by',
+        'currency_code',
+        'language_code',
+        'vat',
+        'vat_status',
     ];
 
     protected $casts = [
@@ -99,5 +105,15 @@ class Project extends Model
     public function stageActions()
     {
         return $this->hasMany(StageAction::class);
+    }
+
+    public function currency()
+    {
+        return $this->belongsTo(Currency::class, 'currency_code', 'code');
+    }
+
+    public function language()
+    {
+        return $this->belongsTo(Language::class, 'language_code', 'code');
     }
 }

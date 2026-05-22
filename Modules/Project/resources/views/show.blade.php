@@ -265,7 +265,79 @@
                                             </div>
                                         </div>
 
+                                        {{-- Currency --}}
+                                        <div class="col-md-6">
+                                            <div class="d-flex align-items-start gap-3 p-3 rounded bg-light-subtle border">
+                                                <i class="ti ti-currency-dollar fs-4 text-primary"></i>
+
+                                                <div>
+                                                    <small class="text-muted">Currency</small>
+
+                                                    <div class="fw-semibold">
+                                                        {{ $project?->currency?->name ?? '-' }}
+                                                    </div>
+
+                                                    <div class="text-muted small">
+                                                        {{ $project?->currency_code ?? '-' }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {{-- Language --}}
+                                        <div class="col-md-6">
+                                            <div class="d-flex align-items-start gap-3 p-3 rounded bg-light-subtle border">
+                                                <i class="ti ti-language fs-4 text-info"></i>
+
+                                                <div>
+                                                    <small class="text-muted">Language</small>
+
+                                                    <div class="fw-semibold">
+                                                        {{ $project?->language?->name ?? '-' }}
+                                                    </div>
+
+                                                    <div class="text-muted small">
+                                                        {{ strtoupper($project?->language_code ?? '-') }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {{-- VAT --}}
+                                        <div class="col-md-6">
+                                            <div class="d-flex align-items-start gap-3 p-3 rounded bg-light-subtle border">
+                                                <i class="ti ti-percentage fs-4 text-warning"></i>
+
+                                                <div>
+                                                    <small class="text-muted">VAT</small>
+
+                                                    <div class="fw-semibold">
+                                                        {{ number_format($project->vat ?? 0, 2) }}%
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {{-- VAT Status --}}
+                                        <div class="col-md-6">
+                                            <div class="d-flex align-items-start gap-3 p-3 rounded bg-light-subtle border">
+                                                <i class="ti ti-receipt-tax fs-4 text-success"></i>
+
+                                                <div>
+                                                    <small class="text-muted">VAT Status</small>
+
+                                                    <div>
+                                                        {!! ($project->vat_status ?? 0) == 1
+                                                            ? '<span class="badge bg-success px-3 py-1">Included</span>'
+                                                            : '<span class="badge bg-secondary px-3 py-1">Excluded</span>' !!}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                     </div>
+
+
 
                                 </div>
                             </div>
