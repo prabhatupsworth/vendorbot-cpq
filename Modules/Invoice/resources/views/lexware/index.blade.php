@@ -74,7 +74,7 @@
                                                         @if ($setting->is_verified)
                                                             <span class="badge badge-soft-success">Connected</span>
                                                         @else
-                                                            <a href="{{ route('settings.invoice.lexware.connect', $setting->id) }}"
+                                                            <a href="{{ route('settings.invoice.lexware.test-connection', $setting->id) }}"
                                                                 class="badge border bg-white text-default">Test
                                                                 Connection</a>
                                                         @endif

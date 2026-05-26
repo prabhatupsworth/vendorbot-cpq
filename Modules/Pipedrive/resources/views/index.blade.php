@@ -555,8 +555,8 @@
                 const type = btn.dataset.type;
 
                 const url = type === 'stages' ?
-                    `/settings/pipedrive/${id}/sync-stages` :
-                    `/settings/pipedrive/${id}/sync-fields`;
+                    `/settings/pipedrive/${id}/sync/stages` :
+                    `/settings/pipedrive/${id}/sync/fields`;
 
                 const originalHTML = btn.innerHTML;
 
@@ -587,16 +587,16 @@
                         // if (viewBtn) viewBtn.click();
 
                         // 🔥 SweetAlert
-                        // if (typeof Swal !== 'undefined') {
-                        //     Swal.fire({
-                        //         toast: true,
-                        //         position: 'top-end',
-                        //         icon: 'success',
-                        //         title: data.message || 'Synced successfully',
-                        //         showConfirmButton: false,
-                        //         timer: 1500
-                        //     });
-                        // }
+                        if (typeof Swal !== 'undefined') {
+                            Swal.fire({
+                                toast: true,
+                                position: 'top-end',
+                                icon: 'success',
+                                title: data.message || 'Synced successfully',
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                        }
 
                     })
                     .catch(() => {

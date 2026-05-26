@@ -182,16 +182,6 @@
                         'required' => true,
                         'col' => 6,
                     ],
-
-                    [
-                        'name' => 'vat',
-                        'label' => 'VAT (%)',
-                        'type' => 'number',
-                        'placeholder' => 'Enter VAT percentage',
-                        'value' => 0,
-                        'col' => 6,
-                    ],
-
                     [
                         'name' => 'vat_status',
                         'label' => 'VAT Status',
@@ -203,7 +193,15 @@
                         'value' => 0,
                         'col' => 6,
                     ],
-                     [
+                    [
+                        'name' => 'vat',
+                        'label' => 'VAT (%)',
+                        'type' => 'number',
+                        'placeholder' => 'Enter VAT percentage',
+                        'value' => 0,
+                        'col' => 6,
+                    ],
+                    [
                         'name' => 'invoice_enabled',
                         'label' => 'Invoice Enabled',
                         'type' => 'checkbox',
