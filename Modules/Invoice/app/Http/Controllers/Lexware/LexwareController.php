@@ -8,7 +8,7 @@ use App\Models\ActivityLog;
 use Illuminate\Http\Request;
 use Modules\Invoice\Models\InvoiceAccount;
 use App\Traits\ActivityLogTrait;
-
+use Modules\Invoice\Services\LexwareService;
 
 class LexwareController extends Controller
 {
@@ -82,28 +82,6 @@ class LexwareController extends Controller
 
         return redirect()->back()->with('success', 'Account updated successfully.');
     }
-
-    public function connect(int $id)
-    {
-        // Logic to connect to Lexware using the provided ID
-        // This could involve redirecting to an OAuth flow or similar
-
-        // update invoice account to mark as verified after successful connection
-        $account = InvoiceAccount::findOrFail($id);
-        $account->is_verified = true;
-        $account->save();
-        $this->activityLog([
-            'module' => 'lexware',
-            'action' => 'connected',
-            'record_id' => $id,
-            'performed_at' => now(),
-            'status' => 'success',
-            'message' => 'Connected to Lexware successfully.',
-        ]);
-        return redirect()->route('invoice::lexware.index')->with('success', 'Connected to Lexware successfully.');
-    }
-
-
     // show details of the invoice account
     public function details(int $id)
     {
@@ -115,5 +93,133 @@ class LexwareController extends Controller
             ->limit(10)
             ->get();
         return response()->json(['account' => $account, 'activityLog' => $activityLog]);
+    }
+
+    public function testConnection(int $id)
+    {
+        $account = InvoiceAccount::findOrFail($id);
+
+        $lexwareService = new LexwareService($account);
+
+        $response = $lexwareService->testConnection();
+
+        if ($response['success']) {
+
+            $account->update([
+                'is_verified' => true,
+            ]);
+
+            $this->activityLog([
+                'module' => 'lexware',
+                'action' => 'connection_tested',
+                'record_id' => $id,
+                'performed_at' => now(),
+                'status' => 'success',
+                'message' => 'Lexware connection successful.',
+            ]);
+
+            return redirect()
+                ->back()
+                ->with(
+                    'success',
+                    'Lexware connected successfully.'
+                );
+        }
+
+        $this->activityLog([
+            'module' => 'lexware',
+            'action' => 'connection_failed',
+            'record_id' => $id,
+            'performed_at' => now(),
+            'status' => 'failed',
+            'message' => 'Lexware connection failed.',
+        ]);
+
+        return redirect()
+            ->back()
+            ->with(
+                'error',
+                $response['message'] ?? 'Connection failed.'
+            );
+    }
+
+    public function createInvoice()
+    {
+        $account = InvoiceAccount::findOrFail(1);
+
+        $lexwareService = new LexwareService($account);
+
+        $payload = [
+
+            "archived" => false,
+
+            "voucherDate" => now()->toISOString(),
+
+            "address" => [
+                "name" => "Bike & Ride GmbH & Co. KG",
+                "supplement" => "Gebäude 10",
+                "street" => "Musterstraße 42",
+                "city" => "Freiburg",
+                "zip" => "79112",
+                "countryCode" => "DE"
+            ],
+
+            "lineItems" => [
+
+                [
+                    "type" => "custom",
+                    "name" => "Energieriegel Testpaket",
+                    "quantity" => 1,
+                    "unitName" => "Stück",
+
+                    "unitPrice" => [
+                        "currency" => "EUR",
+                        "netAmount" => 5,
+                        "taxRatePercentage" => 0
+                    ],
+
+                    "discountPercentage" => 0
+                ],
+
+                [
+                    "type" => "text",
+                    "name" => "Strukturieren Sie Ihre Belege durch Text-Elemente.",
+                    "description" => "Das hilft beim Verständnis"
+                ]
+            ],
+
+            "totalPrice" => [
+                "currency" => "EUR"
+            ],
+
+            "taxConditions" => [
+                "taxType" => "net"
+            ],
+
+            "paymentConditions" => [
+                "paymentTermLabel" => "10 Tage - 3 %, 30 Tage netto",
+                "paymentTermDuration" => 30,
+
+                "paymentDiscountConditions" => [
+                    "discountPercentage" => 3,
+                    "discountRange" => 10
+                ]
+            ],
+
+            "shippingConditions" => [
+                "shippingDate" => now()->addDays(2)->toISOString(),
+                "shippingType" => "delivery"
+            ],
+
+            "title" => "Rechnung",
+
+            "introduction" => "Ihre bestellten Positionen stellen wir Ihnen hiermit in Rechnung",
+
+            "remark" => "Vielen Dank für Ihren Einkauf"
+        ];
+
+        $response = $lexwareService->createInvoice($payload);
+
+        dd($response);
     }
 }

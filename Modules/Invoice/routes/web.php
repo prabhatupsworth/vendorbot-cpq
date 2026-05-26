@@ -24,8 +24,8 @@ Route::middleware('permission:lexware.view')
         Route::get('/{account}/details', 'details')
             ->name('details');
 
-        Route::get('/{account}/connect', 'connect')
-            ->name('connect');
+        Route::get('/{account}/test-connection', 'testConnection')
+            ->name('test-connection');
 
         /*
         |--------------------------------------------------------------------------
@@ -52,4 +52,14 @@ Route::middleware('permission:lexware.view')
                 Route::post('/{account}/update', 'update')
                     ->name('update');
             });
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | CREATE INVOICE
+        |--------------------------------------------------------------------------
+        */
+
     });
+
+
