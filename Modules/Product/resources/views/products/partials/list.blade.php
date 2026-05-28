@@ -50,7 +50,7 @@
 
      <td>
 
-         <span class="fw-semibold text-success">
+         <span class="fw-semibold">
 
              ₹{{ number_format($product->final_price, 2) }}
 
@@ -61,13 +61,13 @@
      <td>
 
          @if ($product->active)
-             <span class="badge badge-soft-success">
+             <span class="badge bg-soft-success">
 
                  Active
 
              </span>
          @else
-             <span class="badge badge-soft-danger">
+             <span class="badge bg-soft-danger">
 
                  Inactive
 

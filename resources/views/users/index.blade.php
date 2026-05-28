@@ -53,9 +53,9 @@
                         <div class="card-body">
 
                             <!-- Manage Users List -->
-                            <div class="table-responsive custom-table">
-                                <table class="table">
-                                    <thead class="thead-light">
+                            <div class="table-responsive">
+                                <table class="table text-nowrap table-striped table-hover">
+                                    <thead>
                                         <tr>
                                             <th width="60">#</th>
                                             <th>Name</th>

@@ -57,7 +57,7 @@
 
                             <!-- Projects List -->
                             <div class="table-responsive">
-                                <table class="table mb-0">
+                                <table class="table text-nowrap table-striped table-hover">
                                     <thead>
                                         <tr>
                                             <th>Project Name</th>

@@ -2,5 +2,7 @@
     "Product": true,
     "Project": true,
     "Pipedrive": true,
-    "Invoice": true
+    "Invoice": true,
+    "Supplier": true,
+    "Coupon": true
 }

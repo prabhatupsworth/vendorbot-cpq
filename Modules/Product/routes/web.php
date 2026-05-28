@@ -9,14 +9,41 @@ use Modules\Product\Http\Controllers\ProductController;
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['web', 'auth'])
+Route::middleware([
+    'web',
+    'auth'
+])
     ->prefix('products')
     ->group(function () {
 
-        Route::resource('/', ProductController::class)
+        /*
+        |--------------------------------------------------------------------------
+        | Import Product
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get(
+            '/import',
+            [ProductController::class, 'import']
+        )->name('products.import');
+
+        Route::post(
+            '/import-product',
+            [ProductController::class, 'importProduct']
+        )->name('products.import-product');
+
+        /*
+        |--------------------------------------------------------------------------
+        | Resource Routes
+        |--------------------------------------------------------------------------
+        */
+
+        Route::resource(
+            '/',
+            ProductController::class
+        )
             ->parameters([
                 '' => 'product'
             ])
             ->names('products');
-
     });
