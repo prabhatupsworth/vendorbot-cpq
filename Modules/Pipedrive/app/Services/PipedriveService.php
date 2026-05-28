@@ -5,6 +5,7 @@ namespace Modules\Pipedrive\Services;
 use Illuminate\Support\Facades\Http;
 use Modules\Pipedrive\Models\PipedriveAccount;
 use Modules\Pipedrive\Models\PipedriveStage;
+use Modules\Product\Models\Product;
 
 class PipedriveService
 {
@@ -175,5 +176,47 @@ class PipedriveService
             'message' => 'Stages synced successfully',
             'total_stages' => count($stages),
         ];
+    }
+
+
+
+     /*
+    |--------------------------------------------------------------------------
+    | Create Product
+    |--------------------------------------------------------------------------
+    */
+
+    public function createProduct(Product $product)
+    {
+
+        $payload = [
+
+            'name' => $product->name,
+
+            'code' => $product->id,
+
+            'description' => $product->description,
+
+            'active_flag' => (bool) $product->active,
+
+            'prices' => [
+
+                [
+                    'price' => $product->price,
+                    'currency' => 'INR',
+                ]
+            ]
+        ];
+
+        $response = $this->request(
+            'post',
+            'products',
+            $payload
+        );
+
+        if (!$response['status']) {
+
+            return $response;
+        }
     }
 }

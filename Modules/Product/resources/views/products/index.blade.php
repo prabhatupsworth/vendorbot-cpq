@@ -104,7 +104,7 @@
                             <!-- Product Table -->
                             <div class="table-responsive">
 
-                                <table class="table table-hover mb-0">
+                                <table class="table text-nowrap table-striped table-hover">
 
                                     <thead>
 

@@ -9,6 +9,7 @@ use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\ProjectSwitcherController;
 
 use Illuminate\Support\Facades\Route;
+use Modules\Product\Http\Controllers\ProductController;
 
 /*
 |--------------------------------------------------------------------------
@@ -111,4 +112,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/{id}/permission-data', [RoleController::class, 'permissionData'])->name('roles.permission-data');
         Route::post('/{id}/toggle-permission', [RoleController::class, 'togglePermission'])->name('roles.toggle-permission');
     });
+
+    Route::get(
+    '/import-suppliers',
+    [ProductController::class, 'importSuppliers']
+);
 });

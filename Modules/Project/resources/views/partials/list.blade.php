@@ -1,7 +1,13 @@
 <tr class="project-list" data-id={{ $project->id }}>
     <td>{{ $project->name }}</td>
-    <td><span class="badge bg-outline-primary">{{ $project->event_name }}</span></td>
-    <td><span class="badge bg-outline-info">{{ $project->flow_type }}</span></td>
+    <td><span class="badge bg-soft-success">{{ $project->event_name }}</span></td>
+    <td>
+        @if ($project->flow_type == 'simple')
+            <span class="badge bg-outline-primary">{{ $project->flow_type }}</span>
+        @else
+            <span class="badge bg-outline-info">{{ $project->flow_type }}</span>
+        @endif
+    </td>
     <td>
 
         @if ($project->invoice_enabled)

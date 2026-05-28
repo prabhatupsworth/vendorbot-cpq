@@ -41,7 +41,7 @@
 
                 <div class="card-body">
 
-                    <form id="productForm" class="ajax-form" method="POST" action="{{ route('products.store') }}">
+                    <form  method="POST" action="{{ route('products.import-product') }}">
 
                         @csrf
 

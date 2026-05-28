@@ -51,9 +51,9 @@
                         </div>
                         <div class="card-body">
                             <!-- Roles List -->
-                            <div class="table-responsive custom-table">
-                                <table class="table align-middle">
-                                    <thead class="thead-light">
+                            <div class="table-responsive">
+                                <table class="table text-nowrap table-striped table-hover align-middle">
+                                    <thead>
                                         <tr>
                                             <th width="60">#</th>
                                             <th>Role Name</th>
