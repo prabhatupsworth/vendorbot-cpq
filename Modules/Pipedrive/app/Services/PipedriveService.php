@@ -37,7 +37,7 @@ class PipedriveService
         $response = Http::timeout(60)
             ->acceptJson()
             ->{$method}(
-                "{$this->baseUrl}/api/v1/{$endpoint}",
+                "{$this->baseUrl}/api/v2/{$endpoint}",
                 array_merge(
                     $data,
                     [
@@ -82,56 +82,56 @@ class PipedriveService
     |--------------------------------------------------------------------------
     */
 
-    public function syncFields(
-        PipedriveAccount $account
-    ): array {
+    public function syncFields(PipedriveAccount $account): array
+    {
+        $endpoints = [
+            'dealFields' => 'deal',
+            'personFields' => 'person',
+            'organizationFields' => 'organization',
+            'productFields' => 'product',
+        ];
 
-        $response = $this->request(
-            'get',
-            'dealFields'
-        );
+        $totalFields = 0;
 
-        if (!$response['status']) {
+        foreach ($endpoints as $endpoint => $entityType) {
 
-            return $response;
-        }
+            $response = $this->request('get', $endpoint);
 
-        $fields = $response['data'] ?? [];
+            if (!$response['status']) {
+                continue;
+            }
 
-        foreach ($fields as $field) {
+            $fields = $response['data'] ?? [];
 
-            \Modules\Pipedrive\Models\PipedriveField::updateOrCreate(
+            foreach ($fields as $field) {
 
-                [
-                    'pipedrive_account_id' => $account->id,
-                    'field_key' => $field['key'],
-                ],
+                if (!($field['is_custom_field'] ?? false)) {
+                    continue;
+                }
 
-                [
-                    'name' => $field['name'],
+                \Modules\Pipedrive\Models\PipedriveField::updateOrCreate(
+                    [
+                        'pipedrive_account_id' => $account->id,
+                        'field_key' => $field['field_code'],
+                        'entity_type' => $entityType,
+                    ],
+                    [
+                        'name' => $field['field_name'],
+                        'field_type' => $field['field_type'] ?? null,
+                        'is_custom_field' => true,
+                    ]
+                );
 
-                    'field_type' => $field['field_type'] ?? null,
-
-                    'options' => !empty($field['options'])
-                        ? json_encode($field['options'])
-                        : null,
-
-                    'subfields' => !empty($field['subfields'])
-                        ? json_encode($field['subfields'])
-                        : null,
-
-                    'is_custom_field' => $field['custom'] ?? false,
-                ]
-            );
+                $totalFields++;
+            }
         }
 
         return [
             'status' => true,
-            'message' => 'Fields synced successfully',
-            'total_fields' => count($fields),
+            'message' => 'Custom fields synced successfully',
+            'total_fields' => $totalFields,
         ];
     }
-
     /*
     |--------------------------------------------------------------------------
     | Sync Stages
@@ -180,7 +180,7 @@ class PipedriveService
 
 
 
-     /*
+    /*
     |--------------------------------------------------------------------------
     | Create Product
     |--------------------------------------------------------------------------
