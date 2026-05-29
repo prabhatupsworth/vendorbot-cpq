@@ -78,42 +78,42 @@
                 </li>
 
                 {{-- SUPPLIERS --}}
+                @can('suppliers.view')
+                    <li>
 
-                <li>
+                        <h6 class="submenu-hdr">
+                            Suppliers
+                        </h6>
 
-                    <h6 class="submenu-hdr">
-                        Suppliers
-                    </h6>
+                        <ul>
 
-                    <ul>
+                            <li class="submenu">
 
-                        <li class="submenu">
+                                <a href="javascript:void(0);"
+                                    class="{{ request()->routeIs('suppliers.*') ? 'subdrop active' : '' }}">
 
-                            <a href="javascript:void(0);"
-                                class="{{ request()->routeIs('suppliers.*') ? 'subdrop active' : '' }}">
+                                    <i class="ti ti-truck"></i>
 
-                                <i class="ti ti-truck"></i>
+                                    <span>Supplier Management</span>
 
-                                <span>Supplier Management</span>
+                                    <span class="menu-arrow"></span>
 
-                                <span class="menu-arrow"></span>
+                                </a>
 
-                            </a>
+                                <ul style="{{ request()->routeIs('suppliers.*') ? 'display:block;' : 'display:none;' }}">
 
-                            <ul style="{{ request()->routeIs('suppliers.*') ? 'display:block;' : 'display:none;' }}">
+                                    <li>
 
-                                <li>
+                                        <a href="{{ route('suppliers.index') }}"
+                                            class="{{ request()->routeIs('suppliers.index') ? 'active' : '' }}">
 
-                                    <a href="{{ route('suppliers.index') }}"
-                                        class="{{ request()->routeIs('suppliers.index') ? 'active' : '' }}">
+                                            Suppliers
 
-                                        Suppliers
+                                        </a>
 
-                                    </a>
+                                    </li>
 
-                                </li>
-
-                                {{-- <li>
+                                    {{-- <li>
 
                                     <a href="{{ route('suppliers.create') }}"
                                         class="{{ request()->routeIs('suppliers.create') ? 'active' : '' }}">
@@ -124,7 +124,7 @@
 
                                 </li> --}}
 
-                                <li>
+                                    {{-- <li>
 
                                     <a href="{{ route('suppliers.import') }}"
                                         class="{{ request()->routeIs('suppliers.import') ? 'active' : '' }}">
@@ -133,15 +133,15 @@
 
                                     </a>
 
-                                </li>
+                                </li> --}}
+                                </ul>
 
-                            </ul>
+                            </li>
 
-                        </li>
+                        </ul>
 
-                    </ul>
-
-                </li>
+                    </li>
+                @endcan
 
                 {{-- PRODUCTS --}}
 
@@ -174,7 +174,7 @@
                                         <a href="{{ route('products.index') }}"
                                             class="{{ request()->routeIs('products.index') ? 'active' : '' }}">
 
-                                            All Products
+                                            Products
 
                                         </a>
 
@@ -203,59 +203,58 @@
                 </li>
 
                 {{-- COUPONS --}}
+                @can('coupons.view')
+                    <li>
 
-                <li>
+                        <h6 class="submenu-hdr">
+                            Coupons
+                        </h6>
 
-                    <h6 class="submenu-hdr">
-                        Coupons
-                    </h6>
+                        <ul>
+                            <li class="submenu">
 
-                    <ul>
+                                <a href="javascript:void(0);"
+                                    class="{{ request()->routeIs('coupon.*') ? 'subdrop active' : '' }}">
 
-                        <li class="submenu">
+                                    <i class="ti ti-ticket"></i>
 
-                            <a href="javascript:void(0);"
-                                class="{{ request()->routeIs('coupon.*') ? 'subdrop active' : '' }}">
+                                    <span>Coupon Management</span>
 
-                                <i class="ti ti-ticket"></i>
+                                    <span class="menu-arrow"></span>
 
-                                <span>Coupon Management</span>
+                                </a>
 
-                                <span class="menu-arrow"></span>
+                                <ul style="{{ request()->routeIs('coupon.*') ? 'display:block;' : 'display:none;' }}">
 
-                            </a>
+                                    <li>
 
-                            <ul style="{{ request()->routeIs('coupon.*') ? 'display:block;' : 'display:none;' }}">
+                                        <a href="{{ route('coupon.index') }}"
+                                            class="{{ request()->routeIs('coupon.index') ? 'active' : '' }}">
 
-                                <li>
+                                            Coupons
 
-                                    <a href="{{ route('coupon.index') }}"
-                                        class="{{ request()->routeIs('coupon.index') ? 'active' : '' }}">
+                                        </a>
 
-                                        All Coupons
+                                    </li>
 
-                                    </a>
+                                    <li>
 
-                                </li>
+                                        <a href="{{ route('coupon.create') }}"
+                                            class="{{ request()->routeIs('coupon.create') ? 'active' : '' }}">
 
-                                <li>
+                                            Create Coupon
 
-                                    <a href="{{ route('coupon.create') }}"
-                                        class="{{ request()->routeIs('coupon.create') ? 'active' : '' }}">
+                                        </a>
 
-                                        Create Coupon
+                                    </li>
 
-                                    </a>
+                                </ul>
 
-                                </li>
+                            </li>
+                        </ul>
 
-                            </ul>
-
-                        </li>
-
-                    </ul>
-
-                </li>
+                    </li>
+                @endcan
 
                 {{-- USER MANAGEMENT --}}
 
