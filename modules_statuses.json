@@ -4,5 +4,6 @@
     "Pipedrive": true,
     "Invoice": true,
     "Supplier": true,
-    "Coupon": true
+    "Coupon": true,
+    "Draft": true
 }

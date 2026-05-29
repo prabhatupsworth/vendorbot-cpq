@@ -55,46 +55,6 @@
 
                         <div class="row">
 
-                            {{-- PROJECT --}}
-
-                            <div class="col-md-6">
-
-                                <div class="mb-4">
-
-                                    <label class="form-label">
-                                        Project
-                                    </label>
-
-                                    <select name="project_id"
-                                        class="select @error('project_id') is-invalid @enderror">
-
-                                        <option value="">
-                                            Select Project
-                                        </option>
-
-                                        @foreach ($projects as $project)
-                                            <option value="{{ $project->id }}"
-                                                {{ old('project_id') == $project->id ? 'selected' : '' }}>
-
-                                                {{ $project->name }}
-
-                                            </option>
-                                        @endforeach
-
-                                    </select>
-
-                                    @error('project_id')
-                                        <div class="invalid-feedback">
-
-                                            {{ $message }}
-
-                                        </div>
-                                    @enderror
-
-                                </div>
-
-                            </div>
-
                             {{-- NAME --}}
 
                             <div class="col-md-6">
@@ -169,8 +129,8 @@
 
                                     <select name="type" class="select @error('type') is-invalid @enderror">
 
-                                        <option value="fixed">
-                                            Fixed
+                                        <option value="amount">
+                                            Amount
                                         </option>
 
                                         <option value="percentage">
@@ -304,10 +264,7 @@
 
                                     </div>
                                     <small class="text-muted d-block mt-2">
-
-                                        Enable this option to allow only one
-                                        coupon usage per customer.
-
+                                        Enable this option to multiply the discount amount by the number of people and reduce it from the total amount.
                                     </small>
                                 </div>
 

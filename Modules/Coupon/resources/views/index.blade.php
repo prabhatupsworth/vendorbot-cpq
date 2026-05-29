@@ -409,7 +409,7 @@
                                             {{-- CODE --}}
                                             <div class="d-inline-flex align-items-center gap-2">
 
-                                                <span class="badge badge-md bg-outline-success"
+                                                <span class="badge badge-md bg-outline-danger"
                                                     id="coupon-code-{{ $coupon->id }}">
 
                                                     {{ $coupon->code }}
@@ -433,11 +433,11 @@
                                     {{-- TYPE --}}
                                     <x-table.td>
 
-                                        @if ($coupon->type == 'fixed')
+                                        @if ($coupon->type == 'amount')
                                             <span
                                                 class="badge bg-outline-danger">
 
-                                                Fixed
+                                                Amount
 
                                             </span>
                                         @else
@@ -456,7 +456,7 @@
 
                                         <h6 class="fw-bold mb-0">
 
-                                            @if ($coupon->type == 'fixed')
+                                            @if ($coupon->type == 'amount')
                                                 {{ number_format($coupon->amount, 2) }}
                                             @else
                                                 {{ $coupon->amount }}%
@@ -470,19 +470,12 @@
                                     <x-table.td>
 
                                         <div class="small">
-
                                             <div>
                                                 Used:
                                                 <strong>
-                                                    {{ $coupon->used_count }}
+                                                     {{ $coupon->usage_limit ?: 'Unlimited' }}
                                                 </strong>
                                             </div>
-
-                                            <div class="text-muted">
-                                                Limit:
-                                                {{ $coupon->usage_limit ?: 'Unlimited' }}
-                                            </div>
-
                                         </div>
 
                                     </x-table.td>
