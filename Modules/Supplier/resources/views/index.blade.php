@@ -412,7 +412,7 @@
                                     {{-- ACTIONS --}}
                                     <x-table.action-buttons :viewUrl="route('suppliers.show', $supplier->id)" viewPermission="suppliers.view"
                                         :editUrl="route('suppliers.edit', $supplier->id)" editPermission="suppliers.edit" :editData="$supplier"
-                                        :deleteUrl="route('suppliers.destroy', $supplier->id)" deletePermission="suppliers.delete" />
+                                        :deleteUrl="route('suppliers.destroy', $supplier->id)" deletePermission="suppliers.delete" :deleteId="$supplier->id" />
 
                                 </x-table.tr>
 

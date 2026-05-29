@@ -11,6 +11,8 @@
     'formId' => '#form',
 
     'deleteUrl' => null,
+    'deleteType' => 'normal', // or 'canvas'
+    'deleteId' => null,
     'deletePermission' => null,
 ])
 
@@ -67,13 +69,49 @@
             {{-- Delete --}}
             {{-- @if ($deleteUrl && $deletePermission)
                 @can($deletePermission) --}}
-            <a href="#" class="dropdown-item delete-btn" data-url="{{ $deleteUrl }}">
+            @if ($deleteUrl)
+                @if ($deleteType === 'canvas')
+                    <a href="#" class="dropdown-item delete-btn" data-bs-toggle="offcanvas"
+                        data-bs-target="{{ $canvasTarget }}" data-type="delete" data-url="{{ $deleteUrl }}"
+                        data-method="DELETE" data-form="{{ $formId }}">
 
-                <i class="ti ti-trash text-danger"></i> Delete
-            </a>
+                        <i class="ti ti-trash text-danger"></i> Delete
+
+                    </a>
+                @else
+                    <a href="#" class="dropdown-item" onclick="confirmDelete(event, {{ $deleteId }})">
+                        <i class="ti ti-trash text-danger"></i> Delete
+                    </a>
+
+                    <form id="delete-form-{{ $deleteId }}" action="{{ $deleteUrl }}" method="POST"
+                        class="d-none">
+                        @csrf
+                        @method('DELETE')
+                    </form>
+                @endif
+            @endif
             {{-- @endcan
             @endif --}}
 
         </div>
     </div>
 </td>
+@push('scripts')
+    <script>
+        function confirmDelete(event, id) {
+            event.preventDefault();
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'You want to delete this item?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('delete-form-' + id).submit();
+                }
+            });
+        }
+    </script>
+@endpush
