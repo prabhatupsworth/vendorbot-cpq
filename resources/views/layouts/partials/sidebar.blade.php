@@ -5,7 +5,7 @@
                 <li class="clinicdropdown">
                     <a href="{{ route('profile') }}">
                         <img src="{{ auth()->user()->profile_image
-                            ? asset('storage/' . auth()->user()->profile_image)
+                            ? asset( auth()->user()->profile_image)
                             : asset('template/assets/img/profiles/avatar-14.jpg') }}"
                             class="img-fluid" alt="Profile">
                         <div class="user-names">

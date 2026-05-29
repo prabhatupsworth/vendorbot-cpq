@@ -45,7 +45,7 @@
                                             <p>Provide the information below</p>
                                         </div>
                                         <div class="mb-3">
-                                            <x-image-upload name="profile_image" :value="asset('storage/' . $user->profile_image)" />
+                                            <x-image-upload name="profile_image" :value="asset($user->profile_image)" />
 
                                         </div>
                                         <div class="border-bottom mb-3">

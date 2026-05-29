@@ -7,7 +7,7 @@
                <div class="text-center p-4 border rounded bg-light-subtle h-100">
 
                    @if ($company->logo)
-                       <img src="{{ asset('storage/' . $company->logo) }}" class="img-fluid rounded mb-3"
+                       <img src="{{ asset($company->logo) }}" class="img-fluid rounded mb-3"
                            style="max-height:120px;">
                    @else
                        <div class="text-muted py-4">
