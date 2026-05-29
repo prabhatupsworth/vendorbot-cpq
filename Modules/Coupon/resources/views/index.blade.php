@@ -532,7 +532,7 @@
                                     </x-table.td>
 
                                     {{-- ACTIONS --}}
-                                    <x-table.action-buttons :viewUrl="route('coupon.show', $coupon->id)" viewPermission="coupon.view" :editUrl="route('coupon.update', $coupon->id)"
+                                    <x-table.action-buttons :viewUrl="route('coupon.show', $coupon->id)" viewPermission="coupon.view" :editUrl="route('coupon.edit', $coupon->id)"
                                         editPermission="coupon.edit" :editData="$coupon" :deleteUrl="route('coupon.destroy', $coupon->id)"
                                         deletePermission="coupon.delete" :deleteId="$coupon->id" />
 
