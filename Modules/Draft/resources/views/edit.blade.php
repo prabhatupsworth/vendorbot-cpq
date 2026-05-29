@@ -1,14 +1,14 @@
 @extends('layouts.app')
 <style>
     .CodeMirror {
-        height: 700px !important;
+        height: 500px !important;
         border: 1px solid #e5e7eb;
         font-size: 14px;
         border-radius: 8px;
     }
 
     .CodeMirror-scroll {
-        min-height: 700px;
+        min-height: 500px;
     }
 </style>
 @section('content')
