@@ -102,8 +102,7 @@ class CouponController extends Controller
      */
     public function create()
     {
-        $projects = Project::all();
-        return view('coupon::create', compact('projects'));
+        return view('coupon::create');
     }
 
     /**
@@ -119,9 +118,6 @@ class CouponController extends Controller
 
         $request->validate([
 
-            'project_id' =>
-            'required|exists:projects,id',
-
             'name' =>
             'required|string|max:255',
 
@@ -132,7 +128,7 @@ class CouponController extends Controller
             'required|numeric|min:0',
 
             'type' =>
-            'required|in:fixed,percentage',
+            'required|in:amount,percentage',
 
             'usage_limit' =>
             'nullable|integer|min:1',
@@ -160,9 +156,6 @@ class CouponController extends Controller
         */
 
         Coupon::create([
-
-            'project_id' =>
-            $request->project_id,
 
             'name' =>
             $request->name,
@@ -258,9 +251,6 @@ class CouponController extends Controller
 
         $request->validate([
 
-            'project_id' =>
-            'required|exists:projects,id',
-
             'name' =>
             'required|string|max:255',
 
@@ -271,7 +261,7 @@ class CouponController extends Controller
             'required|numeric|min:0',
 
             'type' =>
-            'required|in:fixed,percentage',
+            'required|in:amount,percentage',
 
             'usage_limit' =>
             'nullable|integer|min:1',
@@ -299,9 +289,6 @@ class CouponController extends Controller
         */
 
         $coupon->update([
-
-            'project_id' =>
-            $request->project_id,
 
             'name' =>
             $request->name,

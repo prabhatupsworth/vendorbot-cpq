@@ -5,7 +5,7 @@
                 <li class="clinicdropdown">
                     <a href="{{ route('profile') }}">
                         <img src="{{ auth()->user()->profile_image
-                            ? asset( auth()->user()->profile_image)
+                            ? asset(auth()->user()->profile_image)
                             : asset('template/assets/img/profiles/avatar-14.jpg') }}"
                             class="img-fluid" alt="Profile">
                         <div class="user-names">
@@ -77,6 +77,36 @@
 
                 </li>
 
+                <li>
+
+                    <h6 class="submenu-hdr">
+                        Drafts Management
+                    </h6>
+
+                    <ul>
+
+                        {{-- @can('draft.view') --}}
+
+                        @if (moduleEnabled('Draft') && Route::has('draft.index'))
+                            <li>
+
+                                <a href="{{ route('draft.index') }}"
+                                    class="{{ request()->routeIs('draft.*') ? 'active' : '' }}">
+
+                                    <i class="ti ti-mail"></i>
+
+                                    <span> Drafts</span>
+
+                                </a>
+
+                            </li>
+                        @endif
+
+                        {{-- @endcan --}}
+
+                    </ul>
+
+                </li>
                 {{-- SUPPLIERS --}}
                 @can('suppliers.view')
                     <li>

@@ -2,7 +2,6 @@
     'colspan' => 1,
     'title' => 'No Data Found',
     'subtitle' => 'No records available.',
-    'image' => 'https://cdn-icons-png.flaticon.com/512/7486/7486740.png',
 ])
 
 <tr>
@@ -10,7 +9,11 @@
 
         <div class="text-center py-5">
 
-            <img src="{{ $image }}" width="120" class="mb-3" alt="empty">
+            <div class="avatar avatar-xxl bg-light rounded-circle mx-auto mb-3">
+
+                <i class="ti ti-inbox fs-1 text-primary"></i>
+
+            </div>
 
             <h5 class="fw-semibold">
                 {{ $title }}

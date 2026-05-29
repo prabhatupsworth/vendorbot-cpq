@@ -6,13 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Project\Models\Project;
+use App\Traits\BelongsToProject;
 
 // use Modules\Coupon\Database\Factories\CouponFactory;
 
 class Coupon extends Model
 {
-    use HasFactory,
-        SoftDeletes;
+    use HasFactory, SoftDeletes, BelongsToProject;
 
     /*
     |--------------------------------------------------------------------------
@@ -21,7 +21,7 @@ class Coupon extends Model
     */
 
     protected $table =
-        'coupons';
+    'coupons';
 
     /*
     |--------------------------------------------------------------------------
@@ -67,22 +67,22 @@ class Coupon extends Model
     protected $casts = [
 
         'amount' =>
-            'decimal:2',
+        'decimal:2',
 
         'min_order_value' =>
-            'decimal:2',
+        'decimal:2',
 
         'per_person' =>
-            'boolean',
+        'boolean',
 
         'status' =>
-            'boolean',
+        'boolean',
 
         'valid_from' =>
-            'datetime',
+        'datetime',
 
         'valid_until' =>
-            'datetime',
+        'datetime',
     ];
 
     /*
@@ -151,11 +151,11 @@ class Coupon extends Model
                     'valid_from'
                 )
 
-                ->orWhere(
-                    'valid_from',
-                    '<=',
-                    now()
-                );
+                    ->orWhere(
+                        'valid_from',
+                        '<=',
+                        now()
+                    );
             })
 
             ->where(function ($q) {
@@ -164,11 +164,11 @@ class Coupon extends Model
                     'valid_until'
                 )
 
-                ->orWhere(
-                    'valid_until',
-                    '>=',
-                    now()
-                );
+                    ->orWhere(
+                        'valid_until',
+                        '>=',
+                        now()
+                    );
             });
     }
 

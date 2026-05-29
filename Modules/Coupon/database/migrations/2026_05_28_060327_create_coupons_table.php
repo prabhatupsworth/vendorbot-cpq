@@ -60,10 +60,10 @@ return new class extends Migration
             $table->enum(
                 'type',
                 [
-                    'fixed',
+                    'amount',
                     'percentage'
                 ]
-            )->default('fixed');
+            )->default('amount');
 
             /*
             |--------------------------------------------------------------------------
