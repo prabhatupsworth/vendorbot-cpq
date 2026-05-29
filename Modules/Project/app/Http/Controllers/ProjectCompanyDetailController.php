@@ -21,7 +21,10 @@ class ProjectCompanyDetailController extends Controller
             $logoPath = null;
 
             if ($request->hasFile('logo')) {
-                $logoPath = $request->file('logo')->store('company_logos', 'public');
+                $file = $request->file('logo');
+                $fileName = time() . '_' . $file->getClientOriginalName();
+                $file->move(public_path('uploads/company_logos'), $fileName);
+                $logoPath = 'uploads/company_logos/' . $fileName;
             }
 
             $company =  ProjectCompanyDetail::updateOrCreate(
@@ -65,11 +68,18 @@ class ProjectCompanyDetailController extends Controller
         try {
             $company = ProjectCompanyDetail::findOrFail($id);
 
-            if ($company->logo && Storage::disk('public')->exists($company->logo)) {
-                Storage::disk('public')->delete($company->logo);
-            }
+            if ($company->logo) {
 
-            $company->update(['logo' => null]);
+                $filePath = public_path($company->logo);
+
+                if (file_exists($filePath)) {
+                    unlink($filePath);
+                }
+
+                $company->update([
+                    'logo' => null
+                ]);
+            }
 
             return back()->with('success', 'Logo removed successfully');
         } catch (\Exception $e) {

@@ -312,7 +312,7 @@
                         <span class="user-letter">
                             {{-- <img src="{{ asset('template/assets/img/profiles/avatar-20.jpg') }}" alt="Profile"> --}}
                             <img src="{{ auth()->user()->profile_image
-                                ? asset('storage/' . auth()->user()->profile_image)
+                                ? asset( auth()->user()->profile_image)
                                 : asset('template/assets/img/profiles/avatar-20.jpg') }}"
                                 class="img-fluid" alt="Profile">
                         </span>

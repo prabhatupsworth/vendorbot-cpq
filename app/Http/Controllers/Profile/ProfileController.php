@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
+
 class ProfileController extends Controller
 {
     public function index()
@@ -29,15 +30,22 @@ class ProfileController extends Controller
         // ✅ Handle Image Upload
         if ($request->hasFile('profile_image')) {
 
-            // delete old image
-            if ($user->profile_image && Storage::disk('public')->exists($user->profile_image)) {
-                Storage::disk('public')->delete($user->profile_image);
+            // Delete old image
+            if (
+                $user->profile_image &&
+                file_exists(public_path($user->profile_image))
+            ) {
+                unlink(public_path($user->profile_image));
             }
 
-            // store new image
-            $imagePath = $request->file('profile_image')->store('users', 'public');
+            // Upload new image
+            $file = $request->file('profile_image');
 
-            $user->profile_image = $imagePath;
+            $fileName = time() . '_' . $file->getClientOriginalName();
+
+            $file->move(public_path('uploads/users'), $fileName);
+
+            $user->profile_image = 'uploads/users/' . $fileName;
         }
 
         // ✅ Update user data
