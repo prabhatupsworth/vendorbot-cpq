@@ -14,6 +14,7 @@ class PipedriveField extends Model
         'field_key',
         'name',
         'field_type',
+        'entity_type',
     ];
 
     // 🔥 Relation → belongs to account

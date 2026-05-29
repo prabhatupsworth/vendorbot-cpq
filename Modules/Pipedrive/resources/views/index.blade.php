@@ -326,6 +326,7 @@
                                                 <th>Name</th>
                                                 <th>Field Key</th>
                                                 <th>Field Type</th>
+                                                <th>Entity Type</th>
                                             </tr>
                                         </thead>
                                         <tbody id="fieldsTableBody">
@@ -459,6 +460,7 @@
                                     </div>
                                 </td>
                                 <td><span class="badge bg-info">${field.field_type}</span></td>
+                                <td><span class="badge bg-secondary">${field.entity_type}</span></td>
                             </tr>
                         `;
                                     fieldsTableBody.insertAdjacentHTML('beforeend', row);
