@@ -57,7 +57,7 @@ enum SupplierStatusEnum: int
         return match ($this) {
 
             self::NO_STATUS =>
-                'secondary',
+                'light',
 
             self::PREMIUM_AA =>
                 'warning',
