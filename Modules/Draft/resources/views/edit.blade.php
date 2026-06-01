@@ -235,7 +235,7 @@
 
                             <i class="ti ti-device-floppy me-1"></i>
 
-                            Update Draft
+                            Update
 
                         </button>
 
