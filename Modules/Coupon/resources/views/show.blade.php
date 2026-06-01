@@ -130,21 +130,7 @@
 
                                 </div>
 
-                                {{-- PROJECT --}}
 
-                                <div class="col-md-6 mb-4">
-
-                                    <label class="text-muted small">
-                                        Project
-                                    </label>
-
-                                    <h6 class="mb-0">
-
-                                        {{ $coupon->project->name ?? '-' }}
-
-                                    </h6>
-
-                                </div>
 
                                 {{-- TYPE --}}
 
@@ -159,7 +145,7 @@
                                         @if ($coupon->type == 'amount')
 
                                             <span
-                                                class="badge bg-info-subtle text-info border border-info-subtle px-3 py-2"
+                                                class="badge bg-outline-danger"
                                             >
 
                                                 Amount
@@ -169,7 +155,7 @@
                                         @else
 
                                             <span
-                                                class="badge bg-warning-subtle text-warning border border-warning-subtle px-3 py-2"
+                                                class="badge bg-outline-danger"
                                             >
 
                                                 Percentage
