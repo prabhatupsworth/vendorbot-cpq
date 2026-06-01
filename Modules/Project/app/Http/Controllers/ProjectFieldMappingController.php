@@ -92,9 +92,7 @@ class ProjectFieldMappingController extends Controller
 
                 'status' => true,
 
-                'action' => $field->wasRecentlyCreated
-                    ? 'append'
-                    : 'update',
+                'action' => 'replace',
 
                 'target' => '#field-mappling-list',
 
@@ -105,9 +103,11 @@ class ProjectFieldMappingController extends Controller
                 'html' => view(
                     'project::partials.field-mapping',
                     [
-                        'projectId' => $projectId,
+                        'mappings' => FieldMapping::where('project_id', $projectId)
+                            ->latest()
+                            ->get(),
 
-                        'mapping' => $field,
+                        'projectId' => $projectId,
                     ]
                 )->render(),
 

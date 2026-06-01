@@ -636,8 +636,6 @@
 
                                 <!-- Body -->
                                 <div class="card-body p-0">
-
-                                    @if ($project->fieldMappings->count())
                                         <div class="table-responsive">
 
                                             <table class="table align-middle table-hover mb-0">
@@ -663,54 +661,17 @@
 
                                                 <tbody id="field-mappling-list">
 
-                                                    @foreach ($project->fieldMappings as $key => $mapping)
                                                         @include('project::partials.field-mapping', [
                                                             'projectId' => $project->id,
-                                                            'mapping' => $mapping,
+                                                            'mappings' => $project->fieldMappings,
                                                         ])
-                                                    @endforeach
+
 
                                                 </tbody>
 
                                             </table>
 
                                         </div>
-                                    @else
-                                        <!-- Empty State -->
-
-                                        <div class="text-center py-5 px-4">
-
-                                            <div class="mx-auto mb-4 rounded-circle bg-light d-flex align-items-center justify-content-center"
-                                                style="width:90px;height:90px;">
-
-                                                <i class="ti ti-arrows-exchange fs-1 text-primary"></i>
-
-                                            </div>
-
-                                            <h4 class="fw-bold mb-2">
-
-                                                No Field Mappings Found
-
-                                            </h4>
-
-                                            <p class="text-muted mb-4 mx-auto" style="max-width:500px;">
-
-                                                Create mappings between your internal system fields
-                                                and Pipedrive fields to sync and normalize data properly.
-
-                                            </p>
-
-                                            <button class="btn btn-primary px-4" data-bs-toggle="offcanvas"
-                                                data-bs-target="#fieldMappingCanvas">
-
-                                                <i class="ti ti-plus me-1"></i>
-
-                                                Create First Mapping
-
-                                            </button>
-
-                                        </div>
-                                    @endif
 
                                 </div>
 
@@ -749,7 +710,7 @@
                                 <!-- Body -->
                                 <div class="card-body">
 
-                                    @if ($project->stageActions->count())
+
                                         <div class="table-responsive">
 
                                             <table class="table align-middle table-hover mb-0">
@@ -780,40 +741,7 @@
                                             </table>
 
                                         </div>
-                                    @else
-                                        <!-- Empty State -->
 
-                                        <div class="text-center py-5">
-
-                                            <div class="mx-auto mb-4 rounded-circle bg-light d-flex align-items-center justify-content-center"
-                                                style="width:90px;height:90px;">
-
-                                                <i class="ti ti-git-branch fs-1 text-primary"></i>
-
-                                            </div>
-
-                                            <h4 class="fw-bold mb-2">
-                                                No Stage Actions Created
-                                            </h4>
-
-                                            <p class="text-muted mb-4 mx-auto" style="max-width:500px;">
-
-                                                Create automations that trigger actions whenever
-                                                a deal enters a selected pipeline stage.
-
-                                            </p>
-
-                                            <button class="btn btn-primary px-4" data-bs-toggle="offcanvas"
-                                                data-bs-target="#automationCanvas">
-
-                                                <i class="ti ti-plus me-1"></i>
-
-                                                Create Stage Action
-
-                                            </button>
-
-                                        </div>
-                                    @endif
 
                                 </div>
 
