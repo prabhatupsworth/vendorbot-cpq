@@ -156,13 +156,13 @@
 
                                     <div>
 
-                                        @if ($coupon->type == 'fixed')
+                                        @if ($coupon->type == 'amount')
 
                                             <span
                                                 class="badge bg-info-subtle text-info border border-info-subtle px-3 py-2"
                                             >
 
-                                                Fixed
+                                                Amount
 
                                             </span>
 
@@ -194,7 +194,7 @@
                                         class="fw-bold text-primary mb-0"
                                     >
 
-                                        @if ($coupon->type == 'fixed')
+                                        @if ($coupon->type == 'amount')
 
                                             {{ number_format($coupon->amount, 2) }}
 
