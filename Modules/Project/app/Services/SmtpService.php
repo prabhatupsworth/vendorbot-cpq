@@ -21,11 +21,11 @@ class SmtpService
         array $data
     ) {
 
-        if ($data['type'] === 'default') {
+        // if ($data['type'] === 'default') {
 
-            $this->smtpRepository
-                ->updateDefaultType($projectId);
-        }
+        //     $this->smtpRepository
+        //         ->updateDefaultType($projectId);
+        // }
 
         $data['project_id'] = $projectId;
 

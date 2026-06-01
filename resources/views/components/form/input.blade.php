@@ -7,7 +7,7 @@
         @endif
     </label>
 
-    <input name="{{ $name }}" value="{{ old($name, $value) }}"
+    <input @required($required) name="{{ $name }}" value="{{ old($name, $value) }}"
         {{ $attributes->merge(['class' => 'form-control']) }}>
     @error($name)
         <div class="invalid-feedback">

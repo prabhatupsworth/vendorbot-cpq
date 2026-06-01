@@ -3,8 +3,6 @@
 namespace Modules\Product\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\Supplier;
-use App\Models\SupplierCategoryRelationship;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -33,10 +31,21 @@ class ProductController extends Controller
             $projects = Project::pluck('name', 'id')
                 ->toArray();
 
+            $curreenttProjectId = current_project_id();
+
+            // getproject currency
+            $currency_code= 'EUR';
+            if ($curreenttProjectId) {
+                $project = Project::find($curreenttProjectId);
+                if ($project) {
+                    $currency_code = $project->currency_code;
+                }
+            }
 
             return view('product::products.index', compact(
                 'products',
                 'projects',
+                'currency_code'
             ));
         } catch (Throwable $e) {
 
@@ -106,9 +115,13 @@ class ProductController extends Controller
 
             DB::beginTransaction();
 
-            $product = Product::create([
+                Product::create([
 
                 ...$validated,
+
+                'product_code' => $request->product_code,
+
+                'pipedrive_product_id' => $request->pipedrive_product_id,
 
                 'discount_type' => $request->discount_type,
 
@@ -132,11 +145,15 @@ class ProductController extends Controller
 
             return response()->json([
                 'status' => true,
-                'action' => 'append',
+                'action' => 'replace',
                 'target' => '#product-list',
                 'message' => 'Product created successfully',
                 'html' => view('product::products.partials.list', [
-                    'product' => $product,
+                    'products' => Product::with([
+                        'project',
+                        'category',
+                        'tab',
+                    ])->latest()->get(),
                 ])->render(),
             ]);
         } catch (Throwable $e) {
@@ -162,15 +179,10 @@ class ProductController extends Controller
     public function update(Request $request, Product $product)
     {
 
+    // dd($request->all());
         try {
 
             $validated = $request->validate([
-
-                'project_id' => [
-                    'required',
-                    'exists:projects,id'
-                ],
-
                 'name' => [
                     'required',
                     'string',
@@ -210,7 +222,8 @@ class ProductController extends Controller
             $product->update([
 
                 ...$validated,
-
+                'pipedrive_product_id' => $request->pipedrive_product_id,
+                'product_code' => $request->product_code,
                 'is_default' => $request->boolean('is_default'),
 
                 'is_pro' => $request->boolean('is_pro'),
@@ -227,12 +240,16 @@ class ProductController extends Controller
 
             return response()->json([
                 'status' => true,
-                'action' => 'update',
-                'target' => '.product-list',
+                'action' => 'replace',
+                'target' => '#product-list',
                 'id' => $product->id,
                 'message' => 'Product updated successfully',
                 'html' => view('product::products.partials.list', [
-                    'product' => $product,
+                    'products' => Product::with([
+                        'project',
+                        'category',
+                        'tab',
+                    ])->latest()->get(),
                 ])->render(),
             ]);
         } catch (Throwable $e) {
@@ -265,6 +282,9 @@ class ProductController extends Controller
 
                 'status' => true,
 
+                'action' => 'delete',
+                'target' => '.product-list',
+                'id'     => $product->id,
                 'message' => 'Product deleted successfully.'
 
             ]);

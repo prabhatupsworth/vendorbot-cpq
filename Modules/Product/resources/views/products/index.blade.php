@@ -82,14 +82,14 @@
 
                                     <div class="d-flex justify-content-sm-end mt-3 mt-sm-0">
                                         @can('projects.view')
-                                        <a href="javascript:void(0);" class="btn btn-primary" data-bs-toggle="offcanvas"
-                                            data-bs-target="#productCanvas">
+                                            <a href="javascript:void(0);" class="btn btn-primary" data-bs-toggle="offcanvas"
+                                                data-bs-target="#productCanvas">
 
-                                            <i class="ti ti-square-rounded-plus me-2"></i>
+                                                <i class="ti ti-square-rounded-plus me-2"></i>
 
-                                            Add Product
+                                                Add Product
 
-                                        </a>
+                                            </a>
                                         @endcan
                                     </div>
 
@@ -112,13 +112,13 @@
 
                                             <th>Product</th>
 
-                                            {{-- <th>Project</th> --}}
+                                            <th>Pipedrive Id</th>
 
-                                            <th>Price</th>
+                                            <th>Cost Price</th>
 
-                                            <th>Discount</th>
+                                            <th>Selling Price</th>
 
-                                            <th>Final Price</th>
+                                            <th>Product Code</th>
 
                                             <th>Status</th>
 
@@ -132,28 +132,7 @@
 
                                     <tbody id="product-list">
 
-                                        @forelse($products as $product)
-                                            @include('product::products.partials.list', [
-                                                'product' => $product,
-                                            ])
-
-                                        @empty
-
-                                            <tr>
-
-                                                <td colspan="10" class="text-center py-5">
-
-                                                    <div class="text-muted">
-
-                                                        No products found.
-
-                                                    </div>
-
-                                                </td>
-
-                                            </tr>
-                                        @endforelse
-
+                                        @include('product::products.partials.list',['products'=>$products])
                                     </tbody>
 
                                 </table>
@@ -191,14 +170,6 @@
 
                 $config = [
                     [
-                        'name' => 'project_id',
-                        'label' => 'Project',
-                        'type' => 'select',
-                        'options' => $projects ?? [],
-                        'required' => true,
-                        'col' => 6,
-                    ],
-                    [
                         'name' => 'name',
                         'label' => 'Product Name',
                         'type' => 'text',
@@ -206,40 +177,44 @@
                         'required' => true,
                         'col' => 6,
                     ],
-
+                    [
+                        'name' => 'cost',
+                        'label' => 'Cost Price',
+                        'type' => 'number',
+                        'placeholder' => 'Enter cost price',
+                        'col' => 6,
+                    ],
                     [
                         'name' => 'price',
-                        'label' => 'Price',
+                        'label' => 'Selling Price',
                         'type' => 'number',
-                        'placeholder' => 'Enter price',
+                        'placeholder' => 'Enter selling price',
                         'required' => true,
                         'col' => 6,
                     ],
 
                     [
-                        'name' => 'cost',
-                        'label' => 'Cost',
-                        'type' => 'number',
-                        'placeholder' => 'Enter cost',
+                        'name' => 'pipedrive_product_id',
+                        'label' => 'Pipedrive ID',
+                        'type' => 'text',
+                        'placeholder' => 'Enter pipedrive ID',
+                        'col' => 6,
+                    ],
+                    [
+                        'name' => 'product_code',
+                        'label' => 'Product Code',
+                        'type' => 'text',
+                        'placeholder' => 'Enter product code',
                         'col' => 6,
                     ],
 
                     [
-                        'name' => 'discount_type',
-                        'label' => 'Discount Type',
-                        'type' => 'select',
-                        'options' => [
-                            'fixed' => 'Fixed',
-                            'percent' => 'Percent',
-                        ],
-                        'col' => 6,
-                    ],
-
-                    [
-                        'name' => 'discount_value',
-                        'label' => 'Discount Value',
-                        'type' => 'number',
-                        'placeholder' => 'Enter discount value',
+                        'name' => 'currency_code',
+                        'label' => 'Currency Code',
+                        'type' => 'text',
+                        'value' => $currency_code,
+                        'placeholder' => 'Select currency',
+                        'disabled' => true,
                         'col' => 6,
                     ],
                     [

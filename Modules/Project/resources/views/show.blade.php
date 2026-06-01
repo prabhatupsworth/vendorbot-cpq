@@ -531,10 +531,8 @@
                                 <div class="card-body">
 
                                     <!-- ALWAYS EXIST -->
-                                    <div id="smtp-section">
 
-                                        @if ($project->smtps->count())
-                                            <div class="row g-3">
+                                            <div class="row g-3"  id="smtp-section">
 
                                                 @foreach ($project->smtps as $smtp)
                                                     @include('project::partials.smtp-card', [
@@ -544,25 +542,6 @@
                                                 @endforeach
 
                                             </div>
-                                        @else
-                                            <!-- 🔹 Empty -->
-                                            <div class="text-center py-5 smtp-empty-state">
-
-                                                <i class="ti ti-mail fs-1 text-muted"></i>
-
-                                                <p class="mt-2 text-muted">
-                                                    No SMTP configured
-                                                </p>
-
-                                                <button class="btn btn-primary btn-sm create-form"
-                                                    data-bs-toggle="offcanvas" data-bs-target="#smtpCanvas">
-
-                                                    <i class="ti ti-plus"></i> Add SMTP
-
-                                                </button>
-
-                                            </div>
-                                        @endif
 
                                     </div>
 

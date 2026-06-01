@@ -32,7 +32,7 @@ return new class extends Migration
 
             $table->decimal('cost', 12, 2)->default(0);
 
-            $table->enum('discount_type', ['fixed', 'percent'])
+            $table->enum('discount_type', ['amount', 'percentage'])
                 ->nullable();
 
             $table->decimal('discount_value', 12, 2)

@@ -157,8 +157,8 @@ $(document).on("click", ".delete-btn", function () {
                 });
 
                 // 🔥 DataTable reload (dynamic safe)
-                let table = btn.closest("table").DataTable();
-                table.ajax.reload(null, false);
+                // let table = btn.closest("table").DataTable();
+                // table.ajax.reload(null, false);
             },
 
             error: function (xhr) {

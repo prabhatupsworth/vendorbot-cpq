@@ -32,6 +32,8 @@ class Product extends Model
         'active',
         'is_sync_backend',
         'created_by',
+        'currency_code',
+        'product_code',
     ];
 
     protected $casts = [
