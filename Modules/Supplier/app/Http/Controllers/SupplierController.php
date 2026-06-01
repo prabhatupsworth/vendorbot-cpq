@@ -296,7 +296,7 @@ class SupplierController extends Controller
     | Validation
     |--------------------------------------------------------------------------
     */
-
+// dd($request->all());
         $request->validate([
 
             'name' => 'required|string|max:255',
@@ -323,7 +323,7 @@ class SupplierController extends Controller
 
             'social_instagram' => 'nullable',
 
-            // 'status' => 'nullable|string',
+            'status' => 'nullable|string',
 
             'capacity' => 'nullable|numeric',
 
@@ -435,6 +435,8 @@ class SupplierController extends Controller
 
             'cp_title' =>
             $request->cp_title,
+
+            'status' => $request->status,
 
             'notice' => $request->notice,
             'notice_intern' => $request->notice_intern,
