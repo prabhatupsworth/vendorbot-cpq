@@ -517,7 +517,6 @@
                         <div class="tab-pane fade" id="project-smtp">
                             <div class="card border-0 shadow-sm">
 
-                                <!-- 🔹 Header -->
                                 <div class="card-header d-flex justify-content-between align-items-center">
                                     <h5 class="mb-0 fw-semibold">SMTP Settings</h5>
 
@@ -527,29 +526,20 @@
                                     </button>
                                 </div>
 
-                                <!-- 🔹 Body -->
                                 <div class="card-body">
+                                    <div class="row g-3" id="smtp-section">
 
-                                    <!-- ALWAYS EXIST -->
-
-                                            <div class="row g-3"  id="smtp-section">
-
-                                                @foreach ($project->smtps as $smtp)
-                                                    @include('project::partials.smtp-card', [
-                                                        'smtp' => $smtp,
-                                                        'projectId' => $project->id,
-                                                    ])
-                                                @endforeach
-
-                                            </div>
+                                        @foreach ($project->smtps as $smtp)
+                                            @include('project::partials.smtp-card', [
+                                                'smtp' => $smtp,
+                                                'projectId' => $project->id,
+                                            ])
+                                        @endforeach
 
                                     </div>
-
                                 </div>
 
                             </div>
-
-
                         </div>
 
                         <div class="tab-pane fade" id="project-geo">
@@ -831,7 +821,7 @@
 
                         </div>
 
-                        <div class="tab-pane" id="project-history">
+                        <div class="tab-pane fade" id="project-history">
                             <div class="card shadow-sm border-0">
 
                                 <div

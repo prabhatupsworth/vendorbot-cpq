@@ -459,7 +459,7 @@
                                             @if ($coupon->type === 'amount')
                                                 {{ currency($coupon->amount) }}
                                             @else
-                                               {{ active_currency_symbol() }}{{ number_format($coupon->amount, 0) }}%
+                                               {{ active_currency_symbol() }} {{ number_format($coupon->amount, 0) }}%
                                             @endif
 
                                         </h6>
