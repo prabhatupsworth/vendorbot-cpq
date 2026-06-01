@@ -215,6 +215,10 @@ class ProjectSmtpController extends Controller
             );
         }
 
+        $smtpData = $this->smtpRepository->find(
+            $projectId,
+            $smtp
+        );
         return response()->json([
 
             'status' => true,
@@ -230,7 +234,7 @@ class ProjectSmtpController extends Controller
             'html' => view(
                 'project::partials.smtp-card',
                 [
-                    'smtp' => $response['smtp'],
+                    'smtp' => $smtpData,
                     'projectId' => $projectId
                 ]
             )->render(),
