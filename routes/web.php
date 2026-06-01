@@ -42,7 +42,7 @@ Route::middleware('auth')->group(function () {
     // Dashboard
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
-    Route::post('/switch-project',[ProjectSwitcherController::class, 'switch'])->name('projects.switch');
+    Route::post('/switch-project', [ProjectSwitcherController::class, 'switch'])->name('projects.switch');
 
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
     Route::post('/profile/update', [ProfileController::class, 'updateProfile'])->name('profile.update');
@@ -93,28 +93,58 @@ Route::middleware('auth')->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    Route::middleware('role:super_admin')->prefix('roles')->group(function () {
+    // Route::middleware('role:super_admin')->prefix('roles')->group(function () {
 
-        Route::get('/', [RoleController::class, 'index'])->name('roles.index');
-        Route::get('/data', [RoleController::class, 'getRoles'])->name('roles.data');
-        Route::get('/create', [RoleController::class, 'create'])->name('roles.create');
-        Route::post('/', [RoleController::class, 'store'])->name('roles.store');
+    Route::prefix('roles')->group(function () {
 
-        Route::get('/{id}/edit', [RoleController::class, 'edit'])->name('roles.edit');
-        Route::put('/{id}', [RoleController::class, 'update'])->name('roles.update');
-        Route::delete('/{id}', [RoleController::class, 'destroy'])->name('roles.destroy');
+        Route::get('/', [RoleController::class, 'index'])
+            // ->middleware('permission:roles.view')
+            ->name('roles.index');
+
+        Route::get('/data', [RoleController::class, 'getRoles'])
+            ->middleware('permission:roles.view')
+            ->name('roles.data');
+
+        Route::get('/create', [RoleController::class, 'create'])
+            ->middleware('permission:roles.create')
+            ->name('roles.create');
+
+        Route::post('/', [RoleController::class, 'store'])
+            ->middleware('permission:roles.create')
+            ->name('roles.store');
+
+        Route::get('/{id}/edit', [RoleController::class, 'edit'])
+            ->middleware('permission:roles.edit')
+            ->name('roles.edit');
+
+        Route::put('/{id}', [RoleController::class, 'update'])
+            ->middleware('permission:roles.edit')
+            ->name('roles.update');
+
+        Route::delete('/{id}', [RoleController::class, 'destroy'])
+            ->middleware('permission:roles.delete')
+            ->name('roles.destroy');
 
         Route::get('/{id}/permissions', [RoleController::class, 'permissions'])
+            // ->middleware('permission:roles.edit')
             ->name('roles.permissions');
 
         Route::post('/{id}/permissions', [RoleController::class, 'updatePermissions'])
+            // ->middleware('permission:roles.edit')
             ->name('roles.update-permissions');
-        Route::get('/{id}/permission-data', [RoleController::class, 'permissionData'])->name('roles.permission-data');
-        Route::post('/{id}/toggle-permission', [RoleController::class, 'togglePermission'])->name('roles.toggle-permission');
+
+        Route::get('/{id}/permission-data', [RoleController::class, 'permissionData'])
+            ->middleware('permission:roles.view')
+            ->name('roles.permission-data');
+
+        Route::post('/{id}/toggle-permission', [RoleController::class, 'togglePermission'])
+            ->middleware('permission:roles.edit')
+            ->name('roles.toggle-permission');
     });
 
     Route::get(
-    '/import-suppliers',
-    [ProductController::class, 'importSuppliers']
-);
+        '/import-suppliers',
+        [ProductController::class, 'importSuppliers']
+    );
 });
+// });

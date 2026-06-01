@@ -34,7 +34,7 @@
                     </div>
 
                     <div class="col-lg-6 text-end">
-
+                        @can('coupons.create')
                         <a href="{{ route('coupon.create') }}" class="btn btn-primary">
 
                             <i class="ti ti-plus me-1"></i>
@@ -42,7 +42,7 @@
                             Create Coupon
 
                         </a>
-
+                        @endcan
                     </div>
 
                 </div>
@@ -525,9 +525,9 @@
                                     </x-table.td>
 
                                     {{-- ACTIONS --}}
-                                    <x-table.action-buttons :viewUrl="route('coupon.show', $coupon->id)" viewPermission="coupon.view" :editUrl="route('coupon.edit', $coupon->id)"
-                                        editPermission="coupon.edit" :editData="$coupon" :deleteUrl="route('coupon.destroy', $coupon->id)"
-                                        deletePermission="coupon.delete" :deleteId="$coupon->id" />
+                                    <x-table.action-buttons :viewUrl="route('coupon.show', $coupon->id)" viewPermission="coupons.view" :editUrl="route('coupon.edit', $coupon->id)"
+                                        editPermission="coupons.edit" :editData="$coupon" :deleteUrl="route('coupon.destroy', $coupon->id)"
+                                        deletePermission="coupons.delete" :deleteId="$coupon->id" />
 
                                 </x-table.tr>
 

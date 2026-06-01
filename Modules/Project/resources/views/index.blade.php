@@ -44,9 +44,11 @@
                                 </div>
                                 <div class="col-sm-8">
                                     <div class="d-flex align-items-center flex-wrap row-gap-2 justify-content-sm-end">
+                                            @can('projects.create')
                                         <a href="javascript:void(0);" class="btn btn-primary" data-bs-toggle="offcanvas"
                                             data-bs-target="#projectCanvas"><i
                                                 class="ti ti-square-rounded-plus me-2"></i>Add New Project</a>
+                                            @endcan
                                     </div>
                                 </div>
                             </div>

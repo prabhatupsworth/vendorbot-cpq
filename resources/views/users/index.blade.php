@@ -40,10 +40,13 @@
                                 </div>
                                 <div class="col-sm-8">
                                     <div class="d-flex align-items-center flex-wrap row-gap-2 justify-content-sm-end">
+                                        @can('users.create')
                                         <a href="javascript:void(0);" class="btn btn-primary" data-bs-toggle="offcanvas"
                                             data-bs-target="#offcanvas_add"><i
                                                 class="ti ti-square-rounded-plus me-2"></i>Add
                                             user</a>
+
+                                        @endcan
                                     </div>
                                 </div>
                             </div>

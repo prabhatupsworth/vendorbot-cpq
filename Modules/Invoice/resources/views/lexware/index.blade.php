@@ -31,11 +31,12 @@
 
                                 <div class="col-md-8">
                                     <div class="d-flex align-items-center flex-wrap row-gap-2 justify-content-sm-end">
-
-                                        <a href="javascript:void(0);" class="btn btn-primary mb-3"
-                                            data-bs-toggle="offcanvas" data-bs-target="#offcanvas_add_lexware"><i
-                                                class="ti ti-square-rounded-plus me-2"></i>Add
-                                            New</a>
+                                        @can('lexware.create')
+                                            <a href="javascript:void(0);" class="btn btn-primary mb-3"
+                                                data-bs-toggle="offcanvas" data-bs-target="#offcanvas_add_lexware"><i
+                                                    class="ti ti-square-rounded-plus me-2"></i>Add
+                                                New</a>
+                                        @endcan
                                     </div>
                                 </div>
                             </div>
@@ -52,18 +53,23 @@
                                                         src="{{ asset('template/assets/img/icons/lexware.svg') }}"
                                                         alt="Icon">
                                                     <div>
-                                                        <button
-                                                            class="btn btn-sm btn-icon btn-primary rounded-pill edit-btn"
-                                                            data-bs-toggle="offcanvas" data-id="{{ $setting->id }}"
-                                                            data-bs-target="#offcanvas_add_lexware">
-                                                            <i class="ti ti-edit text-white"></i>
-                                                        </button>
-                                                        <button
-                                                            class="btn btn-light btn-icon btn-sm rounded-pill view-details"
-                                                            data-bs-toggle="offcanvas"
-                                                            data-bs-target="#offcanvas_view_lexware">
-                                                            <i class="ti ti-eye text-muted"></i>
-                                                        </button>
+                                                        @can('lexware.edit')
+                                                            <button
+                                                                class="btn btn-sm btn-icon btn-primary rounded-pill edit-btn"
+                                                                data-bs-toggle="offcanvas" data-id="{{ $setting->id }}"
+                                                                data-bs-target="#offcanvas_add_lexware">
+                                                                <i class="ti ti-edit text-white"></i>
+                                                            </button>
+                                                        @endcan
+
+                                                        @can('lexware.view')
+                                                            <button
+                                                                class="btn btn-light btn-icon btn-sm rounded-pill view-details"
+                                                                data-bs-toggle="offcanvas"
+                                                                data-bs-target="#offcanvas_view_lexware">
+                                                                <i class="ti ti-eye text-muted"></i>
+                                                            </button>
+                                                        @endcan
                                                     </div>
                                                 </div>
 
@@ -141,7 +147,8 @@
                         <!-- API KEY -->
                         <div class="col-md-12">
                             <div class="mb-3">
-                                <label class="col-form-label">API Key <span class="text-danger" id="invoice_api_key_label">*</span></label>
+                                <label class="col-form-label">API Key <span class="text-danger"
+                                        id="invoice_api_key_label">*</span></label>
                                 <div class="icon-form-end">
                                     <span class="form-icon"><i class="ti ti-eye-off"></i></span>
                                     <input type="password" name="api_key"
@@ -351,7 +358,7 @@
                             });
                             $('#historyTableBody').html(historyHtml);
                             $('#load_more').attr('href',
-                            `/history/lexware/${response.account.id}`); // Set load more link
+                                `/history/lexware/${response.account.id}`); // Set load more link
                         },
                         error: function() {
                             Swal.fire({
