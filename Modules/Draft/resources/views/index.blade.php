@@ -127,10 +127,6 @@
                                 Subject
                             </x-table.th>
 
-                            <x-table.th>
-                                Content
-                            </x-table.th>
-
                             <x-table.th width="140">
                                 Created
                             </x-table.th>
@@ -169,12 +165,6 @@
                                             {{ $draft->subject }}
 
                                         </h6>
-
-                                    </x-table.td>
-
-                                    <x-table.td>
-
-                                        {{ \Illuminate\Support\Str::limit(strip_tags($draft->content), 100) }}
 
                                     </x-table.td>
 
