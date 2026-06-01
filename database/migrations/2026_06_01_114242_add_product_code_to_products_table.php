@@ -10,7 +10,6 @@ return new class extends Migration
     {
         Schema::table('products', function (Blueprint $table) {
             $table->string('product_code', 100)
-                ->unique()
                 ->nullable()
                 ->after('id');
         });

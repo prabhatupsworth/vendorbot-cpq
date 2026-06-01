@@ -280,6 +280,28 @@
 
         });
     </script>
+
+    <script>
+        document.addEventListener('hidden.bs.offcanvas', function(event) {
+
+            const offcanvas = event.target;
+
+            // Reset all forms inside offcanvas
+            offcanvas.querySelectorAll('form').forEach(form => {
+                form.reset();
+
+                // Remove validation errors
+                form.querySelectorAll('.is-invalid').forEach(el => {
+                    el.classList.remove('is-invalid');
+                });
+
+                form.querySelectorAll('.invalid-feedback').forEach(el => {
+                    el.innerHTML = '';
+                });
+            });
+
+        });
+    </script>
 </body>
 
 </html>
