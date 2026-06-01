@@ -1,7 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-
     <style>
         .permission-table-wrapper {
             background: #fff;
@@ -548,121 +547,191 @@
         </script>
 
 
-        @push('scripts')
-            <script>
-                $(document).ready(function() {
 
-                    let roleId = "{{ $role->id }}";
+        <script>
+            let isBulkUpdate = false;
+            let isBulkOperation = false;
+            let suppressAlert = false;
+            $(document).ready(function() {
 
-                    const allowAll = $('.card-header input[type="checkbox"]');
+                let roleId = "{{ $role->id }}";
 
-                    function allPermissionCheckboxes() {
-                        return $('tbody input[name="permissions[]"]');
+                const allowAll = $('.card-header input[type="checkbox"]');
+
+                function allPermissionCheckboxes() {
+                    return $('tbody input[name="permissions[]"]');
+                }
+
+                // ================================
+                // ✅ THEME UI SYNC
+                // ================================
+                function syncCheckboxUI() {
+                    $('input[type="checkbox"]').each(function() {
+                        $(this).closest('.checkboxs')
+                            .toggleClass('active', $(this).is(':checked'));
+                    });
+                }
+
+                // ================================
+                // ✅ GLOBAL ALLOW ALL SYNC
+                // ================================
+                function syncAllowAll() {
+                    let total = allPermissionCheckboxes().length;
+                    let checked = allPermissionCheckboxes().filter(':checked').length;
+
+                    allowAll.prop('checked', total === checked);
+                }
+
+                // ================================
+                // ✅ ROW AUTO SYNC
+                // ================================
+                function syncRowCheckbox(row) {
+                    let rowCheckboxes = row.find('input[name="permissions[]"]');
+                    let checkedCount = rowCheckboxes.filter(':checked').length;
+
+                    row.find('.module-check').prop(
+                        'checked',
+                        checkedCount === rowCheckboxes.length
+                    );
+                }
+
+                // ================================
+                // ✅ AUTO SAVE (MAIN LOGIC)
+                // ================================
+                $(document).on('change', 'input[name="permissions[]"]', function() {
+
+                    if (isBulkOperation) {
+                        return;
                     }
 
-                    // ================================
-                    // ✅ THEME UI SYNC
-                    // ================================
-                    function syncCheckboxUI() {
-                        $('input[type="checkbox"]').each(function() {
-                            $(this).closest('.checkboxs')
-                                .toggleClass('active', $(this).is(':checked'));
-                        });
-                    }
+                    let checkbox = $(this);
 
-                    // ================================
-                    // ✅ GLOBAL ALLOW ALL SYNC
-                    // ================================
-                    function syncAllowAll() {
-                        let total = allPermissionCheckboxes().length;
-                        let checked = allPermissionCheckboxes().filter(':checked').length;
+                    $.ajax({
+                        url: `/roles/${roleId}/toggle-permission`,
+                        type: "POST",
+                        data: {
+                            permission: checkbox.val(),
+                            checked: checkbox.is(':checked') ? 1 : 0,
+                            _token: "{{ csrf_token() }}"
+                        },
 
-                        allowAll.prop('checked', total === checked);
-                    }
+                        success: function(response) {
 
-                    // ================================
-                    // ✅ ROW AUTO SYNC
-                    // ================================
-                    function syncRowCheckbox(row) {
-                        let rowCheckboxes = row.find('input[name="permissions[]"]');
-                        let checkedCount = rowCheckboxes.filter(':checked').length;
+                            if (!suppressAlert) {
 
-                        row.find('.module-check').prop(
-                            'checked',
-                            checkedCount === rowCheckboxes.length
-                        );
-                    }
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Success',
+                                    text: response.message ||
+                                        'Permission updated successfully.',
+                                    confirmButtonColor: '#E41F07'
+                                }).then(() => {
+                                    location.reload();
+                                });
 
-                    // ================================
-                    // ✅ AUTO SAVE (MAIN LOGIC)
-                    // ================================
-                    $(document).on('change', 'input[name="permissions[]"]', function() {
-
-                        let checkbox = $(this);
-                        let permission = checkbox.val();
-                        let checked = checkbox.is(':checked') ? 1 : 0;
-
-                        $.ajax({
-                            url: `/roles/${roleId}/toggle-permission`,
-                            type: "POST",
-                            data: {
-                                permission: permission,
-                                checked: checked,
-                                _token: "{{ csrf_token() }}"
                             }
+                        }
+                    });
+                });
+
+                // ================================
+                // ✅ ROW SELECT (MODULE)
+                // ================================
+                $(document).on('change', '.module-check', function() {
+
+                    let checked = $(this).is(':checked');
+                    let row = $(this).closest('tr');
+
+                    isBulkOperation = true;
+                    suppressAlert = true;
+
+                    let requests = [];
+
+                    row.find('input[name="permissions[]"]').each(function() {
+
+                        $(this).prop('checked', checked);
+
+                        requests.push(
+                            $.post(`/roles/${roleId}/toggle-permission`, {
+                                permission: $(this).val(),
+                                checked: checked ? 1 : 0,
+                                _token: "{{ csrf_token() }}"
+                            })
+                        );
+                    });
+
+                    $.when.apply($, requests).done(function() {
+
+                        suppressAlert = false;
+                        isBulkOperation = false;
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: 'Module permissions updated successfully.',
+                            confirmButtonColor: '#E41F07'
+                        }).then(() => {
+                            location.reload();
                         });
 
-                        let row = checkbox.closest('tr');
-
-                        // sync row + global
-                        syncRowCheckbox(row);
-                        syncAllowAll();
-                        syncCheckboxUI();
                     });
-
-                    // ================================
-                    // ✅ ROW SELECT (MODULE)
-                    // ================================
-                    $(document).on('change', '.module-check', function() {
-
-                        let checked = $(this).is(':checked');
-                        let row = $(this).closest('tr');
-
-                        row.find('input[name="permissions[]"]').each(function() {
-                            $(this).prop('checked', checked).trigger('change');
-                        });
-
-                        syncCheckboxUI();
-                    });
-
-                    // ================================
-                    // ✅ GLOBAL SELECT ALL
-                    // ================================
-                    allowAll.on('change', function() {
-
-                        let checked = $(this).is(':checked');
-
-                        allPermissionCheckboxes().each(function() {
-                            $(this).prop('checked', checked).trigger('change');
-                        });
-
-                        $('.module-check').prop('checked', checked);
-
-                        syncCheckboxUI();
-                    });
-
-                    // ================================
-                    // ✅ INITIAL LOAD SYNC
-                    // ================================
-                    $('tbody tr').each(function() {
-                        syncRowCheckbox($(this));
-                    });
-
-                    syncAllowAll();
-                    syncCheckboxUI();
 
                 });
-            </script>
-        @endpush
+
+                // ================================
+                // ✅ GLOBAL SELECT ALL
+                // ================================
+                allowAll.on('change', function() {
+
+                    let checked = $(this).is(':checked');
+
+                    isBulkOperation = true;
+                    suppressAlert = true;
+
+                    let requests = [];
+
+                    allPermissionCheckboxes().each(function() {
+
+                        $(this).prop('checked', checked);
+
+                        requests.push(
+                            $.post(`/roles/${roleId}/toggle-permission`, {
+                                permission: $(this).val(),
+                                checked: checked ? 1 : 0,
+                                _token: "{{ csrf_token() }}"
+                            })
+                        );
+                    });
+
+                    $.when.apply($, requests).done(function() {
+
+                        suppressAlert = false;
+                        isBulkOperation = false;
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: 'All permissions updated successfully.',
+                            confirmButtonColor: '#E41F07'
+                        }).then(() => {
+                            location.reload();
+                        });
+
+                    });
+
+                });
+
+                // ================================
+                // ✅ INITIAL LOAD SYNC
+                // ================================
+                $('tbody tr').each(function() {
+                    syncRowCheckbox($(this));
+                });
+
+                syncAllowAll();
+                syncCheckboxUI();
+
+            });
+        </script>
     @endpush
 @endsection

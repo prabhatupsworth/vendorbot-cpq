@@ -7,6 +7,7 @@ return [
         'projects' => ['view', 'create', 'edit', 'delete'],
         'products' => ['view', 'create', 'edit', 'delete'],
         'coupons' => ['view', 'create', 'edit', 'delete'],
+        'draft' => ['view', 'create', 'edit', 'delete'],
         'roles' => ['view', 'create', 'edit', 'delete'],
         'pipedrive' => ['view', 'create', 'edit', 'delete'],
         'lexware' => ['view', 'create', 'edit', 'delete'],

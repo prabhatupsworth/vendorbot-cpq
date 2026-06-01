@@ -35,32 +35,37 @@
 
                     <i class="fa fa-ellipsis-v"></i>
                 </a>
+                @can('roles.edit')
+                    <div class="dropdown-menu dropdown-menu-end">
+                        @can('roles.edit')
+                        <a href="javascript:void(0);" class="dropdown-item edit-role" data-id="{{ $role->id }}"
+                            data-name="{{ $role->name }}">
 
-                <div class="dropdown-menu dropdown-menu-end">
+                            <i class="ti ti-edit text-blue"></i>
+                            Edit
+                        </a>
+                        @endcan
+                        @can('roles.edit')
+                        <a class="dropdown-item" href="{{ url('/roles/' . $role->id . '/permissions') }}">
 
-                    <a href="javascript:void(0);" class="dropdown-item edit-role" data-id="{{ $role->id }}"
-                        data-name="{{ $role->name }}">
+                            <i class="ti ti-shield text-success"></i>
+                            Permission
+                        </a>
+                        @endcan
 
-                        <i class="ti ti-edit text-blue"></i>
-                        Edit
-                    </a>
+                        <!-- DELETE BUTTON -->
 
-                    <a class="dropdown-item" href="{{ url('/roles/' . $role->id . '/permissions') }}">
+                        @can('roles.delete')
+                        <a href="javascript:void(0);" class="dropdown-item delete-role" data-id="{{ $role->id }}"
+                            data-name="{{ $role->name }}">
 
-                        <i class="ti ti-shield text-success"></i>
-                        Permission
-                    </a>
+                            <i class="ti ti-trash text-danger"></i>
+                            Delete
+                        </a>
+                        @endcan
 
-                    <!-- DELETE BUTTON -->
-                    <a href="javascript:void(0);" class="dropdown-item delete-role" data-id="{{ $role->id }}"
-                        data-name="{{ $role->name }}">
-
-                        <i class="ti ti-trash text-danger"></i>
-                        Delete
-                    </a>
-
-                </div>
-
+                    </div>
+                @endcan
             </div>
 
         </td>

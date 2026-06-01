@@ -1,7 +1,7 @@
 <div class="sidebar" id="sidebar">
     <div class="sidebar-inner slimscroll">
         <div id="sidebar-menu" class="sidebar-menu">
-            <ul>
+            {{-- <ul>
                 <li class="clinicdropdown">
                     <a href="{{ route('profile') }}">
                         <img src="{{ auth()->user()->profile_image
@@ -14,7 +14,7 @@
                         </div>
                     </a>
                 </li>
-            </ul>
+            </ul> --}}
             <ul>
 
                 {{-- DASHBOARD --}}

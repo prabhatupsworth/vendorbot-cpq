@@ -49,7 +49,7 @@
                                 <i class="ti ti-refresh"></i>
 
                             </a>
-
+                            @can('suppliers.create')
                             <a href="{{ route('suppliers.create') }}" class="btn btn-primary">
 
                                 <i class="ti ti-plus me-1"></i>
@@ -57,7 +57,7 @@
                                 Add Supplier
 
                             </a>
-
+                            @endcan
                         </div>
 
                     </div>

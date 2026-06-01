@@ -39,6 +39,7 @@
             <a href="#" class="action-icon show" data-bs-toggle="dropdown" aria-expanded="true"><i
                     class="fa fa-ellipsis-v"></i>
             </a>
+            @can('projects.view')
             <div class="dropdown-menu dropdown-menu-right"
                 style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate3d(-104px, 35px, 0px);"
                 data-popper-placement="bottom-start" data-popper-reference-hidden="" data-popper-escaped="">
@@ -61,6 +62,7 @@
                         Delete</a>
                 @endcan
             </div>
+            @endcan
         </div>
     </td>
 </tr>
