@@ -112,7 +112,7 @@
 
                                             <th>Product</th>
 
-                                            <th>Project</th>
+                                            {{-- <th>Project</th> --}}
 
                                             <th>Price</th>
 
