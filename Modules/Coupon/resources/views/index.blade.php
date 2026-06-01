@@ -433,7 +433,7 @@
                                     {{-- TYPE --}}
                                     <x-table.td>
 
-                                        @if ($coupon->type == 'amount')
+                                        @if ($coupon->type === 'amount')
                                             <span
                                                 class="badge bg-outline-danger">
 
@@ -456,10 +456,10 @@
 
                                         <h6 class="fw-bold mb-0">
 
-                                            @if ($coupon->type == 'amount')
-                                                {{ number_format($coupon->amount, 2) }}
+                                            @if ($coupon->type === 'amount')
+                                                {{ currency($coupon->amount) }}
                                             @else
-                                                {{ $coupon->amount }}%
+                                               {{ active_currency_symbol() }}{{ number_format($coupon->amount, 0) }}%
                                             @endif
 
                                         </h6>

@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Auth;
 use Nwidart\Modules\Facades\Module;
 
 use App\Models\Currency;
+use Modules\Project\Models\Project;
 
 if (!function_exists('user_status_badge')) {
     function user_status_badge(int|string|null $status): string
@@ -37,12 +38,21 @@ if (! function_exists('current_project_id')) {
 
 
 
+if (!function_exists('active_currency_code')) {
+
+    function active_currency_code()
+    {
+        $project = Project::find(current_project_id());
+
+        return $project?->currency_code ?? 'EUR';
+    }
+}
 
 if (!function_exists('currency')) {
 
     function currency($amount, $currencyCode = null)
     {
-        $currencyCode = $currencyCode ?? session('currency_code', 'EUR');
+        $currencyCode = $currencyCode ?? active_currency_code();
 
         $currency = Currency::where('code', $currencyCode)->first();
 
@@ -51,5 +61,15 @@ if (!function_exists('currency')) {
         }
 
         return $currency->symbol . ' ' . number_format($amount, 2);
+    }
+}
+
+if (!function_exists('active_currency_symbol')) {
+
+    function active_currency_symbol()
+    {
+        $currency = Currency::where('code', active_currency_code())->first();
+
+        return $currency?->symbol ?? '€';
     }
 }
