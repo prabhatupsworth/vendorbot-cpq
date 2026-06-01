@@ -1,76 +1,96 @@
-<div class="col-md-6 smtp-item" data-id="{{ $smtp->id }}">
+@if ($smtp)
 
-    <div class="smtp-card p-3 border rounded-3 bg-white h-100">
+    <div class="col-md-6 smtp-item" data-id="{{ $smtp->id }}">
 
-        <!-- 🔹 Top -->
-        <div class="d-flex justify-content-between align-items-center mb-2">
+        <div class="smtp-card p-3 border rounded-3 bg-white h-100">
 
-            <div>
-                <span class="badge bg-primary text-uppercase">
-                    {{ $smtp->type }}
-                </span>
-                @if ($smtp->connected)
-                    <span class="badge bg-success">
-                        Connected
+            <!-- 🔹 Top -->
+            <div class="d-flex justify-content-between align-items-center mb-2">
+
+                <div>
+                    <span class="badge bg-primary text-uppercase">
+                        {{ $smtp->type }}
                     </span>
+                    @if ($smtp->connected)
+                        <span class="badge bg-success">
+                            Connected
+                        </span>
+                    @else
+                        <span class="badge bg-danger">
+                            Not Connected
+                        </span>
+                    @endif
+                </div>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-sm btn-light border text-info edit-form" data-bs-toggle="offcanvas"
+                        data-bs-target="#smtpTestCanvas" data-form="#smtpTestForm" data-method="POST"
+                        data-url="{{ route('projects.smtp.test', [$projectId, $smtp->id]) }}">
+                        <i class="ti ti-mail-forward"></i>
+                    </button>
+                    <button class="btn btn-sm btn-light border edit-form" data-type="edit" data-bs-toggle="offcanvas"
+                        data-bs-target="#smtpCanvas" data-data='@json($smtp)' data-form="#smtpForm"
+                        data-method="PUT" data-url="{{ route('projects.smtp.update', [$projectId, $smtp->id]) }}">
+                        <i class="ti ti-edit"></i>
+                    </button>
+
+                    <button class="btn btn-sm btn-light border text-danger delete-btn"
+                        data-url="{{ route('projects.smtp.delete', [$projectId, $smtp->id]) }}">
+                        <i class="ti ti-trash"></i>
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- 🔹 Host -->
+            <h6 class="mb-1 fw-semibold">{{ $smtp->host }}</h6>
+
+            <!-- 🔹 Details -->
+            <div class="small text-muted">
+
+                <div>Port: {{ $smtp->port }}</div>
+                <div>User: {{ $smtp->username }}</div>
+                <div>Encryption: {{ $smtp->encryption ?? 'None' }}</div>
+
+            </div>
+
+            <!-- 🔹 Divider -->
+            <hr class="my-2">
+
+            <!-- 🔹 Footer -->
+            <div class="d-flex justify-content-between align-items-center small">
+
+                <div>
+                    <strong>{{ $smtp->from_name }}</strong><br>
+                    <span class="text-muted">{{ $smtp->from_email }}</span>
+                </div>
+                @if ($smtp->is_active)
+                    <span class="badge bg-success">Active</span>
                 @else
-                    <span class="badge bg-danger">
-                        Not Connected
+                    <span class="badge bg-primary text-uppercase">
+                        Inactive
                     </span>
                 @endif
+
             </div>
-            <div class="d-flex gap-2">
-                <button class="btn btn-sm btn-light border text-info edit-form" data-bs-toggle="offcanvas"
-                    data-bs-target="#smtpTestCanvas" data-form="#smtpTestForm" data-method="POST"
-                    data-url="{{ route('projects.smtp.test', [$projectId, $smtp->id]) }}">
-                    <i class="ti ti-mail-forward"></i>
-                </button>
-                <button class="btn btn-sm btn-light border edit-form" data-type="edit" data-bs-toggle="offcanvas"
-                    data-bs-target="#smtpCanvas" data-data='@json($smtp)' data-form="#smtpForm"
-                    data-method="PUT" data-url="{{ route('projects.smtp.update', [$projectId, $smtp->id]) }}">
-                    <i class="ti ti-edit"></i>
-                </button>
-
-                <button class="btn btn-sm btn-light border text-danger delete-btn"
-                    data-url="{{ route('projects.smtp.delete', [$projectId, $smtp->id]) }}">
-                    <i class="ti ti-trash"></i>
-                </button>
-            </div>
-
-        </div>
-
-        <!-- 🔹 Host -->
-        <h6 class="mb-1 fw-semibold">{{ $smtp->host }}</h6>
-
-        <!-- 🔹 Details -->
-        <div class="small text-muted">
-
-            <div>Port: {{ $smtp->port }}</div>
-            <div>User: {{ $smtp->username }}</div>
-            <div>Encryption: {{ $smtp->encryption ?? 'None' }}</div>
-
-        </div>
-
-        <!-- 🔹 Divider -->
-        <hr class="my-2">
-
-        <!-- 🔹 Footer -->
-        <div class="d-flex justify-content-between align-items-center small">
-
-            <div>
-                <strong>{{ $smtp->from_name }}</strong><br>
-                <span class="text-muted">{{ $smtp->from_email }}</span>
-            </div>
-            @if ($smtp->is_active)
-                <span class="badge bg-success">Active</span>
-            @else
-                <span class="badge bg-primary text-uppercase">
-                    Inactive
-                </span>
-            @endif
 
         </div>
 
     </div>
+@else
+    <!-- 🔹 Empty -->
+    <div class="text-center py-5 smtp-empty-state">
 
-</div>
+        <i class="ti ti-mail fs-1 text-muted"></i>
+
+        <p class="mt-2 text-muted">
+            No SMTP configured
+        </p>
+
+        <button class="btn btn-primary btn-sm create-form" data-bs-toggle="offcanvas" data-bs-target="#smtpCanvas">
+
+            <i class="ti ti-plus"></i> Add SMTP
+
+        </button>
+
+    </div>
+@endif

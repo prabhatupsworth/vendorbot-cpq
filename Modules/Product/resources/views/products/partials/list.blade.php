@@ -1,125 +1,121 @@
- <tr class="product-list" data-id={{ $product->id }}>
+  @forelse($products as $product)
+      <tr class="product-list" data-id={{ $product->id }}>
 
-     <td>
+          <td>
 
-         <div class="d-flex flex-column">
+              <div class="d-flex flex-column">
 
-             <span class="fw-semibold">
+                  <span class="fw-semibold text-capitalize">
 
-                 {{ $product->name }}
+                      {{ $product->name }}
 
-             </span>
+                  </span>
 
-             <small class="text-muted">
+                  {{-- <small class="text-muted">
 
                  {{ \Illuminate\Support\Str::limit($product->description, 50) }}
 
-             </small>
+             </small> --}}
 
-         </div>
+              </div>
 
-     </td>
-{{--
-     <td>
+          </td>
 
-         {{ $product->project?->name ?? '-' }}
+          <td>
 
-     </td> --}}
+              {{ $product->pipedrive_product_id ?? '-' }}
 
-     <td>
+          </td>
 
-         ₹{{ number_format($product->price, 2) }}
+          <td>
 
-     </td>
+              {{ currency($product->cost) }}
 
-     <td>
+          </td>
 
-         @if ($product->discount_type)
+          <td>
 
-             @if ($product->discount_type == 'fixed')
-                 ₹{{ number_format($product->discount_value, 2) }}
-             @else
-                 {{ $product->discount_value }}%
-             @endif
-         @else
-             -
+              {{ currency($product->price) }}
 
-         @endif
+          </td>
 
-     </td>
+          <td>
 
-     <td>
+              <span class="fw-semibold">
 
-         <span class="fw-semibold">
+                  {{ $product->product_code ?? '-' }}
 
-             ₹{{ number_format($product->final_price, 2) }}
+              </span>
 
-         </span>
+          </td>
 
-     </td>
+          <td>
 
-     <td>
+              @if ($product->active)
+                  <span class="badge bg-soft-success">
 
-         @if ($product->active)
-             <span class="badge bg-soft-success">
+                      Active
 
-                 Active
+                  </span>
+              @else
+                  <span class="badge bg-soft-danger">
 
-             </span>
-         @else
-             <span class="badge bg-soft-danger">
+                      Inactive
 
-                 Inactive
+                  </span>
+              @endif
 
-             </span>
-         @endif
+          </td>
 
-     </td>
+          <td class="text-end">
 
-     <td class="text-end">
+              <div class="dropdown table-action">
 
-         <div class="dropdown table-action">
+                  <a href="javascript:void(0);" class="action-icon" data-bs-toggle="dropdown">
 
-             <a href="javascript:void(0);" class="action-icon" data-bs-toggle="dropdown">
+                      <i class="fa fa-ellipsis-v"></i>
 
-                 <i class="fa fa-ellipsis-v"></i>
+                  </a>
 
-             </a>
+                  <div class="dropdown-menu dropdown-menu-end">
 
-             <div class="dropdown-menu dropdown-menu-end">
+                      <!-- Edit -->
+                      <a href="javascript:void(0);" class="dropdown-item edit-form" data-bs-toggle="offcanvas"
+                          data-bs-target="#productCanvas" data-url="{{ route('products.update', $product->id) }}"
+                          data-id="{{ $product->id }}" data-method="PUT" data-data='@json($product)'
+                          data-form="#productForm">
 
-                 <!-- Edit -->
-                 <a href="javascript:void(0);" class="dropdown-item edit-form" data-bs-toggle="offcanvas"
-                     data-bs-target="#productCanvas" data-url="{{ route('products.update', $product->id) }}"
-                     data-id="{{ $product->id }}" data-method="PUT" data-data='@json($product)'
-                     data-form="#productForm">
+                          <i class="ti ti-edit text-blue"></i>
 
-                     <i class="ti ti-edit text-blue"></i>
+                          Edit
 
-                     Edit
+                      </a>
+                      <!-- Delete -->
+                      <a class="dropdown-item delete-btn" href="#"
+                          data-url="{{ route('products.destroy', $product->id) }}"><i
+                              class="ti ti-trash text-danger"></i>
+                          Delete</a>
 
-                 </a>
+                  </div>
 
-                 <!-- Delete -->
-                 <form method="POST" action="{{ route('products.destroy', $product->id) }}">
+              </div>
 
-                     @csrf
-                     @method('DELETE')
+          </td>
 
-                     <button type="submit" class="dropdown-item delete-btn">
+      </tr>
+  @empty
 
-                         <i class="ti ti-trash text-danger"></i>
+      <tr>
 
-                         Delete
+          <td colspan="10" class="text-center py-5">
 
-                     </button>
+              <div class="text-muted">
 
-                 </form>
+                  No products found.
 
-             </div>
+              </div>
 
-         </div>
+          </td>
 
-     </td>
-
- </tr>
+      </tr>
+  @endforelse

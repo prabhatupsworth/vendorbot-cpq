@@ -38,8 +38,10 @@
                 <x-form.input
                     :label="$field['label']"
                     :name="$field['name']"
+                    :value="$field['value'] ?? null"
                     :required="$field['required'] ?? false"
                     :placeholder="$field['placeholder'] ?? ''"
+                    :disabled="$field['disabled'] ?? false"
                 />
 
             @endif
