@@ -19,12 +19,12 @@
          </div>
 
      </td>
-
+{{--
      <td>
 
          {{ $product->project?->name ?? '-' }}
 
-     </td>
+     </td> --}}
 
      <td>
 

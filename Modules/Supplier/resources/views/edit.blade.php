@@ -68,11 +68,9 @@
 
                             <div>
 
-                                <span class="badge bg-success fs-6 px-3 py-2">
-
-                                    {{-- {{ ucfirst($supplier->status) }} --}}
-
-                                </span>
+                                    <span class="badge bg-{{ $supplier->status?->badge() }}">
+                                            {{ $supplier->status?->label() }}
+                                        </span>
 
                             </div>
 

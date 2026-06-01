@@ -299,8 +299,8 @@
                                                 All Types
                                             </option>
 
-                                            <option value="fixed" {{ request('type') == 'fixed' ? 'selected' : '' }}>
-                                                Fixed
+                                            <option value="amount" {{ request('type') == 'amount' ? 'selected' : '' }}>
+                                                Amount
                                             </option>
 
                                             <option value="percentage"
