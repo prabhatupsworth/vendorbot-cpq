@@ -272,7 +272,7 @@
 
                                 <i class="ti ti-device-floppy me-1"></i>
 
-                                Save Draft
+                                Save
 
                             </button>
 
