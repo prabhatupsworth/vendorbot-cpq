@@ -1,8 +1,41 @@
    @extends('layouts.auth')
    @section('title', 'Reset Password')
+   <style>
+       .auth-container {
+           min-height: 100vh;
+       }
+
+       .auth-left {
+           width: 45%;
+           background: #fff;
+           overflow-y: auto;
+       }
+
+       .auth-right {
+           width: 55%;
+           background-image: url('../template/assets/img/authentication/vendor.png');
+           background-repeat: no-repeat;
+           background-position: center center;
+           background-size: cover;
+           background-size: 100% 100%;
+       }
+
+       @media (max-width: 991px) {
+           .auth-left {
+               width: 100%;
+           }
+
+           .auth-right {
+               display: none;
+           }
+       }
+   </style>
    @section('content')
-       <div class="d-flex flex-wrap w-100 vh-100 overflow-hidden account-bg-04">
-           <div class="d-flex align-items-center justify-content-center flex-wrap vh-100 overflow-auto p-4 w-50 bg-backdrop">
+       <div class="d-flex auth-container">
+
+           <!-- Left Side Login Form -->
+           <div class="auth-left d-flex align-items-center justify-content-center p-4">
+
 
                <form method="POST" action="{{ route('password.update') }}" class="flex-fill">
                    <input type="hidden" name="token" value="{{ $token }}">
@@ -49,5 +82,7 @@
                    </div>
                </form>
            </div>
+           <!-- Right Side Image -->
+           <div class="auth-right"></div>
        </div>
    @endsection
