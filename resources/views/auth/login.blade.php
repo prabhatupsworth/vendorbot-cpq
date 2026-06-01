@@ -18,7 +18,7 @@
         background-repeat: no-repeat;
         background-position: center center;
         background-size: cover;
-        /* background-size: 100% 100%; */
+        background-size: 100% 100%;
     }
     @media (max-width: 991px) {
         .auth-left {
