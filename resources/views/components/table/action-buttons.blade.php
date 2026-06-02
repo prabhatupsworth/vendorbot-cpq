@@ -28,16 +28,16 @@
 
                 {{-- View --}}
                 @if ($viewUrl && $viewPermission)
-                    @can($viewPermission)
+                    @if(userCan($viewPermission))
                         <a class="dropdown-item" href="{{ $viewUrl }}">
                             <i class="ti ti-eye text-success"></i> View
                         </a>
-                    @endcan
+                    @endif
                 @endif
 
                 {{-- Edit --}}
                 @if ($editUrl && $editPermission)
-                    @can($editPermission)
+                    @if(userCan($editPermission))
                         @if ($editUrl)
                             {{-- OFFCANVAS --}}
                             @if ($editType === 'canvas')
@@ -62,12 +62,12 @@
                                 </a>
                             @endif
                         @endif
-                    @endcan
+                    @endif
                 @endif
 
                 {{-- Delete --}}
                 @if ($deleteUrl && $deletePermission)
-                    @can($deletePermission)
+                    @if(userCan($deletePermission))
                         @if ($deleteUrl)
                             @if ($deleteType === 'canvas')
                                 <a href="#" class="dropdown-item delete-btn" data-bs-toggle="offcanvas"
@@ -89,7 +89,7 @@
                                 </form>
                             @endif
                         @endif
-                    @endcan
+                    @endif
                 @endif
 
             </div>

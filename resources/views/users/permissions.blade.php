@@ -408,8 +408,9 @@
 
                                                                 <input type="checkbox" name="permissions[]"
                                                                     value="{{ $permissionName }}"
-                                                                    {{ in_array($permissionName, $userPermissions) ? 'checked' : '' }}>
-
+                                                                    {{ in_array($permissionName, $userPermissions) && !in_array($permissionName, $deniedPermissions)
+                                                                        ? 'checked'
+                                                                        : '' }}>
                                                                 <span class="checkmark"></span>
 
                                                             </label>

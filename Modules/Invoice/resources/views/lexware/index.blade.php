@@ -31,12 +31,12 @@
 
                                 <div class="col-md-8">
                                     <div class="d-flex align-items-center flex-wrap row-gap-2 justify-content-sm-end">
-                                        @can('lexware.create')
+                                        @if (userCan('lexware.create'))
                                             <a href="javascript:void(0);" class="btn btn-primary mb-3"
                                                 data-bs-toggle="offcanvas" data-bs-target="#offcanvas_add_lexware"><i
                                                     class="ti ti-square-rounded-plus me-2"></i>Add
                                                 New</a>
-                                        @endcan
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -53,23 +53,23 @@
                                                         src="{{ asset('template/assets/img/icons/lexware.svg') }}"
                                                         alt="Icon">
                                                     <div>
-                                                        @can('lexware.edit')
+                                                        @if (userCan('lexware.edit'))
                                                             <button
                                                                 class="btn btn-sm btn-icon btn-primary rounded-pill edit-btn"
                                                                 data-bs-toggle="offcanvas" data-id="{{ $setting->id }}"
                                                                 data-bs-target="#offcanvas_add_lexware">
                                                                 <i class="ti ti-edit text-white"></i>
                                                             </button>
-                                                        @endcan
+                                                        @endif
 
-                                                        @can('lexware.view')
+                                                        @if (userCan('lexware.view'))
                                                             <button
                                                                 class="btn btn-light btn-icon btn-sm rounded-pill view-details"
                                                                 data-bs-toggle="offcanvas"
                                                                 data-bs-target="#offcanvas_view_lexware">
                                                                 <i class="ti ti-eye text-muted"></i>
                                                             </button>
-                                                        @endcan
+                                                        @endif
                                                     </div>
                                                 </div>
 

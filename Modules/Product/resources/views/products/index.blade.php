@@ -81,7 +81,7 @@
                                 <div class="col-sm-8">
 
                                     <div class="d-flex justify-content-sm-end mt-3 mt-sm-0">
-                                        @can('projects.view')
+                                        @if (userCan('products.create'))
                                             <a href="javascript:void(0);" class="btn btn-primary" data-bs-toggle="offcanvas"
                                                 data-bs-target="#productCanvas">
 
@@ -90,7 +90,7 @@
                                                 Add Product
 
                                             </a>
-                                        @endcan
+                                        @endif
                                     </div>
 
                                 </div>

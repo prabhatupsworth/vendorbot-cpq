@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\PermissionOverride;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\PermissionRegistrar;
 
 class UserPermissionController extends Controller
 {
@@ -17,17 +19,33 @@ class UserPermissionController extends Controller
             return explode('.', $item->name)[0];
         });
 
-        $userPermissions = $user
-            ->getDirectPermissions()
+        $allPermissions = $user
+            ->getAllPermissions()
             ->pluck('name')
             ->toArray();
+
+        $deniedPermissions = PermissionOverride::where(
+            'user_id',
+            $user->id
+        )
+            ->where('is_denied', true)
+            ->pluck('permission_name')
+            ->toArray();
+
+        $userPermissions = array_values(
+            array_diff(
+                $allPermissions,
+                $deniedPermissions
+            )
+        );
 
         return view(
             'users.permissions',
             compact(
                 'user',
                 'modules',
-                'userPermissions'
+                'userPermissions',
+                'deniedPermissions'
             )
         );
     }
@@ -50,13 +68,36 @@ class UserPermissionController extends Controller
 
         if ((int) $request->checked === 1) {
 
-            $user->givePermissionTo($permission->name);
+            // Remove deny override
+            PermissionOverride::where([
+                'user_id' => $user->id,
+                'permission_name' => $permission->name
+            ])->delete();
+
+            // Give direct permission
+            if (!$user->hasDirectPermission($permission->name)) {
+                $user->givePermissionTo($permission->name);
+            }
         } else {
 
-            $user->revokePermissionTo($permission->name);
+            // Remove direct permission
+            if ($user->hasDirectPermission($permission->name)) {
+                $user->revokePermissionTo($permission->name);
+            }
+
+            // Create deny override$userPermissions = $user
+            PermissionOverride::updateOrCreate(
+                [
+                    'user_id' => $user->id,
+                    'permission_name' => $permission->name
+                ],
+                [
+                    'is_denied' => true
+                ]
+            );
         }
 
-        app(\Spatie\Permission\PermissionRegistrar::class)
+        app(PermissionRegistrar::class)
             ->forgetCachedPermissions();
 
         return response()->json([

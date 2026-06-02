@@ -31,12 +31,12 @@
 
                                 <div class="col-md-8">
                                     <div class="d-flex align-items-center flex-wrap row-gap-2 justify-content-sm-end">
-                                        @can('pipedrive.create')
+                                         @if (userCan('pipedrive.create'))
                                         <a href="javascript:void(0);" class="btn btn-primary mb-3"
                                             data-bs-toggle="offcanvas" data-bs-target="#offcanvas_add_pipedrive"><i
                                                 class="ti ti-square-rounded-plus me-2"></i>Add
                                             New</a>
-                                        @endcan
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -53,7 +53,7 @@
                                                         src="{{ asset('template/assets/img/icons/pipedrive.png') }}"
                                                         alt="Icon">
                                                     <div>
-                                                        @can('pipedrive.edit')
+                                                        @if (userCan('pipedrive.edit'))
                                                         <button
                                                             class="btn btn-sm btn-icon btn-primary rounded-pill edit-btn"
                                                             data-bs-toggle="offcanvas"
@@ -63,9 +63,9 @@
                                                             data-url="{{ $account->base_url }}">
                                                             <i class="ti ti-edit text-white"></i>
                                                         </button>
-                                                        @endcan
+                                                        @endif
 
-                                                        @can('pipedrive.view')
+                                                        @if (userCan('pipedrive.view'))
                                                         <button
                                                             class="btn btn-light btn-icon btn-sm rounded-pill view-details"
                                                             data-bs-toggle="offcanvas"
@@ -73,7 +73,7 @@
                                                             data-id="{{ $account->id }}">
                                                             <i class="ti ti-eye text-muted"></i>
                                                         </button>
-                                                        @endcan
+                                                        @endif
                                                     </div>
                                                 </div>
 
