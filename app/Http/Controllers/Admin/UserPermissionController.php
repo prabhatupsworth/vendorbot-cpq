@@ -18,7 +18,7 @@ class UserPermissionController extends Controller
         });
 
         $userPermissions = $user
-            ->getAllPermissions()
+            ->getDirectPermissions()
             ->pluck('name')
             ->toArray();
 
@@ -32,37 +32,36 @@ class UserPermissionController extends Controller
         );
     }
 
-   public function togglePermission(Request $request, $id)
-{
-    $user = User::findOrFail($id);
+    public function togglePermission(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
 
-    $permission = Permission::where(
-        'name',
-        $request->permission
-    )->first();
+        $permission = Permission::where(
+            'name',
+            $request->permission
+        )->first();
 
-    if (!$permission) {
+        if (!$permission) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Permission not found.'
+            ]);
+        }
+
+        if ((int) $request->checked === 1) {
+
+            $user->givePermissionTo($permission->name);
+        } else {
+
+            $user->revokePermissionTo($permission->name);
+        }
+
+        app(\Spatie\Permission\PermissionRegistrar::class)
+            ->forgetCachedPermissions();
+
         return response()->json([
-            'status' => false,
-            'message' => 'Permission not found.'
+            'status' => true,
+            'message' => 'Permission updated successfully.'
         ]);
     }
-
-    if ((int) $request->checked === 1) {
-
-        $user->givePermissionTo($permission->name);
-
-    } else {
-
-        $user->revokePermissionTo($permission->name);
-    }
-
-    app(\Spatie\Permission\PermissionRegistrar::class)
-        ->forgetCachedPermissions();
-
-    return response()->json([
-        'status' => true,
-        'message' => 'Permission updated successfully.'
-    ]);
-}
 }
