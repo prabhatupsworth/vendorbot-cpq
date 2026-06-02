@@ -31,11 +31,11 @@
 
                                 <div class="col-md-8">
                                     <div class="d-flex align-items-center flex-wrap row-gap-2 justify-content-sm-end">
-                                         @if (userCan('pipedrive.create'))
-                                        <a href="javascript:void(0);" class="btn btn-primary mb-3"
-                                            data-bs-toggle="offcanvas" data-bs-target="#offcanvas_add_pipedrive"><i
-                                                class="ti ti-square-rounded-plus me-2"></i>Add
-                                            New</a>
+                                        @if (userCan('pipedrive.create'))
+                                            <a href="javascript:void(0);" class="btn btn-primary mb-3"
+                                                data-bs-toggle="offcanvas" data-bs-target="#offcanvas_add_pipedrive"><i
+                                                    class="ti ti-square-rounded-plus me-2"></i>Add
+                                                New</a>
                                         @endif
                                     </div>
                                 </div>
@@ -54,25 +54,40 @@
                                                         alt="Icon">
                                                     <div>
                                                         @if (userCan('pipedrive.edit'))
-                                                        <button
-                                                            class="btn btn-sm btn-icon btn-primary rounded-pill edit-btn"
-                                                            data-bs-toggle="offcanvas"
-                                                            data-bs-target="#offcanvas_add_pipedrive"
-                                                            data-id="{{ $account->id }}"
-                                                            data-name="{{ $account->account_name }}"
-                                                            data-url="{{ $account->base_url }}">
-                                                            <i class="ti ti-edit text-white"></i>
-                                                        </button>
+                                                            <button
+                                                                class="btn btn-sm btn-icon btn-primary rounded-pill edit-btn"
+                                                                data-bs-toggle="offcanvas"
+                                                                data-bs-target="#offcanvas_add_pipedrive"
+                                                                data-id="{{ $account->id }}"
+                                                                data-name="{{ $account->account_name }}"
+                                                                data-url="{{ $account->base_url }}">
+                                                                <i class="ti ti-edit text-white"></i>
+                                                            </button>
                                                         @endif
 
                                                         @if (userCan('pipedrive.view'))
-                                                        <button
-                                                            class="btn btn-light btn-icon btn-sm rounded-pill view-details"
-                                                            data-bs-toggle="offcanvas"
-                                                            data-bs-target="#offcanvas_view_pipedrive"
-                                                            data-id="{{ $account->id }}">
-                                                            <i class="ti ti-eye text-muted"></i>
-                                                        </button>
+                                                            <button
+                                                                class="btn btn-light btn-icon btn-sm rounded-pill view-details"
+                                                                data-bs-toggle="offcanvas"
+                                                                data-bs-target="#offcanvas_view_pipedrive"
+                                                                data-id="{{ $account->id }}">
+                                                                <i class="ti ti-eye text-muted"></i>
+                                                            </button>
+                                                        @endif
+
+                                                        @if (userCan('pipedrive.delete'))
+                                                            <form
+                                                                action="{{ route('settings.pipedrive.destroy', $account->id) }}"
+                                                                method="POST" class="d-inline">
+                                                                @csrf
+                                                                @method('DELETE')
+
+                                                                <button type="submit"
+                                                                    class="btn btn-sm btn-icon btn-danger rounded-pill"
+                                                                    onclick="return confirm('Are you sure?')">
+                                                                    <i class="ti ti-trash"></i>
+                                                                </button>
+                                                            </form>
                                                         @endif
                                                     </div>
                                                 </div>

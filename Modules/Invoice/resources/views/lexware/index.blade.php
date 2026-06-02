@@ -70,6 +70,19 @@
                                                                 <i class="ti ti-eye text-muted"></i>
                                                             </button>
                                                         @endif
+
+                                                        @if (userCan('lexware.delete'))
+                                                            <form
+                                                                action="{{ route('settings.invoice.lexware.destroy', $setting->id) }}"
+                                                                method="POST" class="d-inline">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button onclick="return confirm('Are you sure?')" type="submit"
+                                                                    class="btn btn-sm btn-icon btn-danger rounded-pill">
+                                                                    <i class="ti ti-trash text-white"></i>
+                                                                </button>
+                                                            </form>
+                                                        @endif
                                                     </div>
                                                 </div>
 
