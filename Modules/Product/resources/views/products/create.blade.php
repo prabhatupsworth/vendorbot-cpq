@@ -60,7 +60,7 @@
                                     </label>
 
                                     <input type="text" name="pipedrive_product_id" class="form-control"
-                                        placeholder="Enter pipedrive product ID">
+                                        placeholder="Enter pipedrive product ID" required>
 
                                 </div>
 
@@ -76,7 +76,7 @@
 
                                     </label>
                                     <select class="js-example-placeholder-multiple select2 js-states" id="scrap_categories"
-                                        name="scrap_categories[]" multiple>
+                                        name="scrap_categories[]" multiple required>
 
                                         @foreach ($scrapCategories as $id => $category)
                                             <option value="{{ $id }}">
