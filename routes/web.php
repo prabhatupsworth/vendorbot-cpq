@@ -3,6 +3,7 @@
 use App\Http\Controllers\ActivityLog\ActivityLogController;
 use App\Http\Controllers\Admin\Role\RoleController;
 use App\Http\Controllers\Admin\User\UserController;
+use App\Http\Controllers\Admin\UserPermissionController;
 use App\Http\Controllers\Profile\ProfileController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Dashboard\DashboardController;
@@ -63,7 +64,20 @@ Route::middleware('auth')->group(function () {
     */
 
     Route::prefix('users')->name('users.')->group(function () {
+        Route::get(
+            '/{id}/permissions',
+            [UserPermissionController::class, 'permissions']
+        )->name('permissions');
 
+        Route::get(
+            '/{id}/permission-data',
+            [UserPermissionController::class, 'permissionData']
+        )->name('permission-data');
+
+        Route::post(
+            '/{id}/toggle-permission',
+            [UserPermissionController::class, 'togglePermission']
+        )->name('toggle-permission');
         Route::get('/', [UserController::class, 'index'])
             ->middleware('permission:users.view')
             ->name('index');

@@ -29,16 +29,11 @@ class ProjectController extends Controller
     public function index(Request $request)
     {
         $query = Project::query();
-
+        $user = auth()->user();
         // 🔥 role based visibility
-        if (!auth()->user()->hasRole('super_admin')) {
-
-            $query->whereHas('users', function ($q) {
-
-                $q->where(
-                    'users.id',
-                    auth()->id()
-                );
+        if (!$user->hasRole('super_admin')) {
+            $query->whereHas('users', function ($q) use ($user) {
+                $q->where('users.id', $user->id);
             });
         }
 
@@ -174,7 +169,7 @@ class ProjectController extends Controller
                 'name' => $validated['name'],
                 'website_url' => $validated['website_url'] ?? null,
                 'event_name' => $validated['event_name'] ?? null,
-                 'currency_code' => $validated['currency_code'] ?? null,
+                'currency_code' => $validated['currency_code'] ?? null,
                 'language_code' => $validated['language_code'] ?? null,
                 'vat' => $validated['vat'] ?? 0,
                 'vat_status' => $validated['vat_status'] ?? 0,
