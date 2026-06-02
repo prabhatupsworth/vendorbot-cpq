@@ -12,244 +12,224 @@
     }
 </style>
 @section('content')
-<div class="page-wrapper">
+    <div class="page-wrapper">
 
-    <div class="content">
+        <div class="content">
 
-        <div class="page-header mb-4">
+            <div class="page-header mb-4">
 
-            <div class="row align-items-center">
+                <div class="row align-items-center">
 
-                <div class="col-lg-6">
+                    <div class="col-lg-6">
 
-                    <h3 class="page-title fw-bold">
-                        Edit Draft
-                    </h3>
+                        <h3 class="page-title fw-bold">
+                            Edit Draft
+                        </h3>
 
-                    <p class="text-muted mb-0">
-                        Update email template draft
-                    </p>
+                        <p class="text-muted mb-0">
+                            Update email template draft
+                        </p>
 
-                </div>
+                    </div>
 
-                <div class="col-lg-6 text-end">
+                    <div class="col-lg-6 text-end">
 
-                    <a href="{{ route('draft.index') }}"
-                        class="btn btn-light">
+                        <a href="{{ route('draft.index') }}" class="btn btn-light">
 
-                        <i class="ti ti-arrow-left me-1"></i>
+                            <i class="ti ti-arrow-left me-1"></i>
 
-                        Back
+                            Back
 
-                    </a>
+                        </a>
+
+                    </div>
 
                 </div>
 
             </div>
 
-        </div>
+            <div class="card border-0 shadow-sm">
 
-        <div class="card border-0 shadow-sm">
+                <form action="{{ route('draft.update', $draft->id) }}" method="POST">
 
-            <form action="{{ route('draft.update', $draft->id) }}"
-                  method="POST">
+                    @csrf
+                    @method('PUT')
 
-                @csrf
-                @method('PUT')
+                    <div class="card-body">
 
-                <div class="card-body">
+                        <div class="row">
 
-                    <div class="row">
+                            {{-- CATEGORY --}}
 
-                        {{-- CATEGORY --}}
+                            <div class="col-md-6">
 
-                        <div class="col-md-6">
+                                <div class="mb-4">
 
-                            <div class="mb-4">
+                                    <label class="form-label">
+                                        Category
+                                        <span class="text-danger">*</span>
+                                    </label>
 
-                                <label class="form-label">
-                                    Category
-                                    <span class="text-danger">*</span>
-                                </label>
+                                    <select name="draft_category_id"
+                                        class="select @error('draft_category_id') is-invalid @enderror">
 
-                                <select
-                                    name="draft_category_id"
-                                    class="select @error('draft_category_id') is-invalid @enderror">
-
-                                    <option value="">
-                                        Select Category
-                                    </option>
-
-                                    @foreach($categories as $category)
-
-                                        <option
-                                            value="{{ $category->id }}"
-                                            @selected(old('draft_category_id', $draft->draft_category_id) == $category->id)>
-
-                                            {{ $category->translations->first()?->name }}
-
+                                        <option value="">
+                                            Select Category
                                         </option>
 
-                                    @endforeach
+                                        @foreach ($categories as $category)
+                                            <option value="{{ $category->id }}" @selected(old('draft_category_id', $draft->draft_category_id) == $category->id)>
 
-                                </select>
+                                                {{ $category->translations->first()?->name }}
 
-                                @error('draft_category_id')
-                                <div class="invalid-feedback d-block">
-                                    {{ $message }}
-                                </div>
-                                @enderror
-
-                            </div>
-
-                        </div>
-
-                        {{-- SUBJECT --}}
-
-                        <div class="col-md-6">
-
-                            <div class="mb-4">
-
-                                <label class="form-label">
-                                    Subject
-                                    <span class="text-danger">*</span>
-                                </label>
-
-                                <input
-                                    type="text"
-                                    name="subject"
-                                    class="form-control @error('subject') is-invalid @enderror"
-                                    value="{{ old('subject', $draft->subject) }}">
-
-                                @error('subject')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
-                                @enderror
-
-                            </div>
-
-                        </div>
-
-                        {{-- CONTENT --}}
-
-                        <div class="col-md-12">
-
-                            <div class="mb-4">
-
-                                <label class="form-label">
-                                    Email Template HTML
-                                    <span class="text-danger">*</span>
-                                </label>
-
-                                <textarea
-                                    id="content"
-                                    name="content">{{ old('content', $draft->content) }}</textarea>
-
-                                @error('content')
-                                <div class="invalid-feedback d-block">
-                                    {{ $message }}
-                                </div>
-                                @enderror
-
-                            </div>
-
-                        </div>
-
-                        {{-- PLACEHOLDERS --}}
-
-                        <div class="col-md-12">
-
-                            <div class="card border border-primary-subtle bg-light">
-
-                                <div class="card-header bg-primary-subtle">
-
-                                    <h6 class="mb-0">
-
-                                        <i class="ti ti-variable me-1"></i>
-
-                                        Available Placeholders
-
-                                    </h6>
-
-                                </div>
-
-                                <div class="card-body">
-
-                                    <p class="text-muted mb-3">
-                                        Click any placeholder to insert into editor.
-                                    </p>
-
-                                    <div class="d-flex flex-wrap gap-2">
-
-                                        @foreach($placeholders as $placeholder)
-
-                                            <button
-                                                type="button"
-                                                class="btn btn-sm btn-outline-primary placeholder-copy"
-                                                data-value="{{ $placeholder }}">
-
-                                                {{ $placeholder }}
-
-                                            </button>
-
+                                            </option>
                                         @endforeach
+
+                                    </select>
+
+                                    @error('draft_category_id')
+                                        <div class="invalid-feedback d-block">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+
+                                </div>
+
+                            </div>
+
+                            {{-- SUBJECT --}}
+
+                            <div class="col-md-6">
+
+                                <div class="mb-4">
+
+                                    <label class="form-label">
+                                        Subject
+                                        <span class="text-danger">*</span>
+                                    </label>
+
+                                    <input type="text" name="subject"
+                                        class="form-control @error('subject') is-invalid @enderror"
+                                        value="{{ old('subject', $draft->subject) }}">
+
+                                    @error('subject')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+
+                                </div>
+
+                            </div>
+
+                            {{-- CONTENT --}}
+                            <div class="row">
+                                <div class="col-md-8">
+
+                                    <div class="mb-4">
+
+                                        <label class="form-label">
+                                            Email Template HTML
+                                            <span class="text-danger">*</span>
+                                        </label>
+
+                                        <textarea id="content" name="content">{{ old('content', $draft->content) }}</textarea>
+
+                                        @error('content')
+                                            <div class="invalid-feedback d-block">
+                                                {{ $message }}
+                                            </div>
+                                        @enderror
 
                                     </div>
 
                                 </div>
 
+                                {{-- PLACEHOLDERS --}}
+
+                                <div class="col-md-4">
+
+                                    <div class="card border border-primary-subtle bg-light">
+
+                                        <div class="card-header bg-primary-subtle">
+
+                                            <h6 class="mb-0">
+
+                                                <i class="ti ti-variable me-1"></i>
+
+                                                Available Placeholders
+
+                                            </h6>
+
+                                        </div>
+
+                                        <div class="card-body">
+
+                                            <p class="text-muted mb-3">
+                                                Click any placeholder to insert into editor.
+                                            </p>
+
+                                            <div class="d-flex flex-wrap gap-2">
+
+                                                @foreach ($placeholders as $placeholder)
+                                                    <button type="button"
+                                                        class="btn btn-sm btn-outline-primary placeholder-copy"
+                                                        data-value="{{ $placeholder }}">
+
+                                                        {{ $placeholder }}
+
+                                                    </button>
+                                                @endforeach
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
                             </div>
+                        </div>
+
+                    </div>
+
+                    <div class="card-footer bg-white">
+
+                        <div class="d-flex justify-content-end gap-2">
+
+                            <a href="{{ route('draft.index') }}" class="btn btn-light">
+
+                                Cancel
+
+                            </a>
+
+                            <button type="button" onclick="previewEmail()" class="btn btn-info">
+
+                                <i class="ti ti-eye me-1"></i>
+
+                                Preview Email
+
+                            </button>
+
+                            <button type="submit" class="btn btn-primary">
+
+                                <i class="ti ti-device-floppy me-1"></i>
+
+                                Update
+
+                            </button>
 
                         </div>
 
                     </div>
 
-                </div>
+                </form>
 
-                <div class="card-footer bg-white">
-
-                    <div class="d-flex justify-content-end gap-2">
-
-                        <a href="{{ route('draft.index') }}"
-                           class="btn btn-light">
-
-                            Cancel
-
-                        </a>
-
-                        <button
-                            type="button"
-                            onclick="previewEmail()"
-                            class="btn btn-info">
-
-                            <i class="ti ti-eye me-1"></i>
-
-                            Preview Email
-
-                        </button>
-
-                        <button
-                            type="submit"
-                            class="btn btn-primary">
-
-                            <i class="ti ti-device-floppy me-1"></i>
-
-                            Update
-
-                        </button>
-
-                    </div>
-
-                </div>
-
-            </form>
+            </div>
 
         </div>
 
     </div>
-
-</div>
 @endsection
 @push('scripts')
     <script>

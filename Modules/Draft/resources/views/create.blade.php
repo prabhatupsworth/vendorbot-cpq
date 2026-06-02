@@ -125,7 +125,7 @@
 
                                     <input type="text" name="subject"
                                         class="form-control @error('subject') is-invalid @enderror"
-                                        placeholder="Enter draft subject" value="{{ old('subject') }}">
+                                        placeholder="Enter draft subject" value="{{ old('subject') }}" required>
 
                                     @error('subject')
                                         <div class="invalid-feedback">
@@ -141,109 +141,110 @@
 
                             {{-- CONTENT --}}
 
-                            <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-8">
 
-                                <div class="mb-4">
+                                    <div class="mb-4">
 
-                                    <label class="form-label">
+                                        <label class="form-label">
 
-                                        Draft Content
+                                            Draft Content
 
-                                        <span class="text-danger">*</span>
+                                            <span class="text-danger">*</span>
 
-                                    </label>
+                                        </label>
 
-                                    <textarea id="content" name="content" rows="12" class="form-control @error('content') is-invalid @enderror"
-                                        placeholder="Write draft content here...">{{ old('content') }}</textarea>
-
-
-
-                                    @error('content')
-                                        <div class="invalid-feedback d-block">
-
-                                            {{ $message }}
-
-                                        </div>
-                                    @enderror
-
-                                </div>
-
-                            </div>
+                                        <textarea id="content" name="content" rows="12" class="form-control @error('content') is-invalid @enderror"
+                                            placeholder="Write draft content here..." required>{{ old('content') }}</textarea>
 
 
-                            <div class="col-md-12">
 
-                                <div class="card border border-primary-subtle bg-light">
+                                        @error('content')
+                                            <div class="invalid-feedback d-block">
 
-                                    <div class="card-header bg-primary-subtle">
+                                                {{ $message }}
 
-                                        <h6 class="mb-0">
-
-                                            <i class="ti ti-variable me-1"></i>
-
-                                            Available Placeholders
-
-                                        </h6>
-
-                                    </div>
-
-                                    <div class="card-body">
-
-                                        <p class="text-muted mb-3">
-                                            Click any placeholder to insert it into the editor.
-                                        </p>
-
-                                        <div class="d-flex flex-wrap gap-2">
-
-                                            @php
-                                                $placeholders = [
-                                                    '#Deal_Id#',
-                                                    '#Deal_City#',
-                                                    '#Deal_Pax#',
-                                                    '#Deal_Date#',
-                                                    '#Deal_Restaurant_StartTime#',
-                                                    '#Deal_Language#',
-                                                    '#Deal_Product_Name#',
-                                                    '#Deal_Product_Description#',
-                                                    '#Deal_Product2_Name#',
-                                                    '#Deal_Product2_Description#',
-                                                    '#Deal_Product_NettoCosts#',
-                                                    '#Deal_Product_GruttoCosts#',
-                                                    '#Deal_Data_Changes#',
-                                                    '#Supplier_Name#',
-                                                    '#Supplier_Address#',
-                                                    '#Supplier_Link_ReplyPage#',
-                                                    '#Restaurant_LatestMenu#',
-                                                    '#Supplier_Link_Blacklist#',
-                                                    '#Supplier_Link_ChangeData#',
-                                                    '#Supplier_Winner_Name#',
-                                                    '#Customer_Name#',
-                                                    '#Customer_Orga#',
-                                                    '#Customer_Link_ReplyPage#',
-                                                    '#Customer_LatestMenu#',
-                                                    '#Customer_Restaurant_List#',
-                                                    '#Decline_Link#',
-                                                ];
-                                            @endphp
-
-                                            @foreach ($placeholders as $placeholder)
-                                                <button type="button"
-                                                    class="btn btn-sm btn-outline-primary placeholder-copy"
-                                                    data-value="{{ $placeholder }}">
-
-                                                    {{ $placeholder }}
-
-                                                </button>
-                                            @endforeach
-
-                                        </div>
+                                            </div>
+                                        @enderror
 
                                     </div>
 
                                 </div>
 
-                            </div>
 
+                                <div class="col-md-4">
+
+                                    <div class="card border border-primary-subtle bg-light">
+
+                                        <div class="card-header bg-primary-subtle">
+
+                                            <h6 class="mb-0">
+
+                                                <i class="ti ti-variable me-1"></i>
+
+                                                Available Placeholders
+
+                                            </h6>
+
+                                        </div>
+
+                                        <div class="card-body">
+
+                                            <p class="text-muted mb-3">
+                                                Click any placeholder to insert it into the editor.
+                                            </p>
+
+                                            <div class="d-flex flex-wrap gap-2">
+
+                                                @php
+                                                    $placeholders = [
+                                                        '#Deal_Id#',
+                                                        '#Deal_City#',
+                                                        '#Deal_Pax#',
+                                                        '#Deal_Date#',
+                                                        '#Deal_Restaurant_StartTime#',
+                                                        '#Deal_Language#',
+                                                        '#Deal_Product_Name#',
+                                                        '#Deal_Product_Description#',
+                                                        '#Deal_Product2_Name#',
+                                                        '#Deal_Product2_Description#',
+                                                        '#Deal_Product_NettoCosts#',
+                                                        '#Deal_Product_GruttoCosts#',
+                                                        '#Deal_Data_Changes#',
+                                                        '#Supplier_Name#',
+                                                        '#Supplier_Address#',
+                                                        '#Supplier_Link_ReplyPage#',
+                                                        '#Restaurant_LatestMenu#',
+                                                        '#Supplier_Link_Blacklist#',
+                                                        '#Supplier_Link_ChangeData#',
+                                                        '#Supplier_Winner_Name#',
+                                                        '#Customer_Name#',
+                                                        '#Customer_Orga#',
+                                                        '#Customer_Link_ReplyPage#',
+                                                        '#Customer_LatestMenu#',
+                                                        '#Customer_Restaurant_List#',
+                                                        '#Decline_Link#',
+                                                    ];
+                                                @endphp
+
+                                                @foreach ($placeholders as $placeholder)
+                                                    <button type="button"
+                                                        class="btn btn-sm btn-outline-primary placeholder-copy"
+                                                        data-value="{{ $placeholder }}">
+
+                                                        {{ $placeholder }}
+
+                                                    </button>
+                                                @endforeach
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
                         </div>
 
                     </div>
@@ -509,5 +510,4 @@
             });
         }
     </script>
-
 @endpush
