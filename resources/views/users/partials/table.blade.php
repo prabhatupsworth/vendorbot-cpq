@@ -9,6 +9,10 @@
             {{ $user->name }}
         </td>
 
+        <td class="text-capitalize">
+            {{ str_replace('_', ' ', $user->roles->first()?->name) }}
+        </td>
+
         <td>
             {{ $user->email }}
         </td>
@@ -41,8 +45,9 @@
                         </a>
                     @endcan
 
-                    <a href="{{ route('users.permissions', $user->id) }}" class="dropdown-item d-flex align-items-center">
-                         <i class="ti ti-shield text-success"></i>
+                    <a href="{{ route('users.permissions', $user->id) }}"
+                        class="dropdown-item d-flex align-items-center">
+                        <i class="ti ti-shield text-success"></i>
                         Permission
                     </a>
 
