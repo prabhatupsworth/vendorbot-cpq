@@ -62,7 +62,7 @@
                                         <tr>
                                             <th width="60">#</th>
                                             <th>Name</th>
-                                            <th>Roles</th>
+                                            <th>Role</th>
                                             <th>Email</th>
                                             <th>Created</th>
                                             <th>Status</th>
