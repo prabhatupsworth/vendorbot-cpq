@@ -1,6 +1,6 @@
 <div class="table-responsive">
     <table {{ $attributes->merge([
-        'class' => 'table text-nowrap table-striped table-hover',
+        'class' => 'table text-nowrap',
     ]) }}>
         {{ $slot }}
     </table>
