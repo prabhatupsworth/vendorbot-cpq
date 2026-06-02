@@ -32,54 +32,37 @@ class UserPermissionController extends Controller
         );
     }
 
-    public function togglePermission(
-        Request $request,
-        $id
-    ) {
-        $user = User::findOrFail($id);
+   public function togglePermission(Request $request, $id)
+{
+    $user = User::findOrFail($id);
 
-        if ($user->hasRole('super_admin')) {
+    $permission = Permission::where(
+        'name',
+        $request->permission
+    )->first();
 
-            return response()->json([
-                'status' => false,
-                'message' => 'Super Admin permissions cannot be modified.'
-            ]);
-        }
-
-        $permission = Permission::where(
-            'name',
-            $request->permission
-        )->first();
-
-        if (!$permission) {
-
-            return response()->json([
-                'status' => false,
-                'message' => 'Permission not found.'
-            ]);
-        }
-
-        if ($request->checked) {
-
-            if (!$user->hasDirectPermission($permission->name)) {
-
-                $user->givePermissionTo(
-                    $permission->name
-                );
-            }
-        } else {
-
-            if ($user->hasDirectPermission($permission->name)) {
-
-                $user->revokePermissionTo(
-                    $permission->name
-                );
-            }
-        }
-
+    if (!$permission) {
         return response()->json([
-            'status' => true,
-            'message' => 'Permission updated successfully.'
+            'status' => false,
+            'message' => 'Permission not found.'
         ]);
     }
+
+    if ((int) $request->checked === 1) {
+
+        $user->givePermissionTo($permission->name);
+
+    } else {
+
+        $user->revokePermissionTo($permission->name);
+    }
+
+    app(\Spatie\Permission\PermissionRegistrar::class)
+        ->forgetCachedPermissions();
+
+    return response()->json([
+        'status' => true,
+        'message' => 'Permission updated successfully.'
+    ]);
+}
 }

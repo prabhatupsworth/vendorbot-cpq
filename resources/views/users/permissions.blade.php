@@ -547,6 +547,8 @@
 
 
         <script>
+            let userId = "{{ $user->id }}";
+
             let isBulkOperation = false;
             let suppressAlert = false;
 
