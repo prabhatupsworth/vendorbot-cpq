@@ -57,11 +57,12 @@
 
                             <!-- Manage Users List -->
                             <div class="table-responsive">
-                                <table class="table text-nowrap table-striped table-hover">
+                                <table class="table text-nowrap">
                                     <thead>
                                         <tr>
                                             <th width="60">#</th>
                                             <th>Name</th>
+                                            <th>Roles</th>
                                             <th>Email</th>
                                             <th>Created</th>
                                             <th>Status</th>

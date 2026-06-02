@@ -53,7 +53,7 @@
                         <div class="card-body">
                             <!-- Roles List -->
                             <div class="table-responsive">
-                                <table class="table text-nowrap table-striped table-hover align-middle">
+                                <table class="table text-nowrap align-middle">
                                     <thead>
                                         <tr>
                                             <th width="60">#</th>
