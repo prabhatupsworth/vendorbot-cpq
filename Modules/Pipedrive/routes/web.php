@@ -100,5 +100,9 @@ Route::middleware([
                     '/{account}/sync/stages',
                     'syncStages'
                 )->name('sync.stages');
+
+                Route::delete('/{account}', 'destroy')
+                    ->name('destroy');
+
             });
     });

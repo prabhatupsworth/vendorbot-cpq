@@ -220,6 +220,24 @@ class LexwareController extends Controller
 
         $response = $lexwareService->createInvoice($payload);
 
-        dd($response);
+
+    }
+
+
+    public function destroy(int $id)
+    {
+        $account = InvoiceAccount::findOrFail($id);
+        $account->delete();
+
+        $this->activityLog([
+            'module' => 'lexware',
+            'action' => 'deleted',
+            'record_id' => $id,
+            'performed_at' => now(),
+            'status' => 'success',
+            'message' => 'Account deleted successfully.',
+        ]);
+
+        return redirect()->back()->with('success', 'Account deleted successfully.');
     }
 }

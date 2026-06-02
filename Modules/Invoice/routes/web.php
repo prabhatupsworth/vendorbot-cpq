@@ -54,12 +54,10 @@ Route::middleware('permission:lexware.view')
             });
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | CREATE INVOICE
-        |--------------------------------------------------------------------------
-        */
+        Route::middleware('permission:lexware.delete')
+            ->group(function () {
 
+                Route::delete('/{account}/delete', 'destroy')
+                    ->name('destroy');
+            });
     });
-
-

@@ -445,4 +445,33 @@ class PipedriveController extends Controller
             'data' => $pipelines
         ]);
     }
+
+    public function destroy(int $id)
+    {
+        $account = PipedriveAccount::find($id);
+
+        if (!$account) {
+
+            return back()->with(
+                'error',
+                'Account not found'
+            );
+        }
+
+        try {
+
+            $account->delete();
+
+            return back()->with(
+                'success',
+                'Pipedrive account deleted successfully!'
+            );
+        } catch (\Exception $e) {
+
+            return back()->with(
+                'error',
+                'Something went wrong. Please try again.'
+            );
+        }
+    }
 }
