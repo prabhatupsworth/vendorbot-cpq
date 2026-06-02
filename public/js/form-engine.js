@@ -155,10 +155,13 @@ $(document).on("click", ".delete-btn", function () {
                     timer: 1500,
                     showConfirmButton: false
                 });
+                const $userSelect = $('select[name="user_ids[]"]');
 
-                // 🔥 DataTable reload (dynamic safe)
-                // let table = btn.closest("table").DataTable();
-                // table.ajax.reload(null, false);
+                if ($userSelect.length && Array.isArray(res.selected_users)) {
+                    $userSelect
+                        .val(res.selected_users.map(String))
+                        .trigger('change');
+                }
             },
 
             error: function (xhr) {

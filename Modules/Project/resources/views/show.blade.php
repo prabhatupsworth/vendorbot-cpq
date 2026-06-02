@@ -473,41 +473,16 @@
 
                                 <div class="card-body">
 
-                                    @if ($project->users->count())
-                                        <div class="row g-4" id="user-card">
 
-                                            @foreach ($project->users as $user)
-                                                @php $role = $user->getRoleNames()->first(); @endphp
+                                    <div class="row g-4" id="user-card">
 
-                                                @include('project::partials.users-card', [
-                                                    'user' => $user,
-                                                    'projectId' => $project->id,
-                                                    'role' => $role,
-                                                ])
-                                            @endforeach
+                                        @include('project::partials.users-card', [
+                                            'users' => $project->users,
+                                            'projectId' => $project->id,
+                                        ])
 
-                                        </div>
-                                    @else
-                                        <!-- Empty State -->
-                                        <div class="text-center py-5">
+                                    </div>
 
-                                            <div class="mb-3">
-                                                <i class="ti ti-users fs-1 text-muted"></i>
-                                            </div>
-
-                                            <h6 class="fw-semibold">No Users Assigned</h6>
-
-                                            <p class="text-muted small mb-3">
-                                                Add users to collaborate on this project.
-                                            </p>
-
-                                            <button class="btn btn-sm btn-primary" data-bs-toggle="offcanvas"
-                                                data-bs-target="#userCanvas" data-form="#userForm">
-                                                <i class="ti ti-user-plus"></i> Add User
-                                            </button>
-
-                                        </div>
-                                    @endif
 
                                 </div>
                             </div>
@@ -636,42 +611,42 @@
 
                                 <!-- Body -->
                                 <div class="card-body p-0">
-                                        <div class="table-responsive">
+                                    <div class="table-responsive">
 
-                                            <table class="table align-middle table-hover mb-0">
+                                        <table class="table align-middle table-hover mb-0">
 
-                                                <thead class="table-light">
+                                            <thead class="table-light">
 
-                                                    <tr>
-                                                        <th>
-                                                            System Field
-                                                        </th>
+                                                <tr>
+                                                    <th>
+                                                        System Field
+                                                    </th>
 
-                                                        <th>
-                                                            Pipedrive Field
-                                                        </th>
+                                                    <th>
+                                                        Pipedrive Field
+                                                    </th>
 
-                                                        <th width="150" class="text-end pe-4">
-                                                            Actions
-                                                        </th>
+                                                    <th width="150" class="text-end pe-4">
+                                                        Actions
+                                                    </th>
 
-                                                    </tr>
+                                                </tr>
 
-                                                </thead>
+                                            </thead>
 
-                                                <tbody id="field-mappling-list">
+                                            <tbody id="field-mappling-list">
 
-                                                        @include('project::partials.field-mapping', [
-                                                            'projectId' => $project->id,
-                                                            'mappings' => $project->fieldMappings,
-                                                        ])
+                                                @include('project::partials.field-mapping', [
+                                                    'projectId' => $project->id,
+                                                    'mappings' => $project->fieldMappings,
+                                                ])
 
 
-                                                </tbody>
+                                            </tbody>
 
-                                            </table>
+                                        </table>
 
-                                        </div>
+                                    </div>
 
                                 </div>
 
@@ -711,36 +686,36 @@
                                 <div class="card-body">
 
 
-                                        <div class="table-responsive">
+                                    <div class="table-responsive">
 
-                                            <table class="table align-middle table-hover mb-0">
+                                        <table class="table align-middle table-hover mb-0">
 
-                                                <thead class="table-light">
+                                            <thead class="table-light">
 
-                                                    <tr>
-                                                        <th>Pipeline Stage</th>
-                                                        <th>Trigger</th>
-                                                        <th>Action Type</th>
-                                                        <th>Status</th>
-                                                        <th class="text-end">Actions</th>
-                                                    </tr>
+                                                <tr>
+                                                    <th>Pipeline Stage</th>
+                                                    <th>Trigger</th>
+                                                    <th>Action Type</th>
+                                                    <th>Status</th>
+                                                    <th class="text-end">Actions</th>
+                                                </tr>
 
-                                                </thead>
+                                            </thead>
 
-                                                <tbody id="satege-mapping">
+                                            <tbody id="satege-mapping">
 
-                                                    @foreach ($project->stageActions as $key => $automation)
-                                                        @include('project::partials.stage-mapping', [
-                                                            'projectId' => $project->id,
-                                                            'automation' => $automation,
-                                                        ])
-                                                    @endforeach
+                                                @foreach ($project->stageActions as $key => $automation)
+                                                    @include('project::partials.stage-mapping', [
+                                                        'projectId' => $project->id,
+                                                        'automation' => $automation,
+                                                    ])
+                                                @endforeach
 
-                                                </tbody>
+                                            </tbody>
 
-                                            </table>
+                                        </table>
 
-                                        </div>
+                                    </div>
 
 
                                 </div>
@@ -993,11 +968,13 @@
                 @php
                     $config = [
                         [
+
                             'name' => 'user_ids[]',
                             'label' => 'Select User',
                             'type' => 'select',
                             'multiple' => true,
                             'options' => $allUsers ?? [],
+                            'value' => $selectedUsers ?? [],
                             'required' => true,
                             'col' => 6,
                         ],
@@ -1307,6 +1284,20 @@
                 value="${data.type}"
             >
         `);
+            });
+        </script>
+
+        <script>
+            const projectId = {{ $project->id }};
+            $('#userCanvas').on('show.bs.offcanvas', function() {
+
+                $.get(`/projects/${projectId}/selected-users`, function(res) {
+
+                    $('#user_ids')
+                        .val(res.selected_users)
+                        .trigger('change');
+                });
+
             });
         </script>
     @endpush

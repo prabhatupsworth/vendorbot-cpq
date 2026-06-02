@@ -29,6 +29,9 @@ Route::prefix('projects')
         Route::controller(ProjectController::class)
             ->group(function () {
 
+                Route::get('/{project}/selected-users','selectedUsers')
+                ->name('selected-users');
+
                 Route::get('/', 'index')
                     ->middleware('permission:projects.view')
                     ->name('index');
