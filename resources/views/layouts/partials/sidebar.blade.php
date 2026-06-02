@@ -1,5 +1,7 @@
 <div class="sidebar" id="sidebar">
     <div class="sidebar-inner slimscroll">
+
+
         <div id="sidebar-menu" class="sidebar-menu">
             {{-- <ul>
                 <li class="clinicdropdown">
@@ -15,6 +17,7 @@
                     </a>
                 </li>
             </ul> --}}
+
             <ul>
 
                 {{-- DASHBOARD --}}
@@ -45,70 +48,77 @@
                 </li>
 
                 {{-- PROJECT MANAGEMENT --}}
+                @if (userCanModule('projects'))
+                    <li>
 
-                <li>
+                        <h6 class="submenu-hdr">
+                            Project Management
+                        </h6>
 
-                    <h6 class="submenu-hdr">
-                        Project Management
-                    </h6>
+                        <ul>
 
-                    <ul>
+                            @if (userCan('projects.view'))
 
-                        @can('projects.view')
+                                @if (moduleEnabled('Invoice') && Route::has('projects.index'))
+                                    <li>
 
-                            @if (moduleEnabled('Invoice') && Route::has('projects.index'))
-                                <li>
+                                        <a href="{{ route('projects.index') }}"
+                                            class="{{ request()->routeIs('projects.*') ? 'active' : '' }}">
 
-                                    <a href="{{ route('projects.index') }}"
-                                        class="{{ request()->routeIs('projects.*') ? 'active' : '' }}">
+                                            <i class="ti ti-briefcase"></i>
 
-                                        <i class="ti ti-briefcase"></i>
+                                            <span>Projects</span>
 
-                                        <span>Projects</span>
+                                        </a>
 
-                                    </a>
+                                    </li>
+                                @endif
 
-                                </li>
                             @endif
 
-                        @endcan
+                        </ul>
 
-                    </ul>
+                    </li>
 
-                </li>
+                @endif
 
-                <li>
+                {{-- DRAFTS --}}
+                @if (userCanModule('draft'))
+                    <li>
 
-                    <h6 class="submenu-hdr">
-                        Drafts Management
-                    </h6>
+                        <h6 class="submenu-hdr">
+                            Drafts Management
+                        </h6>
 
-                    <ul>
+                        <ul>
 
-                        {{-- @can('draft.view') --}}
+                            @if (userCan('draft.view'))
 
-                        @if (moduleEnabled('Draft') && Route::has('draft.index'))
-                            <li>
+                                @if (moduleEnabled('Draft') && Route::has('draft.index'))
+                                    <li>
 
-                                <a href="{{ route('draft.index') }}"
-                                    class="{{ request()->routeIs('draft.*') ? 'active' : '' }}">
+                                        <a href="{{ route('draft.index') }}"
+                                            class="{{ request()->routeIs('draft.*') ? 'active' : '' }}">
 
-                                    <i class="ti ti-mail"></i>
+                                            <i class="ti ti-mail"></i>
 
-                                    <span> Drafts</span>
+                                            <span> Drafts</span>
 
-                                </a>
+                                        </a>
 
-                            </li>
-                        @endif
+                                    </li>
+                                @endif
 
-                        {{-- @endcan --}}
+                            @endif
 
-                    </ul>
+                        </ul>
 
-                </li>
+                    </li>
+                @endif
                 {{-- SUPPLIERS --}}
-                @can('suppliers.view')
+
+                @if (userCanModule('suppliers'))
+
                     <li>
 
                         <h6 class="submenu-hdr">
@@ -130,19 +140,20 @@
 
                                 </a>
 
-                                <ul style="{{ request()->routeIs('suppliers.*') ? 'display:block;' : 'display:none;' }}">
+                                <ul
+                                    style="{{ request()->routeIs('suppliers.*') ? 'display:block;' : 'display:none;' }}">
+                                    @if (userCan('suppliers.view'))
+                                        <li>
 
-                                    <li>
+                                            <a href="{{ route('suppliers.index') }}"
+                                                class="{{ request()->routeIs('suppliers.index') ? 'active' : '' }}">
 
-                                        <a href="{{ route('suppliers.index') }}"
-                                            class="{{ request()->routeIs('suppliers.index') ? 'active' : '' }}">
+                                                Suppliers
 
-                                            Suppliers
+                                            </a>
 
-                                        </a>
-
-                                    </li>
-
+                                        </li>
+                                    @endif
                                     {{-- <li>
 
                                     <a href="{{ route('suppliers.create') }}"
@@ -171,165 +182,174 @@
                         </ul>
 
                     </li>
-                @endcan
 
+                @endif
                 {{-- PRODUCTS --}}
 
-                <li>
-
-                    <h6 class="submenu-hdr">
-                        Products
-                    </h6>
-
-                    <ul>
-
-                        <li class="submenu">
-
-                            <a href="javascript:void(0);"
-                                class="{{ request()->routeIs('products.*') ? 'subdrop active' : '' }}">
-
-                                <i class="ti ti-package"></i>
-
-                                <span>Product Management</span>
-
-                                <span class="menu-arrow"></span>
-
-                            </a>
-
-                            <ul style="{{ request()->routeIs('products.*') ? 'display:block;' : 'display:none;' }}">
-
-                                @can('products.view')
-                                    <li>
-
-                                        <a href="{{ route('products.index') }}"
-                                            class="{{ request()->routeIs('products.index') ? 'active' : '' }}">
-
-                                            Products
-
-                                        </a>
-
-                                    </li>
-                                @endcan
-
-                                @can('products.create')
-                                    <li>
-
-                                        <a href="{{ route('products.create') }}"
-                                            class="{{ request()->routeIs('products.create') ? 'active' : '' }}">
-
-                                            Create Product
-
-                                        </a>
-
-                                    </li>
-                                @endcan
-
-                            </ul>
-
-                        </li>
-
-                    </ul>
-
-                </li>
-
-                {{-- COUPONS --}}
-                @can('coupons.view')
+                @if (userCanModule('products'))
                     <li>
 
                         <h6 class="submenu-hdr">
-                            Coupons
+                            Products
                         </h6>
 
                         <ul>
+
                             <li class="submenu">
 
                                 <a href="javascript:void(0);"
-                                    class="{{ request()->routeIs('coupon.*') ? 'subdrop active' : '' }}">
+                                    class="{{ request()->routeIs('products.*') ? 'subdrop active' : '' }}">
 
-                                    <i class="ti ti-ticket"></i>
+                                    <i class="ti ti-package"></i>
 
-                                    <span>Coupon Management</span>
+                                    <span>Product Management</span>
 
                                     <span class="menu-arrow"></span>
 
                                 </a>
 
-                                <ul style="{{ request()->routeIs('coupon.*') ? 'display:block;' : 'display:none;' }}">
+                                <ul
+                                    style="{{ request()->routeIs('products.*') ? 'display:block;' : 'display:none;' }}">
 
-                                    <li>
+                                    @if (userCan('products.view'))
+                                        <li>
 
-                                        <a href="{{ route('coupon.index') }}"
-                                            class="{{ request()->routeIs('coupon.index') ? 'active' : '' }}">
+                                            <a href="{{ route('products.index') }}"
+                                                class="{{ request()->routeIs('products.index') ? 'active' : '' }}">
 
-                                            Coupons
+                                                Products
 
-                                        </a>
+                                            </a>
 
-                                    </li>
+                                        </li>
+                                    @endif
 
-                                    <li>
+                                    @if (userCan('products.create'))
+                                        <li>
 
-                                        <a href="{{ route('coupon.create') }}"
-                                            class="{{ request()->routeIs('coupon.create') ? 'active' : '' }}">
+                                            <a href="{{ route('products.create') }}"
+                                                class="{{ request()->routeIs('products.create') ? 'active' : '' }}">
 
-                                            Create Coupon
+                                                Create Product
 
-                                        </a>
+                                            </a>
 
-                                    </li>
+                                        </li>
+                                    @endif
 
                                 </ul>
 
                             </li>
+
                         </ul>
 
                     </li>
-                @endcan
+
+                @endif
+
+                {{-- COUPONS --}}
+                @if (userCanModule('coupons'))
+
+                    @if (userCan('coupons.view'))
+                        <li>
+
+                            <h6 class="submenu-hdr">
+                                Coupons
+                            </h6>
+
+                            <ul>
+                                <li class="submenu">
+
+                                    <a href="javascript:void(0);"
+                                        class="{{ request()->routeIs('coupon.*') ? 'subdrop active' : '' }}">
+
+                                        <i class="ti ti-ticket"></i>
+
+                                        <span>Coupon Management</span>
+
+                                        <span class="menu-arrow"></span>
+
+                                    </a>
+
+                                    <ul
+                                        style="{{ request()->routeIs('coupon.*') ? 'display:block;' : 'display:none;' }}">
+
+                                        <li>
+
+                                            <a href="{{ route('coupon.index') }}"
+                                                class="{{ request()->routeIs('coupon.index') ? 'active' : '' }}">
+
+                                                Coupons
+
+                                            </a>
+
+                                        </li>
+
+                                        <li>
+
+                                            <a href="{{ route('coupon.create') }}"
+                                                class="{{ request()->routeIs('coupon.create') ? 'active' : '' }}">
+
+                                                Create Coupon
+
+                                            </a>
+
+                                        </li>
+
+                                    </ul>
+
+                                </li>
+                            </ul>
+
+                        </li>
+                    @endif
+                @endif
 
                 {{-- USER MANAGEMENT --}}
 
-                <li>
+                @if (userCanModule('users'))
+                    <li>
 
-                    <h6 class="submenu-hdr">
-                        User Management
-                    </h6>
+                        <h6 class="submenu-hdr">
+                            User Management
+                        </h6>
 
-                    <ul>
+                        <ul>
 
-                        @can('users.view')
-                            <li>
+                            @if (userCan('users.view'))
+                                <li>
 
-                                <a href="{{ route('users.index') }}"
-                                    class="{{ request()->routeIs('users.*') ? 'active' : '' }}">
+                                    <a href="{{ route('users.index') }}"
+                                        class="{{ request()->routeIs('users.*') ? 'active' : '' }}">
 
-                                    <i class="ti ti-users"></i>
+                                        <i class="ti ti-users"></i>
 
-                                    <span>Users</span>
+                                        <span>Users</span>
 
-                                </a>
+                                    </a>
 
-                            </li>
-                        @endcan
+                                </li>
+                            @endif
 
-                        @can('roles.view')
-                            <li>
+                            @if (userCan('roles.view'))
+                                <li>
 
-                                <a href="{{ route('roles.index') }}"
-                                    class="{{ request()->routeIs('roles.*') ? 'active' : '' }}">
+                                    <a href="{{ route('roles.index') }}"
+                                        class="{{ request()->routeIs('roles.*') ? 'active' : '' }}">
 
-                                    <i class="ti ti-navigation-cog"></i>
+                                        <i class="ti ti-navigation-cog"></i>
 
-                                    <span>Roles & Permissions</span>
+                                        <span>Roles & Permissions</span>
 
-                                </a>
+                                    </a>
 
-                            </li>
-                        @endcan
+                                </li>
+                            @endif
 
-                    </ul>
+                        </ul>
 
-                </li>
-
+                    </li>
+                @endif
                 {{-- SETTINGS --}}
 
                 <li>
@@ -355,39 +375,45 @@
 
                             <ul style="{{ request()->routeIs('settings.*') ? 'display:block;' : 'display:none;' }}">
 
-                                @can('pipedrive.view')
+                                @if (userCanModule('pipedrive'))
+                                    @if (userCan('pipedrive.view'))
 
-                                    @if (moduleEnabled('Pipedrive') && Route::has('settings.pipedrive.index'))
-                                        <li>
+                                        @if (moduleEnabled('Pipedrive') && Route::has('settings.pipedrive.index'))
+                                            <li>
 
-                                            <a href="{{ route('settings.pipedrive.index') }}"
-                                                class="{{ request()->routeIs('settings.pipedrive.index') ? 'active' : '' }}">
+                                                <a href="{{ route('settings.pipedrive.index') }}"
+                                                    class="{{ request()->routeIs('settings.pipedrive.index') ? 'active' : '' }}">
 
-                                                Pipedrive
+                                                    Pipedrive
 
-                                            </a>
+                                                </a>
 
-                                        </li>
+                                            </li>
+                                        @endif
+
                                     @endif
 
-                                @endcan
+                                @endif
 
-                                @can('lexware.view')
 
-                                    @if (moduleEnabled('Invoice') && Route::has('settings.invoice.lexware.index'))
-                                        <li>
+                                @if (userCanModule('lexware'))
+                                    @if (userCan('lexware.view'))
 
-                                            <a href="{{ route('settings.invoice.lexware.index') }}"
-                                                class="{{ request()->routeIs('settings.invoice.lexware.index') ? 'active' : '' }}">
+                                        @if (moduleEnabled('Invoice') && Route::has('settings.invoice.lexware.index'))
+                                            <li>
 
-                                                Lexware
+                                                <a href="{{ route('settings.invoice.lexware.index') }}"
+                                                    class="{{ request()->routeIs('settings.invoice.lexware.index') ? 'active' : '' }}">
 
-                                            </a>
+                                                    Lexware
 
-                                        </li>
+                                                </a>
+
+                                            </li>
+                                        @endif
+
                                     @endif
-
-                                @endcan
+                                @endif
 
                             </ul>
 

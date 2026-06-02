@@ -182,7 +182,8 @@ class RoleController extends Controller
             // ✅ revoke (now works perfectly)
             $role->revokePermissionTo($permission->name);
         }
-
+        app(\Spatie\Permission\PermissionRegistrar::class)
+            ->forgetCachedPermissions();
         return response()->json(['status' => true]);
     }
 }

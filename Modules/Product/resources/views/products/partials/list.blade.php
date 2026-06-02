@@ -78,7 +78,7 @@
                   </a>
 
                   <div class="dropdown-menu dropdown-menu-end">
-
+                    @if (userCan('products.edit'))
                       <!-- Edit -->
                       <a href="javascript:void(0);" class="dropdown-item edit-form" data-bs-toggle="offcanvas"
                           data-bs-target="#productCanvas" data-url="{{ route('products.update', $product->id) }}"
@@ -90,11 +90,15 @@
                           Edit
 
                       </a>
+                    @endif
+
+                    @if (userCan('products.delete'))
                       <!-- Delete -->
                       <a class="dropdown-item delete-btn" href="#"
                           data-url="{{ route('products.destroy', $product->id) }}"><i
                               class="ti ti-trash text-danger"></i>
                           Delete</a>
+                    @endif
 
                   </div>
 

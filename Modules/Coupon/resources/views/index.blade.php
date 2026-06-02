@@ -34,7 +34,7 @@
                     </div>
 
                     <div class="col-lg-6 text-end">
-                        @can('coupons.create')
+                        @if(userCan('coupons.create'))
                         <a href="{{ route('coupon.create') }}" class="btn btn-primary">
 
                             <i class="ti ti-plus me-1"></i>
@@ -42,7 +42,7 @@
                             Create Coupon
 
                         </a>
-                        @endcan
+                        @endif
                     </div>
 
                 </div>
