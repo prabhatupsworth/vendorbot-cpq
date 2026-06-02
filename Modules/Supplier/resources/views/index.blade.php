@@ -52,7 +52,7 @@
                             @can('suppliers.create')
                             <a href="{{ route('suppliers.create') }}" class="btn btn-primary">
 
-                                <i class="ti ti-plus me-1"></i>
+                                <i class="ti ti-square-rounded-plus me-2"> </i>
 
                                 Add Supplier
 
