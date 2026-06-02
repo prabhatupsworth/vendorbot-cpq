@@ -127,8 +127,12 @@
                                 Subject
                             </x-table.th>
 
-                            <x-table.th width="140">
-                                Created
+                            <x-table.th>
+                                Created At
+                            </x-table.th>
+
+                            <x-table.th>
+                                Updated At
                             </x-table.th>
 
                             <x-table.th width="180" class="text-end">
@@ -171,13 +175,19 @@
 
                                     <x-table.td>
 
-                                        {{ $draft->created_at->format('d M Y') }}
+                                        {{ $draft->created_at->format('d M Y h:i A') }}
 
+                                    </x-table.td>
+
+                                    <x-table.td>
+
+                                        {{ $draft->updated_at->format('d M Y h:i A') }}
                                     </x-table.td>
 
                                     <x-table.action-buttons :viewUrl="route('draft.show', $draft->id)" viewPermission="draft.view" :editUrl="route('draft.edit', $draft->id)"
                                         editPermission="draft.edit" :editData="$draft" :deleteUrl="route('draft.destroy', $draft->id)"
                                         deletePermission="draft.delete" :deleteId="$draft->id" />
+                                        {{-- :emailUrl="route('draft.email', $draft->id)" emailPermission="draft.edit" --}}
 
                                 </x-table.tr>
 

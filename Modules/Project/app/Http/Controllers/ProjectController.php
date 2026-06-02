@@ -328,7 +328,9 @@ class ProjectController extends Controller
                 ->latest()
                 ->limit(5)
                 ->get();
-
+            $selectedUsers = $project->users
+                ->pluck('id')
+                ->toArray();
             return view('project::show', compact(
 
                 'project',
@@ -339,6 +341,7 @@ class ProjectController extends Controller
                 'existingTypes',
                 'pipedriveFields',
                 'systemFields',
+                'selectedUsers'
 
             ));
         } catch (\Exception $e) {
@@ -351,5 +354,14 @@ class ProjectController extends Controller
                 'error' => 'Project not found'
             ], 404);
         }
+    }
+
+    public function selectedUsers(Project $project)
+    {
+        return response()->json([
+            'selected_users' => $project->users()
+                ->pluck('users.id')
+                ->toArray()
+        ]);
     }
 }

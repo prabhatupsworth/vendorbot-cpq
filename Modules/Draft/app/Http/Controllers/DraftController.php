@@ -177,4 +177,23 @@ class DraftController extends Controller
 
         return back()->with('success', 'Draft deleted successfully.');
     }
+
+
+    /**
+     * Show the email preview for the specified draft.
+     */
+    public function email(Draft $draft)
+    {
+        $draft->load([
+            'category.translations'
+        ]);
+
+        return view(
+            'draft::email',
+            compact('draft')
+        );
+    }
+
+
+
 }

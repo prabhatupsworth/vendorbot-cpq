@@ -32,10 +32,9 @@ class ProjectUserController extends Controller
 
         foreach ($users as $user) {
             $role = $user->getRoleNames()->first();
-            $html .= view('project::partials.users-card', [
-                'user' => $user,
+            $html = view('project::partials.users-card', [
+                'users' => $project->users,
                 'projectId' => $projectId,
-                'role' => $role
             ])->render();
         }
 
@@ -50,7 +49,7 @@ class ProjectUserController extends Controller
 
         return response()->json([
             'status' => true,
-            'action' => 'append',
+            'action' => 'replace',
             'target' => '#user-card',
             'message' => 'Users added successfully',
             'html' => $html
@@ -70,6 +69,7 @@ class ProjectUserController extends Controller
                 'action' => 'added',
                 'record_id' => $project->id,
                 'performed_at' => now(),
+
                 'status' => 'success',
                 'message' => 'User removed successfully.',
             ]);
@@ -79,6 +79,9 @@ class ProjectUserController extends Controller
                 'action' => 'delete',
                 'target' => '.user-card',
                 'id' => $userId,
+                'selected_users' => $project->users()
+                    ->pluck('users.id')
+                    ->toArray(),
                 'message' => 'User removed successfully',
             ]);
         } catch (\Exception $e) {
