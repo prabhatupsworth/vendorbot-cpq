@@ -173,7 +173,7 @@
                                 <div class="col-md-6 mb-4">
 
                                     <label class="text-muted small">
-                                        Discount Amount
+                                        Discount
                                     </label>
 
                                     <h4
@@ -182,11 +182,12 @@
 
                                         @if ($coupon->type == 'amount')
 
-                                            {{ number_format($coupon->amount, 2) }}
+                                         {{ currency($coupon->amount) }}
+
 
                                         @else
 
-                                            {{ $coupon->amount }}%
+                                         {{ active_currency_symbol() }} {{ number_format($coupon->amount, 0) }}%
 
                                         @endif
 
@@ -207,7 +208,7 @@
                                         @if ($coupon->min_order_value)
 
 
-                                            {{ number_format($coupon->min_order_value, 2) }}
+                                            {{ currency($coupon->min_order_value) }}
 
                                         @else
 
