@@ -41,11 +41,10 @@
                                 <div class="col-sm-8">
                                     <div class="d-flex align-items-center flex-wrap row-gap-2 justify-content-sm-end">
                                         @can('users.create')
-                                        <a href="javascript:void(0);" class="btn btn-primary" data-bs-toggle="offcanvas"
-                                            data-bs-target="#offcanvas_add"><i
-                                                class="ti ti-square-rounded-plus me-2"></i>Add
-                                            user</a>
-
+                                            <a href="javascript:void(0);" class="btn btn-primary" data-bs-toggle="offcanvas"
+                                                data-bs-target="#offcanvas_add"><i
+                                                    class="ti ti-square-rounded-plus me-2"></i>Add
+                                                user</a>
                                         @endcan
                                     </div>
                                 </div>
@@ -143,12 +142,16 @@
                             <label class="col-form-label">Role <span class="text-danger">*</span></label>
                             <select name="role" class="select" required>
                                 <option value="">Select Role</option>
-                                 @foreach ($roles as $role)
-                                    @if ($role->name !== 'super_admin' || auth()->user()->hasRole('super_admin'))
+                                @foreach ($roles as $role)
+                                    @php
+                                        $canShowRole =
+                                            auth()->user()->hasRole('super_admin') ||
+                                            !in_array($role->name, ['super_admin', 'admin']);
+                                    @endphp
+
+                                    @if ($canShowRole)
                                         <option value="{{ $role->name }}">
-
                                             {{ ucwords(str_replace('_', ' ', $role->name)) }}
-
                                         </option>
                                     @endif
                                 @endforeach
