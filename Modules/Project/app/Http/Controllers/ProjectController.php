@@ -247,7 +247,7 @@ class ProjectController extends Controller
                 'pipedriveAccount:id,account_name',
                 'invoiceAccount:id,type',
                 'companyDetails',
-                'users:id,name',
+                'users:id,name,email',
                 'geoFilter'
             ])->findOrFail($id);
 
