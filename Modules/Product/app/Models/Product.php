@@ -2,7 +2,6 @@
 
 namespace Modules\Product\Models;
 
-
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Project\Models\Project;
@@ -11,40 +10,31 @@ use App\Traits\BelongsToProject;
 class Product extends Model
 {
     use SoftDeletes;
-
     use BelongsToProject;
 
     protected $fillable = [
         'project_id',
-        'category_id',
-        'tab_id',
-        'name',
-        'description',
-        'pdf_description',
-        'price',
-        'cost',
-        'discount_type',
-        'discount_value',
-        'pipedrive_product_id',
-        'is_default',
-        'is_pro',
-        'show_only',
-        'active',
-        'is_sync_backend',
-        'created_by',
-        'currency_code',
+        'crm_product_id',
+        'title',
+        'sub_title',
         'product_code',
+        'cost',
+        'price',
+        'currency_code',
+        'description',
+        'proposal_desc',
+        'is_best_seller',
+        'is_sync_backend',
+        'active',
     ];
 
     protected $casts = [
-        'is_default' => 'boolean',
-        'is_pro' => 'boolean',
-        'show_only' => 'boolean',
-        'active' => 'boolean',
-        'is_sync_backend' => 'boolean',
-        'price' => 'decimal:2',
         'cost' => 'decimal:2',
-        'discount_value' => 'decimal:2',
+        'price' => 'decimal:2',
+
+        'is_best_seller' => 'boolean',
+        'is_sync_backend' => 'boolean',
+        'active' => 'boolean',
     ];
 
     /*
@@ -53,51 +43,39 @@ class Product extends Model
     |--------------------------------------------------------------------------
     */
 
-    public function category()
-    {
-        return $this->belongsTo(Category::class);
-    }
-
-    public function tab()
-    {
-        return $this->belongsTo(CategoryTab::class, 'tab_id');
-    }
-
     public function project()
     {
         return $this->belongsTo(Project::class);
-    }
-
-    public function creator()
-    {
-        return $this->belongsTo(\App\Models\User::class, 'created_by');
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | Accessors
-    |--------------------------------------------------------------------------
-    */
-
-    public function getFinalPriceAttribute()
-    {
-        if (!$this->discount_type) {
-            return $this->price;
-        }
-
-        if ($this->discount_type === 'fixed') {
-            return $this->price - $this->discount_value;
-        }
-
-        return $this->price -
-            (($this->price * $this->discount_value) / 100);
     }
 
     public function scrapCategories()
     {
         return $this->belongsToMany(
             ScrapCategory::class,
-            'product_scrap_categories'
+            'product_scrap_categories',
+            'product_id',
+            'scrap_category_id'
         );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Scopes
+    |--------------------------------------------------------------------------
+    */
+
+    public function scopeActive($query)
+    {
+        return $query->where('active', 1);
+    }
+
+    public function scopeBestSeller($query)
+    {
+        return $query->where('is_best_seller', 1);
+    }
+
+    public function scopeSynced($query)
+    {
+        return $query->where('is_sync_backend', 1);
     }
 }

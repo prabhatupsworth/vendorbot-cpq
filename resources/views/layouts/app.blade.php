@@ -140,6 +140,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/css/css.min.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/htmlmixed/htmlmixed.min.js"></script>
+
+    <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+
     {{-- form handle js --}}
     <script src="{{ asset('/js/ui-renderer.js') }}"></script>
     <script src="{{ asset('/js/form-engine.js') }}"></script>
@@ -300,6 +303,14 @@
                 });
             });
 
+        });
+    </script>
+
+    <script>
+        document.querySelectorAll('.ckeditor').forEach((element) => {
+            ClassicEditor
+                .create(element)
+                .catch(error => console.error(error));
         });
     </script>
 </body>

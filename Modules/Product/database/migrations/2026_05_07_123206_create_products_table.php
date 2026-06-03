@@ -12,69 +12,45 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('products', function (Blueprint $table) {
-
             $table->id();
 
-            // Relations
-            $table->foreignId('project_id')
-                ->constrained('projects')
-                ->cascadeOnDelete();
+            // Project
+            $table->foreignId('project_id')->constrained()->cascadeOnDelete();
+
+            // CRM
+            $table->string('crm_product_id')->nullable();
 
             // Product Info
-            $table->string('name');
-
-            $table->text('description')->nullable();
-
-            $table->text('pdf_description')->nullable();
+            $table->string('title');
+            $table->string('sub_title')->nullable();
+            $table->string('product_code')->nullable();
 
             // Pricing
-            $table->decimal('price', 12, 2)->default(0);
+            $table->decimal('cost', 15, 2)->nullable();
+            $table->decimal('price', 15, 2);
+            $table->string('currency_code', 10)->nullable();
 
-            $table->decimal('cost', 12, 2)->default(0);
+            // Content
+            $table->longText('description')->nullable();
+            $table->longText('proposal_desc')->nullable();
 
-            $table->enum('discount_type', ['amount', 'percentage'])
-                ->nullable();
+            // Marketing
+            $table->boolean('is_best_seller')->default(false);
 
-            $table->decimal('discount_value', 12, 2)
-                ->default(0);
+            // Sync
+            $table->boolean('is_sync_backend')->default(0);
 
-            // External System
-            $table->string('pipedrive_product_id')
-                ->nullable()
-                ->index();
-
-            // Flags
-            $table->boolean('is_default')
-                ->default(false);
-
-            $table->boolean('is_pro')
-                ->default(false);
-
-            $table->boolean('show_only')
-                ->default(false);
-
-            $table->boolean('active')
-                ->default(true);
-
-            $table->boolean('is_sync_backend')
-                ->default(false);
-
-            // Audit
-            $table->foreignId('created_by')
-                ->nullable()
-                ->constrained('users')
-                ->nullOnDelete();
-
-            $table->timestamps();
+            // Status
+            $table->boolean('active')->default(1);
 
             $table->softDeletes();
 
-            // Indexes
-            $table->index(['project_id']);
+            $table->timestamps();
 
-            $table->index(['active', 'is_default']);
-
-            $table->index('name');
+            $table->index('project_id');
+            $table->index('product_code');
+            $table->index('active');
+            $table->index('is_sync_backend');
         });
     }
 

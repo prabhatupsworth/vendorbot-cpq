@@ -82,8 +82,7 @@
 
                                     <div class="d-flex justify-content-sm-end mt-3 mt-sm-0">
                                         @if (userCan('products.create'))
-                                            <a href="javascript:void(0);" class="btn btn-primary" data-bs-toggle="offcanvas"
-                                                data-bs-target="#productCanvas">
+                                            <a href="{{route('products.create')}}" class="btn btn-primary" >
 
                                                 <i class="ti ti-square-rounded-plus me-2"></i>
 
@@ -112,7 +111,7 @@
 
                                             <th>Product</th>
 
-                                            <th>Pipedrive Id</th>
+                                            <th>CRM Project Id</th>
 
                                             <th>Cost Price</th>
 
@@ -160,7 +159,7 @@
     </div>
 
     <!-- Add Product Offcanvas -->
-    <x-offcanvas id="productCanvas" title="Add Product" formId="productForm">
+    {{-- <x-offcanvas id="productCanvas" title="Add Product" formId="productForm">
 
         <form id="productForm" class="ajax-form" method="POST" action="{{ route('products.store') }}">
 
@@ -260,5 +259,5 @@
 
         </form>
 
-    </x-offcanvas>
+    </x-offcanvas> --}}
 @endsection
