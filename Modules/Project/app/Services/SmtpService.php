@@ -105,14 +105,25 @@ class SmtpService
 
             ]);
 
-            Mail::raw(
-                $data['message'],
-                function ($mail) use ($data) {
+            if (!empty($data['html'])) {
 
-                    $mail->to($data['to_email'])
-                        ->subject($data['subject']);
-                }
-            );
+                Mail::html(
+                    $data['html'],
+                    function ($mail) use ($data) {
+                        $mail->to($data['to_email'])
+                            ->subject($data['subject']);
+                    }
+                );
+            } else {
+
+                Mail::raw(
+                    $data['message'],
+                    function ($mail) use ($data) {
+                        $mail->to($data['to_email'])
+                            ->subject($data['subject']);
+                    }
+                );
+            }
 
             $this->smtpRepository
                 ->updateConnectionStatus(
@@ -127,7 +138,7 @@ class SmtpService
 
                 'smtp' => $smtp,
 
-                'message' => 'SMTP connected successfully'
+                'message' => 'SMTP is configured correctly and the email was sent successfully.'
 
             ];
         } catch (\Exception $e) {
@@ -153,6 +164,60 @@ class SmtpService
 
                 'message' => $e->getMessage()
 
+            ];
+        }
+    }
+
+
+    public function sendDraft(
+        int $projectId,
+        int $smtpId,
+        string $toEmail,
+        object $draft
+    ): array {
+
+        try {
+
+            $smtp = $this->smtpRepository->find(
+                $projectId,
+                $smtpId
+            );
+
+            config([
+                'mail.default' => 'smtp',
+                'mail.mailers.smtp.transport' => 'smtp',
+                'mail.mailers.smtp.host' => $smtp->host,
+                'mail.mailers.smtp.port' => $smtp->port,
+                'mail.mailers.smtp.username' => $smtp->username,
+                'mail.mailers.smtp.password' => $smtp->password,
+                'mail.mailers.smtp.encryption' => $smtp->encryption,
+                'mail.from.address' => $smtp->from_email,
+                'mail.from.name' => $smtp->from_name,
+            ]);
+
+            Mail::html(
+                $draft->content,
+                function ($mail) use ($toEmail, $draft) {
+
+                    $mail->to($toEmail)
+                        ->subject($draft->subject);
+                }
+            );
+
+            return [
+                'status' => true,
+                'message' => 'Draft sent successfully'
+            ];
+        } catch (\Exception $e) {
+
+            Log::error(
+                'Draft Send Error: '
+                    . $e->getMessage()
+            );
+
+            return [
+                'status' => false,
+                'message' => $e->getMessage()
             ];
         }
     }
