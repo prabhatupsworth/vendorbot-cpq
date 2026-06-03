@@ -215,6 +215,20 @@
             font-size: 16px;
         }
 
+        .user-avatar {
+            width: 52px;
+            height: 52px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #E41F07, #ff826e);
+            color: #fff;
+            font-size: 22px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 20px rgba(79, 70, 229, .2);
+        }
+
         /* MOBILE RESPONSIVE */
         @media (max-width: 768px) {
 
@@ -281,6 +295,10 @@
                             </div>
                             <div class="col-4 text-end">
                                 <div class="head-icons">
+                                    <a href="{{ route('users.index') }}" class="btn btn-sm btn-light"
+                                        data-bs-toggle="tooltip" data-bs-placement="top" title="Back to Users">
+                                        <i class="ti ti-arrow-left"></i>
+                                    </a>
                                     <a href="{{ route('users.permissions', $user->id) }}" data-bs-toggle="tooltip"
                                         data-bs-placement="top" data-bs-original-title="Refresh"><i
                                             class="ti ti-refresh-dot"></i></a>
@@ -294,7 +312,44 @@
                     <!-- /Page Header -->
 
                     <div class="card border-0 shadow-sm mt-4">
+                        <div class="card-header py-4">
+                            <div class="d-flex justify-content-between align-items-center">
 
+                                <div class="d-flex align-items-center">
+
+                                    <div class="user-avatar me-3">
+                                        {{ strtoupper(substr($user->name, 0, 1)) }}
+                                    </div>
+
+                                    <div>
+                                        <h4 class="mb-1 fw-bold text-dark">
+                                            {{ $user->name }}
+                                        </h4>
+
+                                        <div class="d-flex align-items-center gap-2">
+
+                                            <span class="badge bg-primary">
+                                                {{ str_replace('_', ' ', ucwords($user->roles->first()->name ?? 'No Role Assigned')) }}
+                                            </span>
+
+                                            <span class="text-muted">
+                                                Permission Management
+                                            </span>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div>
+                                    <a href="{{ route('users.index') }}" class="btn btn-light me-2">
+                                        <i class="ti ti-arrow-left"></i>
+                                        Back
+                                    </a>
+                                </div>
+
+                            </div>
+                        </div>
                         <div class="card-body">
 
                             <div class="permission-table-wrapper">
