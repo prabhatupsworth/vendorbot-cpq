@@ -264,7 +264,8 @@
 
                                     </div>
                                     <small class="text-muted d-block mt-2">
-                                        Enable this option to multiply the discount amount by the number of people and reduce it from the total amount.
+                                        Enable this option to multiply the discount amount by the number of people and
+                                        reduce it from the total amount.
                                     </small>
                                 </div>
 
@@ -346,19 +347,48 @@
     </div>
     @push('scripts')
         <script>
-            document.getElementById('generateCouponBtn').addEventListener('click', function() {
-                const code = generateCouponCode(10);
-                document.getElementById('couponCode').value = code;
-            });
+            function generateCouponCode() {
+                let name =
+                    document
+                    .getElementById(
+                        'couponName'
+                    )
+                    .value;
 
-            function generateCouponCode(length) {
-                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-                let result = '';
-                for (let i = 0; i < length; i++) {
-                    result += chars.charAt(Math.floor(Math.random() * chars.length));
+                if (!name) {
+
+                    name = 'COUPON';
                 }
-                return result;
+
+                name = name
+                    .toUpperCase()
+                    .replace(/[^A-Z0-9]/g, '-')
+                    .replace(/-+/g, '-');
+
+                let random =
+                    Math.random()
+                    .toString(36)
+                    .substring(2, 6)
+                    .toUpperCase();
+
+                let code =
+                    `${name}-${random}`;
+
+                document
+                    .getElementById(
+                        'couponCode'
+                    )
+                    .value = code;
             }
+
+            document
+                .getElementById(
+                    'generateCouponBtn'
+                )
+                .addEventListener(
+                    'click',
+                    generateCouponCode
+                );
         </script>
     @endpush
 @endsection
