@@ -17,42 +17,38 @@ class ProjectUserController extends Controller
     public function add_user(Request $request, int $projectId)
     {
         $validated = $request->validate([
-            'user_ids' => 'required|array',
-            'user_ids.*' => 'exists:users,id'
+            'user_ids'   => 'required|array',
+            'user_ids.*' => 'exists:users,id',
         ]);
 
         $project = Project::findOrFail($projectId);
 
-        // 🔥 Just attach (no role)
-        $project->users()->syncWithoutDetaching($validated['user_ids']);
+        // Sync users (add new + remove unchecked)
+        $project->users()->sync($validated['user_ids']);
 
-        $users = User::whereIn('id', $validated['user_ids'])->get();
+        // Reload relationship
+        $project->load('users');
 
-        $html = '';
-
-        foreach ($users as $user) {
-            $role = $user->getRoleNames()->first();
-            $html = view('project::partials.users-card', [
-                'users' => $project->users,
-                'projectId' => $projectId,
-            ])->render();
-        }
+        $html = view('project::partials.users-card', [
+            'users'     => $project->users,
+            'projectId' => $projectId,
+        ])->render();
 
         $this->activityLog([
-            'module' => 'projects',
-            'action' => 'added',
-            'record_id' => $project->id,
+            'module'       => 'projects',
+            'action'       => 'updated',
+            'record_id'    => $project->id,
             'performed_at' => now(),
-            'status' => 'success',
-            'message' => 'Users added successfully.',
+            'status'       => 'success',
+            'message'      => 'Project users updated successfully.',
         ]);
 
         return response()->json([
-            'status' => true,
-            'action' => 'replace',
-            'target' => '#user-card',
-            'message' => 'Users added successfully',
-            'html' => $html
+            'status'  => true,
+            'action'  => 'replace',
+            'target'  => '#user-card',
+            'message' => 'Project users updated successfully.',
+            'html'    => $html,
         ]);
     }
 
