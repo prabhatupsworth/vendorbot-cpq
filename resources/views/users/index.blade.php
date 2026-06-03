@@ -40,383 +40,383 @@
                                 </div>
                                 <div class="col-sm-8">
                                     <div class="d-flex align-items-center flex-wrap row-gap-2 justify-content-sm-end">
-                                        @can('users.create')
+                                        @if (userCan('users.create'))
                                             <a href="javascript:void(0);" class="btn btn-primary" data-bs-toggle="offcanvas"
                                                 data-bs-target="#offcanvas_add"><i
                                                     class="ti ti-square-rounded-plus me-2"></i>Add
                                                 user</a>
                                         @endcan
-                                    </div>
                                 </div>
                             </div>
-                            <!-- /Search -->
                         </div>
+                        <!-- /Search -->
+                    </div>
 
-                        <div class="card-body">
+                    <div class="card-body">
 
-                            <!-- Manage Users List -->
-                            <div class="table-responsive">
-                                <table class="table text-nowrap">
-                                    <thead>
-                                        <tr>
-                                            <th width="60">#</th>
-                                            <th>Name</th>
-                                            <th>Role</th>
-                                            <th>Email</th>
-                                            <th>Created</th>
-                                            <th>Status</th>
-                                            <th class="text-end">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="user-table-body">
-                                        @include('users.partials.table')
-                                    </tbody>
-                                </table>
+                        <!-- Manage Users List -->
+                        <div class="table-responsive">
+                            <table class="table text-nowrap">
+                                <thead>
+                                    <tr>
+                                        <th width="60">#</th>
+                                        <th>Name</th>
+                                        <th>Role</th>
+                                        <th>Email</th>
+                                        <th>Created</th>
+                                        <th>Status</th>
+                                        <th class="text-end">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="user-table-body">
+                                    @include('users.partials.table')
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <div class="datatable-length"></div>
                             </div>
-                            <div class="row align-items-center">
-                                <div class="col-md-6">
-                                    <div class="datatable-length"></div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="datatable-paginate"></div>
-                                </div>
+                            <div class="col-md-6">
+                                <div class="datatable-paginate"></div>
                             </div>
-                            <!-- /Manage Users List -->
+                        </div>
+                        <!-- /Manage Users List -->
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- Add User -->
+<div class="offcanvas offcanvas-end offcanvas-large" tabindex="-1" id="offcanvas_add">
+    <div class="offcanvas-header border-bottom">
+        <h5 class="fw-semibold">Add New User</h5>
+        <button type="button"
+            class="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
+            data-bs-dismiss="offcanvas" aria-label="Close">
+            <i class="ti ti-x"></i>
+        </button>
+    </div>
+    <div class="offcanvas-body">
+        <form action="{{ route('users.store') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+
+            <div class="row">
+                <div class="col-md-12">
+                    <x-image-upload name="profile_image" />
+                </div>
+                <!-- NAME -->
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="col-form-label">Name <span class="text-danger">*</span></label>
+                        <input type="text" name="name" class="form-control" required>
+                    </div>
+                </div>
+
+                <!-- EMAIL -->
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="col-form-label">Email <span class="text-danger">*</span></label>
+                        <input type="email" name="email" class="form-control" required>
+                    </div>
+                </div>
+
+                <!-- PASSWORD -->
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="col-form-label">Password <span class="text-danger">*</span></label>
+                        <div class="icon-form-end">
+                            <span class="form-icon"><i class="ti ti-eye-off"></i></span>
+                            <input name="password" type="password" class="form-control" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ROLE (🔥 Dynamic) -->
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="col-form-label">Role <span class="text-danger">*</span></label>
+                        <select name="role" class="select" required>
+                            <option value="">Select Role</option>
+                            @foreach ($roles as $role)
+                                @php
+                                    $canShowRole =
+                                        auth()->user()->hasRole('super_admin') ||
+                                        !in_array($role->name, ['super_admin', 'admin']);
+                                @endphp
+
+                                @if ($canShowRole)
+                                    <option value="{{ $role->name }}">
+                                        {{ ucwords(str_replace('_', ' ', $role->name)) }}
+                                    </option>
+                                @endif
+                            @endforeach
+
+                        </select>
+
+
+                    </div>
+                </div>
+
+                <!-- STATUS -->
+                <div class="col-md-6">
+                    <div class="radio-wrap">
+                        <label class="col-form-label">Status</label>
+                        <div class="d-flex align-items-center">
+
+                            <div class="me-2">
+                                <input type="radio" class="status-radio" id="active1" name="status"
+                                    value="1" checked>
+                                <label for="active1">Active</label>
+                            </div>
+
+                            <div>
+                                <input type="radio" class="status-radio" id="inactive1" name="status"
+                                    value="0">
+                                <label for="inactive1">Inactive</label>
+                            </div>
 
                         </div>
                     </div>
 
                 </div>
+
             </div>
 
-        </div>
+            <div class="d-flex justify-content-end mt-3">
+                <button type="submit" class="btn btn-primary">Create User</button>
+            </div>
+        </form>
     </div>
-    <!-- Add User -->
-    <div class="offcanvas offcanvas-end offcanvas-large" tabindex="-1" id="offcanvas_add">
-        <div class="offcanvas-header border-bottom">
-            <h5 class="fw-semibold">Add New User</h5>
-            <button type="button"
-                class="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
-                data-bs-dismiss="offcanvas" aria-label="Close">
-                <i class="ti ti-x"></i>
-            </button>
-        </div>
-        <div class="offcanvas-body">
-            <form action="{{ route('users.store') }}" method="POST" enctype="multipart/form-data">
-                @csrf
 
-                <div class="row">
-                    <div class="col-md-12">
-                        <x-image-upload name="profile_image" />
-                    </div>
-                    <!-- NAME -->
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label class="col-form-label">Name <span class="text-danger">*</span></label>
-                            <input type="text" name="name" class="form-control" required>
-                        </div>
-                    </div>
+</div>
+<!-- /Add User -->
 
-                    <!-- EMAIL -->
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label class="col-form-label">Email <span class="text-danger">*</span></label>
-                            <input type="email" name="email" class="form-control" required>
-                        </div>
+<!-- Edit User -->
+<div class="offcanvas offcanvas-end offcanvas-large" tabindex="-1" id="offcanvas_edit">
+    <div class="offcanvas-header border-bottom">
+        <h5 class="fw-semibold">Edit User</h5>
+        <button type="button"
+            class="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
+            data-bs-dismiss="offcanvas" aria-label="Close">
+            <i class="ti ti-x"></i>
+        </button>
+    </div>
+    <div class="offcanvas-body">
+        <form id="editUserForm" method="POST" enctype="multipart/form-data">
+            @csrf
+            @method('PUT')
+            <div class="row">
+                <div class="col-md-12">
+                    <x-image-upload name="profile_image" id="edit_profile_image" />
+                </div>
+                <!-- NAME -->
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="col-form-label">Name</label>
+                        <input type="text" name="name" id="edit_name" class="form-control">
                     </div>
+                </div>
 
-                    <!-- PASSWORD -->
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label class="col-form-label">Password <span class="text-danger">*</span></label>
-                            <div class="icon-form-end">
-                                <span class="form-icon"><i class="ti ti-eye-off"></i></span>
-                                <input name="password" type="password" class="form-control" required>
+                <!-- EMAIL -->
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="col-form-label">Email</label>
+                        <input type="email" name="email" id="edit_email" class="form-control">
+                    </div>
+                </div>
+                <!-- ROLE -->
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="col-form-label">Role</label>
+                        <select name="role" id="edit_role" class="select">
+
+                            @foreach ($roles as $role)
+                                @php
+                                    $canShowRole =
+                                        auth()->user()->hasRole('super_admin') ||
+                                        !in_array($role->name, ['super_admin', 'admin']);
+                                @endphp
+
+                                @if ($canShowRole)
+                                    <option value="{{ $role->name }}">
+                                        {{ ucwords(str_replace('_', ' ', $role->name)) }}
+                                    </option>
+                                @endif
+                            @endforeach
+
+                        </select>
+                    </div>
+                </div>
+
+                <!-- STATUS -->
+                <div class="col-md-6">
+
+                    <div class="radio-wrap">
+                        <label class="col-form-label">Status</label>
+                        <div class="d-flex align-items-center">
+                            <div class="me-2">
+                                <input type="radio" class="status-radio" id="edit_active" name="status"
+                                    value="1">
+                                <label for="edit_active">Active</label>
+                            </div>
+                            <div>
+                                <input type="radio" class="status-radio" id="edit_inactive" name="status"
+                                    value="0">
+                                <label for="edit_inactive">Inactive</label>
                             </div>
                         </div>
                     </div>
-
-                    <!-- ROLE (🔥 Dynamic) -->
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label class="col-form-label">Role <span class="text-danger">*</span></label>
-                            <select name="role" class="select" required>
-                                <option value="">Select Role</option>
-                                @foreach ($roles as $role)
-                                    @php
-                                        $canShowRole =
-                                            auth()->user()->hasRole('super_admin') ||
-                                            !in_array($role->name, ['super_admin', 'admin']);
-                                    @endphp
-
-                                    @if ($canShowRole)
-                                        <option value="{{ $role->name }}">
-                                            {{ ucwords(str_replace('_', ' ', $role->name)) }}
-                                        </option>
-                                    @endif
-                                @endforeach
-
-                            </select>
-
-
-                        </div>
-                    </div>
-
-                    <!-- STATUS -->
-                    <div class="col-md-6">
-                        <div class="radio-wrap">
-                            <label class="col-form-label">Status</label>
-                            <div class="d-flex align-items-center">
-
-                                <div class="me-2">
-                                    <input type="radio" class="status-radio" id="active1" name="status"
-                                        value="1" checked>
-                                    <label for="active1">Active</label>
-                                </div>
-
-                                <div>
-                                    <input type="radio" class="status-radio" id="inactive1" name="status"
-                                        value="0">
-                                    <label for="inactive1">Inactive</label>
-                                </div>
-
-                            </div>
-                        </div>
-
-                    </div>
-
                 </div>
 
-                <div class="d-flex justify-content-end mt-3">
-                    <button type="submit" class="btn btn-primary">Create User</button>
-                </div>
-            </form>
-        </div>
+            </div>
 
+            <div class="text-end mt-3">
+                <button type="submit" class="btn btn-primary">Update</button>
+            </div>
+        </form>
     </div>
-    <!-- /Add User -->
 
-    <!-- Edit User -->
-    <div class="offcanvas offcanvas-end offcanvas-large" tabindex="-1" id="offcanvas_edit">
-        <div class="offcanvas-header border-bottom">
-            <h5 class="fw-semibold">Edit User</h5>
-            <button type="button"
-                class="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
-                data-bs-dismiss="offcanvas" aria-label="Close">
-                <i class="ti ti-x"></i>
-            </button>
-        </div>
-        <div class="offcanvas-body">
-            <form id="editUserForm" method="POST" enctype="multipart/form-data">
-                @csrf
-                @method('PUT')
-                <div class="row">
-                    <div class="col-md-12">
-                        <x-image-upload name="profile_image" id="edit_profile_image" />
-                    </div>
-                    <!-- NAME -->
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label class="col-form-label">Name</label>
-                            <input type="text" name="name" id="edit_name" class="form-control">
-                        </div>
+</div>
+<!-- /Edit User -->
+
+<!-- Delete User -->
+<div class="modal fade" id="delete_contact" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="text-center">
+
+                    <div class="avatar avatar-xl bg-danger-light rounded-circle mb-3">
+                        <i class="ti ti-trash-x fs-36 text-danger"></i>
                     </div>
 
-                    <!-- EMAIL -->
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label class="col-form-label">Email</label>
-                            <input type="email" name="email" id="edit_email" class="form-control">
-                        </div>
-                    </div>
-                    <!-- ROLE -->
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label class="col-form-label">Role</label>
-                            <select name="role" id="edit_role" class="select">
+                    <h4 class="mb-2">Remove user?</h4>
+                    <p class="mb-0">Are you sure you want to delete this user?</p>
 
-                                @foreach ($roles as $role)
-                                    @php
-                                        $canShowRole =
-                                            auth()->user()->hasRole('super_admin') ||
-                                            !in_array($role->name, ['super_admin', 'admin']);
-                                    @endphp
+                    <div class="d-flex align-items-center justify-content-center mt-4">
 
-                                    @if ($canShowRole)
-                                        <option value="{{ $role->name }}">
-                                            {{ ucwords(str_replace('_', ' ', $role->name)) }}
-                                        </option>
-                                    @endif
-                                @endforeach
+                        <button class="btn btn-light me-2" data-bs-dismiss="modal">
+                            Cancel
+                        </button>
 
-                            </select>
-                        </div>
-                    </div>
+                        <!-- ✅ FORM -->
+                        <form id="deleteUserForm" method="POST">
+                            @csrf
+                            @method('DELETE')
 
-                    <!-- STATUS -->
-                    <div class="col-md-6">
-
-                        <div class="radio-wrap">
-                            <label class="col-form-label">Status</label>
-                            <div class="d-flex align-items-center">
-                                <div class="me-2">
-                                    <input type="radio" class="status-radio" id="edit_active" name="status"
-                                        value="1">
-                                    <label for="edit_active">Active</label>
-                                </div>
-                                <div>
-                                    <input type="radio" class="status-radio" id="edit_inactive" name="status"
-                                        value="0">
-                                    <label for="edit_inactive">Inactive</label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="text-end mt-3">
-                    <button type="submit" class="btn btn-primary">Update</button>
-                </div>
-            </form>
-        </div>
-
-    </div>
-    <!-- /Edit User -->
-
-    <!-- Delete User -->
-    <div class="modal fade" id="delete_contact" role="dialog">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <div class="text-center">
-
-                        <div class="avatar avatar-xl bg-danger-light rounded-circle mb-3">
-                            <i class="ti ti-trash-x fs-36 text-danger"></i>
-                        </div>
-
-                        <h4 class="mb-2">Remove user?</h4>
-                        <p class="mb-0">Are you sure you want to delete this user?</p>
-
-                        <div class="d-flex align-items-center justify-content-center mt-4">
-
-                            <button class="btn btn-light me-2" data-bs-dismiss="modal">
-                                Cancel
+                            <button type="submit" class="btn btn-danger">
+                                Yes, Delete it
                             </button>
-
-                            <!-- ✅ FORM -->
-                            <form id="deleteUserForm" method="POST">
-                                @csrf
-                                @method('DELETE')
-
-                                <button type="submit" class="btn btn-danger">
-                                    Yes, Delete it
-                                </button>
-                            </form>
-
-                        </div>
+                        </form>
 
                     </div>
+
                 </div>
             </div>
         </div>
     </div>
-    <!-- /Delete User -->
+</div>
+<!-- /Delete User -->
 
-    @push('scripts')
-        <script>
-            $(document).on('click', '.edit-btn', function() {
+@push('scripts')
+    <script>
+        $(document).on('click', '.edit-btn', function() {
 
-                let id = $(this).data('id');
+            let id = $(this).data('id');
 
-                // set form action dynamically
-                $('#editUserForm').attr('action', '/users/' + id);
+            // set form action dynamically
+            $('#editUserForm').attr('action', '/users/' + id);
 
-                // fetch user data
-                $.get('/users/' + id + '/edit', function(data) {
-                    console.log(data);
-                    $('#edit_name').val(data.name);
-                    $('#edit_email').val(data.email);
-                    $('#edit_role').val(data.role);
-
-
-                    if (data.status == 1) {
-                        $('#edit_active').prop('checked', true);
-                    } else {
-                        $('#edit_inactive').prop('checked', true);
-                    }
-
-                    // 🔥 IMPORTANT (this is the missing part)
-                    setImagePreview('edit_profile_image', data.profile_image_url);
-
-                });
-            });
-        </script>
-        <script>
-            $(document).on('click', '.edit-btn', function() {
-
-                let id = $(this).data('id');
-
-                // set form action dynamically
-                $('#editUserForm').attr('action', '/users/' + id);
-
-                // fetch user data
-                $.get('/users/' + id + '/edit', function(data) {
-                    console.log(data);
-                    $('#edit_name').val(data.name);
-                    $('#edit_email').val(data.email);
-                    $('#edit_role').val(data.role);
+            // fetch user data
+            $.get('/users/' + id + '/edit', function(data) {
+                console.log(data);
+                $('#edit_name').val(data.name);
+                $('#edit_email').val(data.email);
+                $('#edit_role').val(data.role);
 
 
-                    if (data.status == 1) {
-                        $('#edit_active').prop('checked', true);
-                    } else {
-                        $('#edit_inactive').prop('checked', true);
-                    }
+                if (data.status == 1) {
+                    $('#edit_active').prop('checked', true);
+                } else {
+                    $('#edit_inactive').prop('checked', true);
+                }
 
-                    // 🔥 IMPORTANT (this is the missing part)
-                    setImagePreview('edit_profile_image', data.profile_image_url);
-
-                });
-            });
-        </script>
-        <script>
-            $(document).on('click', '.delete-btn', function() {
-
-                let userId = $(this).data('id');
-
-                console.log("Deleting user ID:", userId); // debug
-
-                // ✅ IMPORTANT
-                $('#deleteUserForm').attr('action', '/users/' + userId);
+                // 🔥 IMPORTANT (this is the missing part)
+                setImagePreview('edit_profile_image', data.profile_image_url);
 
             });
-        </script>
+        });
+    </script>
+    <script>
+        $(document).on('click', '.edit-btn', function() {
 
-        <script>
-            let searchTimer;
+            let id = $(this).data('id');
 
-            $('#userSearch').on('keyup', function() {
+            // set form action dynamically
+            $('#editUserForm').attr('action', '/users/' + id);
 
-                clearTimeout(searchTimer);
+            // fetch user data
+            $.get('/users/' + id + '/edit', function(data) {
+                console.log(data);
+                $('#edit_name').val(data.name);
+                $('#edit_email').val(data.email);
+                $('#edit_role').val(data.role);
 
-                let search = $(this).val();
 
-                searchTimer = setTimeout(() => {
+                if (data.status == 1) {
+                    $('#edit_active').prop('checked', true);
+                } else {
+                    $('#edit_inactive').prop('checked', true);
+                }
 
-                    $.ajax({
+                // 🔥 IMPORTANT (this is the missing part)
+                setImagePreview('edit_profile_image', data.profile_image_url);
 
-                        url: "{{ route('users.index') }}",
+            });
+        });
+    </script>
+    <script>
+        $(document).on('click', '.delete-btn', function() {
 
-                        type: "GET",
+            let userId = $(this).data('id');
 
-                        data: {
-                            search: search
-                        },
+            console.log("Deleting user ID:", userId); // debug
 
-                        beforeSend: function() {
+            // ✅ IMPORTANT
+            $('#deleteUserForm').attr('action', '/users/' + userId);
 
-                            $('#user-table-body').html(`
+        });
+    </script>
+
+    <script>
+        let searchTimer;
+
+        $('#userSearch').on('keyup', function() {
+
+            clearTimeout(searchTimer);
+
+            let search = $(this).val();
+
+            searchTimer = setTimeout(() => {
+
+                $.ajax({
+
+                    url: "{{ route('users.index') }}",
+
+                    type: "GET",
+
+                    data: {
+                        search: search
+                    },
+
+                    beforeSend: function() {
+
+                        $('#user-table-body').html(`
                         <tr>
                             <td colspan="6" class="text-center py-4">
                                 Loading...
@@ -424,19 +424,19 @@
                         </tr>
                     `);
 
-                        },
+                    },
 
-                        success: function(response) {
+                    success: function(response) {
 
-                            $('#user-table-body').html(response.html);
+                        $('#user-table-body').html(response.html);
 
-                        }
+                    }
 
-                    });
+                });
 
-                }, 500);
+            }, 500);
 
-            });
-        </script>
-    @endpush
+        });
+    </script>
+@endpush
 @endsection

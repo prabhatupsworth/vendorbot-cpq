@@ -7,7 +7,7 @@
 
                   <span class="fw-semibold text-capitalize">
 
-                      {{ $product->name }}
+                      {{ $product->title }}
 
                   </span>
 
@@ -23,7 +23,7 @@
 
           <td>
 
-              {{ $product->pipedrive_product_id ?? '-' }}
+              {{ $product->crm_product_id ?? '-' }}
 
           </td>
 
@@ -78,27 +78,21 @@
                   </a>
 
                   <div class="dropdown-menu dropdown-menu-end">
-                    @if (userCan('products.edit'))
-                      <!-- Edit -->
-                      <a href="javascript:void(0);" class="dropdown-item edit-form" data-bs-toggle="offcanvas"
-                          data-bs-target="#productCanvas" data-url="{{ route('products.update', $product->id) }}"
-                          data-id="{{ $product->id }}" data-method="PUT" data-data='@json($product)'
-                          data-form="#productForm">
+                      @if (userCan('products.edit'))
+                          <!-- Edit -->
+                          <a href="{{ route('products.edit', $product->id) }}" class="dropdown-item">
+                              <i class="ti ti-edit text-blue"></i>
+                              Edit
+                          </a>
+                      @endif
 
-                          <i class="ti ti-edit text-blue"></i>
-
-                          Edit
-
-                      </a>
-                    @endif
-
-                    @if (userCan('products.delete'))
-                      <!-- Delete -->
-                      <a class="dropdown-item delete-btn" href="#"
-                          data-url="{{ route('products.destroy', $product->id) }}"><i
-                              class="ti ti-trash text-danger"></i>
-                          Delete</a>
-                    @endif
+                      @if (userCan('products.delete'))
+                          <!-- Delete -->
+                          <a class="dropdown-item delete-btn" href="#"
+                              data-url="{{ route('products.destroy', $product->id) }}"><i
+                                  class="ti ti-trash text-danger"></i>
+                              Delete</a>
+                      @endif
 
                   </div>
 

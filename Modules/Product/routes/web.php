@@ -23,6 +23,26 @@ Route::middleware([
         */
 
         Route::get(
+            '/create',
+            [ProductController::class, 'create']
+        )->name('products.create');
+
+        Route::post(
+            '/store',
+            [ProductController::class, 'store']
+        )->name('products.store');
+
+        Route::get(
+            '/{product}/edit',
+            [ProductController::class, 'edit']
+        )->name('products.edit');
+
+        Route::put(
+            '/{product}',
+            [ProductController::class, 'update']
+        )->name('products.update');
+
+        Route::get(
             '/import',
             [ProductController::class, 'import']
         )->name('products.import');

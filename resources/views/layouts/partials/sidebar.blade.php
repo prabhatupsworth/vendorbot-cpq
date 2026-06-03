@@ -225,7 +225,7 @@
                                     @endif
 
                                     @if (userCan('products.create'))
-                                        <li>
+                                     <li>
 
                                             <a href="{{ route('products.create') }}"
                                                 class="{{ request()->routeIs('products.create') ? 'active' : '' }}">
@@ -235,6 +235,17 @@
                                             </a>
 
                                         </li>
+                                        <li>
+
+                                            <a href="{{ route('products.import') }}"
+                                                class="{{ request()->routeIs('products.import') ? 'active' : '' }}">
+
+                                                Import Product
+
+                                            </a>
+
+                                        </li>
+
                                     @endif
 
                                 </ul>

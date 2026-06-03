@@ -4,7 +4,6 @@ namespace Modules\Product\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Modules\Product\Models\Product;
@@ -21,8 +20,6 @@ class ProductController extends Controller
 
             $products = Product::with([
                 'project',
-                'category',
-                'tab',
             ])
                 ->latest()
                 ->paginate(20);
@@ -34,7 +31,7 @@ class ProductController extends Controller
             $curreenttProjectId = current_project_id();
 
             // getproject currency
-            $currency_code= 'EUR';
+            $currency_code = 'EUR';
             if ($curreenttProjectId) {
                 $project = Project::find($curreenttProjectId);
                 if ($project) {
@@ -79,196 +76,176 @@ class ProductController extends Controller
 
                 'error',
 
-                'Unable to load product import form.'
+                'Unable to load product create form.'
 
             );
         }
     }
+
+
+    public function edit(Product $product)
+    {
+        $scrapCategories = ScrapCategory::query()
+            ->where('active', 1)
+            ->pluck('name', 'id');
+
+        return view('product::products.edit', [
+            'product' => $product->load('scrapCategories'),
+            'scrapCategories' => $scrapCategories,
+        ]);
+    }
+
     public function store(Request $request)
     {
+        $validated = $request->validate([
+
+            'crm_product_id' => 'required|string|max:255',
+
+            'title' => 'required|string|max:255',
+
+            'sub_title' => 'nullable|string|max:255',
+
+            'product_code' => 'nullable|string|max:255',
+
+            'price' => 'required|numeric',
+
+            'cost' => 'nullable|numeric',
+
+            'description' => 'nullable|string',
+
+            'proposal_desc' => 'nullable|string',
+
+            'scrap_categories' => 'required|array|min:1',
+
+            'scrap_categories.*' => 'exists:scrap_categories,id',
+
+        ]);
+
+        DB::beginTransaction();
+
         try {
 
-            $validated = $request->validate([
+            $product = Product::create([
 
-                'name' => [
-                    'required',
-                    'string',
-                    'max:255'
-                ],
+                // 'project_id' => current_project_id(),
 
-                'description' => [
-                    'nullable',
-                    'string'
-                ],
+                'crm_product_id' => $validated['crm_product_id'],
 
-                'price' => [
-                    'required',
-                    'numeric'
-                ],
+                'title' => $validated['title'],
 
-                'cost' => [
-                    'nullable',
-                    'numeric'
-                ],
+                'sub_title' => $validated['sub_title'] ?? null,
 
+                'product_code' => $validated['product_code'] ?? null,
+
+                'cost' => $validated['cost'] ?? null,
+
+                'price' => $validated['price'],
+
+                'currency_code' => active_currency_code(),
+
+                'description' => $validated['description'] ?? null,
+
+                'proposal_desc' => $validated['proposal_desc'] ?? null,
+
+                'is_best_seller' => $request->boolean('is_best_seller'),
+
+                'active' => 1,
+
+                'is_sync_backend' => 0,
             ]);
 
-            DB::beginTransaction();
-
-                Product::create([
-
-                ...$validated,
-
-                'product_code' => $request->product_code,
-
-                'pipedrive_product_id' => $request->pipedrive_product_id,
-
-                'discount_type' => $request->discount_type,
-
-                'discount_value' => $request->discount_value ?? 0,
-
-                'is_default' => $request->boolean('is_default'),
-
-                'is_pro' => $request->boolean('is_pro'),
-
-                'show_only' => $request->boolean('show_only'),
-
-                'active' => $request->boolean('active', true),
-
-                'is_sync_backend' => $request->boolean('is_sync_backend'),
-
-                'created_by' => Auth::id(),
-
-            ]);
+            $product->scrapCategories()->sync(
+                $request->scrap_categories
+            );
 
             DB::commit();
 
-            return response()->json([
-                'status' => true,
-                'action' => 'replace',
-                'target' => '#product-list',
-                'message' => 'Product created successfully',
-                'html' => view('product::products.partials.list', [
-                    'products' => Product::with([
-                        'project',
-                        'category',
-                        'tab',
-                    ])->latest()->get(),
-                ])->render(),
-            ]);
-        } catch (Throwable $e) {
+            return redirect()
+                ->route('products.index')
+                ->with('success', 'Product created successfully.');
+        } catch (\Throwable $e) {
 
             DB::rollBack();
 
             report($e);
 
-            return response()->json([
-
-                'status' => false,
-
-                'message' => 'Failed to create product.',
-
-                'error' => config('app.debug')
-                    ? $e->getMessage()
-                    : null,
-
-            ], 500);
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('error', 'Failed to create product.');
         }
     }
 
     public function update(Request $request, Product $product)
     {
 
-    // dd($request->all());
+        $validated = $request->validate([
+
+            'crm_product_id' => 'required|string|max:255',
+
+            'title' => 'required|string|max:255',
+
+            'sub_title' => 'nullable|string|max:255',
+
+            'product_code' => 'nullable|string|max:255',
+
+            'price' => 'required|numeric',
+
+            'cost' => 'nullable|numeric',
+
+            'description' => 'nullable|string',
+
+            'proposal_desc' => 'nullable|string',
+
+            'scrap_categories' => 'required|array|min:1',
+
+            'scrap_categories.*' => 'exists:scrap_categories,id',
+        ]);
+
+        DB::beginTransaction();
+
         try {
-
-            $validated = $request->validate([
-                'name' => [
-                    'required',
-                    'string',
-                    'max:255'
-                ],
-
-                'description' => [
-                    'nullable',
-                    'string'
-                ],
-
-                'price' => [
-                    'required',
-                    'numeric'
-                ],
-
-                'cost' => [
-                    'nullable',
-                    'numeric'
-                ],
-
-                // 🔥 REQUIRED
-                'discount_type' => [
-                    'nullable',
-                    'in:fixed,percent'
-                ],
-
-                'discount_value' => [
-                    'nullable',
-                    'numeric'
-                ],
-
-            ]);
-
-            DB::beginTransaction();
 
             $product->update([
 
-                ...$validated,
-                'pipedrive_product_id' => $request->pipedrive_product_id,
-                'product_code' => $request->product_code,
-                'is_default' => $request->boolean('is_default'),
+                'crm_product_id' => $validated['crm_product_id'],
 
-                'is_pro' => $request->boolean('is_pro'),
+                'title' => $validated['title'],
 
-                'show_only' => $request->boolean('show_only'),
+                'sub_title' => $validated['sub_title'] ?? null,
 
-                'active' => $request->boolean('active', true),
+                'product_code' => $validated['product_code'] ?? null,
 
-                'is_sync_backend' => $request->boolean('is_sync_backend'),
+                'cost' => $validated['cost'] ?? null,
 
+                'price' => $validated['price'],
+
+                'description' => $validated['description'] ?? null,
+
+                'proposal_desc' => $validated['proposal_desc'] ?? null,
+
+                'is_best_seller' => $request->boolean('is_best_seller'),
             ]);
+
+            $product->scrapCategories()->sync(
+                $request->scrap_categories
+            );
 
             DB::commit();
 
-            return response()->json([
-                'status' => true,
-                'action' => 'replace',
-                'target' => '#product-list',
-                'id' => $product->id,
-                'message' => 'Product updated successfully',
-                'html' => view('product::products.partials.list', [
-                    'products' => Product::with([
-                        'project',
-                        'category',
-                        'tab',
-                    ])->latest()->get(),
-                ])->render(),
-            ]);
-        } catch (Throwable $e) {
+            return redirect()
+                ->route('products.index')
+                ->with('success', 'Product updated successfully.');
+        } catch (\Throwable $e) {
 
             DB::rollBack();
 
             report($e);
 
-            return response()->json([
-
-                'status' => false,
-
-                'message' => 'Failed to update product.',
-
-                'error' => config('app.debug')
-                    ? $e->getMessage()
-                    : null,
-
-            ], 500);
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('error', 'Failed to update product.');
         }
     }
 
@@ -306,12 +283,40 @@ class ProductController extends Controller
         }
     }
 
+
+    public function import()
+    {
+        try {
+
+            $scrapCategories = ScrapCategory::where('active', true)
+                ->orderBy('name')
+                ->pluck('name', 'id')
+                ->toArray();
+
+            return view(
+                'product::products.import',
+                compact('scrapCategories')
+            );
+        } catch (Throwable $e) {
+
+            report($e);
+
+            return back()->with(
+
+                'error',
+
+                'Unable to load product import form.'
+
+            );
+        }
+    }
+
     public function importProduct(Request $request)
     {
 
         $validated = $request->validate([
 
-            'pipedrive_product_id' => [
+            'crm_product_id' => [
                 'required'
             ],
 
@@ -352,7 +357,7 @@ class ProductController extends Controller
                 ->acceptJson()
                 ->get(
 
-                    "{$account->base_url}/api/v2/products/{$validated['pipedrive_product_id']}",
+                    "{$account->base_url}/api/v2/products/{$validated['crm_product_id']}",
 
                     [
                         'api_token' =>
@@ -413,14 +418,14 @@ class ProductController extends Controller
             $product = Product::updateOrCreate(
 
                 [
-                    'pipedrive_product_id' =>
+                    'crm_product_id' =>
                     $data['id'],
                 ],
 
                 [
-                    'project_id' => 1,
+                    'project_id' => current_project_id(),
 
-                    'name' =>
+                    'title' =>
                     $data['name'],
 
                     'description' =>
@@ -430,7 +435,7 @@ class ProductController extends Controller
 
                     'cost' => $data['prices'][0]['cost'] ?? 0,
 
-                    'currency' => $data['prices'][0]['currency'] ?? 'USD',
+                    'currency_code' => $data['prices'][0]['currency'] ?? 'USD',
 
                     'active' => $data['active_flag'] ?? true,
 
