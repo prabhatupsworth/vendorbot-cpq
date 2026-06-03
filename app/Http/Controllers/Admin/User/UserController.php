@@ -23,14 +23,14 @@ class UserController extends Controller
         // base query
         $query = User::with('roles');
 
-        // hide super admin for non-super-admin users
         if (!auth()->user()->hasRole('super_admin')) {
 
             $query->whereDoesntHave('roles', function ($q) {
-
-                $q->where('name', 'super_admin');
+                $q->whereIn('name', ['super_admin', 'admin']);
             });
         }
+
+        $users = $query->latest()->paginate(10);
 
         // search filter
         if (!empty($search)) {

@@ -236,11 +236,15 @@
                             <select name="role" id="edit_role" class="select">
 
                                 @foreach ($roles as $role)
-                                    @if ($role->name !== 'super_admin' || auth()->user()->hasRole('super_admin'))
+                                    @php
+                                        $canShowRole =
+                                            auth()->user()->hasRole('super_admin') ||
+                                            !in_array($role->name, ['super_admin', 'admin']);
+                                    @endphp
+
+                                    @if ($canShowRole)
                                         <option value="{{ $role->name }}">
-
                                             {{ ucwords(str_replace('_', ' ', $role->name)) }}
-
                                         </option>
                                     @endif
                                 @endforeach
