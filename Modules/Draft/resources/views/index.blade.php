@@ -17,9 +17,6 @@
 
                             Drafts
 
-                            <span class="badge bg-primary ms-2">
-                                {{ $drafts->total() }}
-                            </span>
 
                         </h3>
 
@@ -186,8 +183,8 @@
 
                                     <x-table.action-buttons :viewUrl="route('draft.show', $draft->id)" viewPermission="draft.view" :editUrl="route('draft.edit', $draft->id)"
                                         editPermission="draft.edit" :editData="$draft" :deleteUrl="route('draft.destroy', $draft->id)"
-                                        deletePermission="draft.delete" :deleteId="$draft->id" />
-                                        {{-- :emailUrl="route('draft.email', $draft->id)" emailPermission="draft.edit" --}}
+                                        deletePermission="draft.delete" :deleteId="$draft->id" :emailUrl="route('draft.email', $draft->id)" emailPermission="draft.edit"/>
+
 
                                 </x-table.tr>
 

@@ -4,20 +4,7 @@
     <div class="page-wrapper">
         <div class="container">
 
-            <div class="d-flex justify-content-between mb-3">
-
-                <h4>Email Preview</h4>
-
-                @if (userCan('draft.create'))
-                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#testMailModal">
-                        Send Test Email
-                    </button>
-                @endif
-
-            </div>
-
-
-            <div class="page-header mb-4">
+            <div class="page-header mb-4 py-4">
 
                 <div class="row align-items-center">
 
@@ -26,10 +13,6 @@
                         <h3 class="page-title fw-bold">
 
                             Email Preview
-
-                            <span class="badge bg-primary ms-2">
-                                {{ $drafts->total() }}
-                            </span>
 
                         </h3>
 
@@ -40,14 +23,10 @@
                     </div>
 
                     <div class="col-lg-6 text-end">
-                        @if(userCan('draft.create'))
-                        <a href="{{ route('draft.create') }}" class="btn btn-primary">
-
-                            <i class="ti ti-plus me-1"></i>
-
-                            Create Draft
-
-                        </a>
+                        @if (userCan('draft.create'))
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#testMailModal">
+                                Send Test Email
+                            </button>
                         @endif
                     </div>
 
@@ -56,7 +35,7 @@
             </div>
 
 
-            <div class="card">
+            <div class="card border-0 shadow-sm">
                 <div class="card-body">
 
                     {!! $draft->content !!}
@@ -66,5 +45,5 @@
 
         </div>
     </div>
-    @include('draft::partials.test-mail-modal')
+    @include('draft::partials.test-mail-modal',['smtp'=>$smtp])
 @endsection

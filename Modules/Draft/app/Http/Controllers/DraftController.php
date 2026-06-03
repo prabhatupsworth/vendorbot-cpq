@@ -6,9 +6,20 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Modules\Draft\Models\Draft;
 use Modules\Draft\Models\DraftCategory;
+use Modules\Project\Interfaces\SmtpRepositoryInterface;
+use Modules\Project\Models\Smtp;
+use Modules\Project\Services\SmtpService;
 
 class DraftController extends Controller
 {
+    public function __construct(
+
+        protected SmtpRepositoryInterface $smtpRepository,
+
+        protected SmtpService $smtpService
+
+    ) {}
+
     /**
      * Display a listing of the resource.
      */
@@ -166,8 +177,6 @@ class DraftController extends Controller
             ->with('success', 'Draft updated successfully.');
     }
 
-
-
     /**
      * Remove the specified resource from storage.
      */
@@ -184,16 +193,37 @@ class DraftController extends Controller
      */
     public function email(Draft $draft)
     {
+        $smtp = Smtp::where('project_id', current_project_id())->pluck('id', 'type');
+
         $draft->load([
             'category.translations'
         ]);
 
-        return view(
-            'draft::email',
-            compact('draft')
-        );
+        return view('draft::email', compact('draft', 'smtp'));
     }
 
 
+    public function sendTest(Request $request, Draft $draft)
+    {
 
+        $request->validate([
+            'smtp_id' => ['required'],
+            'email'   => ['required', 'email'],
+        ]);
+
+        $response = $this->smtpService->test(
+            current_project_id(),
+            $request->smtp_id,
+            [
+                'to_email' => $request->email,
+                'subject'  => $draft->subject,
+                'html'     => $draft->content,
+            ]
+        );
+
+        return back()->with(
+            $response['status'] ? 'success' : 'error',
+            $response['message']
+        );
+    }
 }

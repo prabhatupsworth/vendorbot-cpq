@@ -1,11 +1,8 @@
-<div class="modal fade"
-     id="testMailModal">
+<div class="modal fade" id="testMailModal">
 
     <div class="modal-dialog">
 
-        <form
-            action="{{ route('draft.send-test',$draft->id) }}"
-            method="POST">
+        <form id="testMailForm" action="{{ route('draft.send-test', $draft->id) }}" method="POST">
 
             @csrf
 
@@ -16,21 +13,26 @@
                 </div>
 
                 <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">SMTP Account</label>
 
-                    <input
-                        type="email"
-                        name="email"
-                        class="form-control"
-                        placeholder="Enter email address"
+                        <select name="smtp_id" class="form-select" required>
+                            <option value="">Select SMTP</option>
+                            @foreach ($smtp as $type => $id)
+                                <option value="{{ $id }}">
+                                    {{ ucwords(str_replace('_', ' ', $type)) }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <input type="email" name="email" class="form-control" placeholder="Enter email address"
                         required>
 
                 </div>
 
                 <div class="modal-footer">
 
-                    <button
-                        type="submit"
-                        class="btn btn-primary">
+                    <button id="sendMailBtn" type="submit" class="btn btn-primary">
                         Send
                     </button>
 
@@ -43,3 +45,25 @@
     </div>
 
 </div>
+
+@push('scripts')
+    <script>
+        $(document).on('submit', '#testMailForm', function(e) {
+
+            const form = $(this);
+
+            if (form.data('submitted')) {
+                e.preventDefault();
+                return false;
+            }
+
+            form.data('submitted', true);
+
+            $('#sendMailBtn')
+                .prop('disabled', true)
+                .html(
+                    '<span class="spinner-border spinner-border-sm me-1"></span>Sending...'
+                );
+        });
+    </script>
+@endpush
