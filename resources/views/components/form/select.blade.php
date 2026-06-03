@@ -41,7 +41,7 @@
     </label>
 
     {{-- 🔹 Select --}}
-    <select id="{{ $id }}" name="{{ $name }}" class="form-select {{ $multiple ? 'select2' : '' }}"
+    <select id="{{ $id }}" name="{{ $name }}" class="select {{ $multiple ? 'select2' : '' }}"
         {{ $multiple ? 'multiple' : '' }}  {{ $disabled ? 'disabled' : '' }}>
 
         {{-- 🔹 Placeholder --}}

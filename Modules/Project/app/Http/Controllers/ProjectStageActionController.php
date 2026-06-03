@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Modules\Project\Models\StageAction;
 use App\Traits\ActivityLogTrait;
+use Illuminate\Validation\ValidationException;
+
 class ProjectStageActionController extends Controller
 {
     use ActivityLogTrait;
@@ -16,15 +18,37 @@ class ProjectStageActionController extends Controller
      */
     public function store(Request $request, int $projectId)
     {
-        $validated = $request->validate([
-
-            'stage_id'    => 'required',
-
-            'action_type' => 'required',
-
-        ]);
 
         try {
+
+            $validated = $request->validate([
+                'stage_id'    => 'required',
+                'action_type' => 'required',
+            ]);
+
+            $exists = StageAction::where('project_id', $projectId)
+                ->where('stage_id', $validated['stage_id'])
+                ->exists();
+
+            if ($exists) {
+                throw ValidationException::withMessages([
+                    'stage_id' => [
+                        'This stage is already mapped.'
+                    ]
+                ]);
+            }
+
+            $config = $this->generateConfig(
+                $validated['action_type'],
+                $request
+            );
+
+            $stage = StageAction::create([
+                'project_id'    => $projectId,
+                'stage_id'      => $validated['stage_id'],
+                'action_type'   => $validated['action_type'],
+                'action_config' => $config,
+            ]);
 
             /*
         |--------------------------------------------------------------------------
