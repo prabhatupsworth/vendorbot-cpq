@@ -968,7 +968,7 @@
                 @php
                     $config = [
                         [
-
+                            'id' => 'user_ids',
                             'name' => 'user_ids[]',
                             'label' => 'Select User',
                             'type' => 'select',
@@ -1293,9 +1293,13 @@
 
                 $.get(`/projects/${projectId}/selected-users`, function(res) {
 
+                    $('#user_ids option').prop('selected', false);
+
                     $('#user_ids')
-                        .val(res.selected_users)
-                        .trigger('change');
+                        .val(res.selected_users.map(String))
+                        .trigger('change.select2');
+
+                    console.log($('#user_ids').val());
                 });
 
             });
