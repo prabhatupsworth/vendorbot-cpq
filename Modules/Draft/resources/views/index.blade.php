@@ -14,10 +14,7 @@
                     <div class="col-lg-6">
 
                         <h3 class="page-title fw-bold">
-
                             Drafts
-
-
                         </h3>
 
                         <p class="text-muted mb-0">
@@ -64,7 +61,7 @@
 
                             <div class="col-lg-3">
 
-                                <select name="category" class="form-select">
+                                <select name="category" class="select">
 
                                     <option value="">
                                         All Categories

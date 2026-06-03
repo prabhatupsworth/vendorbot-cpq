@@ -1,17 +1,9 @@
 @extends('layouts.app')
-{{-- <style>
-    .google-strike:before {
-    content: " ";
-    display: block;
-    position: absolute;
-    top: 50%;
-    left: 0px;
-    width: 30px;
-    height: 2px;
-    background-color: #fff;
-    transform: rotate(45deg);
-}
-</style> --}}
+<style>
+    .select2-container .select2-search--inline .select2-search__field{
+        height: 25px !important;
+    }
+</style>
 @section('content')
 
     <div class="page-wrapper">
@@ -50,13 +42,13 @@
 
                             </a>
                             @can('suppliers.create')
-                            <a href="{{ route('suppliers.create') }}" class="btn btn-primary">
+                                <a href="{{ route('suppliers.create') }}" class="btn btn-primary">
 
-                                <i class="ti ti-square-rounded-plus me-2"> </i>
+                                    <i class="ti ti-square-rounded-plus me-2"> </i>
 
-                                Add Supplier
+                                    Add Supplier
 
-                            </a>
+                                </a>
                             @endcan
                         </div>
 
@@ -204,7 +196,7 @@
                                     Supplier Status
                                 </label>
 
-                                <select name="status" class="form-select">
+                                <select name="status" class="select">
 
                                     <option value="">
                                         Select Status
