@@ -1277,13 +1277,10 @@
                 form.find('input[type="hidden"][name="type"]').remove();
 
                 // hidden input so disabled select value submits
-                form.append(`
-            <input
+                form.append(`<input
                 type="hidden"
                 name="type"
-                value="${data.type}"
-            >
-        `);
+                value="${data.type}">`);
             });
         </script>
 
@@ -1299,7 +1296,7 @@
                         .val(res.selected_users.map(String))
                         .trigger('change.select2');
 
-                    console.log($('#user_ids').val());
+                    // console.log($('#user_ids').val());
                 });
 
             });
