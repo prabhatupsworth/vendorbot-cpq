@@ -239,6 +239,8 @@ class PipedriveController extends Controller
 
         $connection = $pipedriveService->testConnection();
 
+        // dd($connection );
+
         if (!$connection['status']) {
 
             return back()->with(

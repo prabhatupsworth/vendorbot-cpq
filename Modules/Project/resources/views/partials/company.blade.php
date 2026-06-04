@@ -79,7 +79,7 @@
                Add company information to manage billing, invoices, and integrations.
            </p>
 
-           <button class="btn btn-success" data-bs-toggle="offcanvas" data-bs-target="#companyCanvas">
+           <button class="btn btn-success" data-title="Add Company" data-form="#companyForm" data-url="{{ route('projects.company.store', $project->id) }}" data-bs-toggle="offcanvas" data-bs-target="#companyCanvas">
                <i class="ti ti-plus"></i> Add Company
            </button>
 
