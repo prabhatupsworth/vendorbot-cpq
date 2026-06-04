@@ -86,7 +86,7 @@
             No SMTP configured
         </p>
 
-        <button class="btn btn-primary btn-sm create-form" data-bs-toggle="offcanvas" data-bs-target="#smtpCanvas" data-title="Add SMTP" data-form="smtpForm" data-url="{{ route('projects.smtp.store', $project->id) }}">
+        <button class="btn btn-primary btn-sm add-form" data-title="Add SMTP" data-bs-toggle="offcanvas" data-bs-target="#smtpCanvas"  data-form="smtpForm" data-url="{{ route('projects.smtp.store', $project->id) }}">
 
             <i class="ti ti-plus"></i> Add SMTP
 
