@@ -506,9 +506,11 @@
 
         <script>
             $(document).on("click", ".add-btn", function() {
-
-                $("#offcanvasTitle").text('Add Pipedrive Account');
-
+                 $("#offcanvasTitle").text('Add Pipedrive Account');
+                 document.getElementById('submitBtn').innerText = 'Create';
+                 const form = document.getElementById('pipedriveForm');
+                 form.action = `/settings/pipedrive`;
+                 form.method = "POST";
             });
             document.addEventListener('click', function(e) {
 
