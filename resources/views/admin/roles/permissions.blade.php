@@ -304,18 +304,18 @@
                                     </div>
                                 </div>
                                 <div class="col-md-7 col-sm-8">
-                                    <div class="text-sm-end">
-                                        {{-- <label class="checkboxs d-flex align-items-center justify-content-sm-end"><input
+                                    {{-- <div class="text-sm-end">
+                                        <label class="checkboxs d-flex align-items-center justify-content-sm-end"><input
                                                 type="checkbox"><span
                                                 class="checkmarks position-relative d-flex me-2"></span>Allow All
-                                            Modules</label> --}}
+                                            Modules</label>
 
                                         <input class="form-check-input" type="checkbox" value="" id="checkebox-md"
                                             checked="">
                                         <label class="form-check-label" for="checkebox-md">
                                             Allow All Modules
                                         </label>
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
                         </div>

@@ -19,6 +19,7 @@ use Modules\Project\Models\Action;
 use Modules\Project\Models\Project;
 use Modules\Project\Models\Smtp;
 use App\Traits\ActivityLogTrait;
+use Illuminate\Validation\ValidationException;
 
 
 class ProjectController extends Controller
@@ -105,7 +106,24 @@ class ProjectController extends Controller
 
         try {
             $validated = $request->validated();
+            // 1. Generate the slug manually first
+            $slug = Str::slug($validated['name']);
+            // 2. Check if this slug already exists in the database
+            $deletedProject = Project::onlyTrashed()
+                ->where('slug', $slug)
+                ->first();
 
+            if ($deletedProject) {
+                throw ValidationException::withMessages([
+                    'name' => ['This project was deleted. Please restore it or use another name.']
+                ]);
+            }
+
+            if (Project::withoutTrashed()->where('slug', $slug)->exists()) {
+                throw ValidationException::withMessages([
+                    'name' => ['A project with this name already exists.']
+                ]);
+            }
             $project = Project::create([
                 'name' => $validated['name'],
                 'slug' => Str::slug($validated['name']),
@@ -122,6 +140,11 @@ class ProjectController extends Controller
                 'invoice_account_id' => $validated['invoice_account_id'] ?? null,
                 'created_by' => Auth::id(),
             ]);
+
+            // Assign only super admin(s)
+            $superAdminIds = User::role('super_admin')->pluck('id')->toArray();
+
+            $project->users()->sync($superAdminIds);
 
             $this->activityLog([
                 'module' => 'projects',
@@ -141,10 +164,18 @@ class ProjectController extends Controller
                     'project' => $project,
                 ])->render(),
             ]);
+        } catch (ValidationException $e) {
+
+            throw $e; // Return 422 with errors object
+
         } catch (\Exception $e) {
+
             Log::error('Project Store Error: ' . $e->getMessage());
 
-            return redirect()->back()->withInput()->with('error', 'Something went wrong while creating project');
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong while creating project.',
+            ], 500);
         }
     }
 
@@ -164,6 +195,35 @@ class ProjectController extends Controller
     public function update(ProjectRequest $request, int $id)
     {
         $validated = $request->validated();
+        $slug = Str::slug($validated['name']);
+
+        // Check deleted project with same slug
+        $deletedProject = Project::onlyTrashed()
+            ->where('slug', $slug)
+            ->where('id', '!=', $id)
+            ->first();
+
+        if ($deletedProject) {
+            throw ValidationException::withMessages([
+                'name' => [
+                    'This project was deleted. Please restore it or use another name.'
+                ]
+            ]);
+        }
+
+        // Check active project with same slug
+        if (
+            Project::withoutTrashed()
+            ->where('slug', $slug)
+            ->where('id', '!=', $id)
+            ->exists()
+        ) {
+            throw ValidationException::withMessages([
+                'name' => [
+                    'A project with this name already exists.'
+                ]
+            ]);
+        }
         try {
             $project = Project::findOrFail($id);
 
@@ -365,7 +425,7 @@ class ProjectController extends Controller
             // return response()->back([
             //     'error' => 'Project not found'
             // ], 404);
-            return redirect()->route('projects.index')->with('error','Project not assigend');
+            return redirect()->route('projects.index')->with('error', 'Project not assigend');
         }
     }
 

@@ -35,37 +35,37 @@
 
                     <i class="fa fa-ellipsis-v"></i>
                 </a>
-                @can('roles.edit')
+                @if (userCan('roles.edit'))
                     <div class="dropdown-menu dropdown-menu-end">
-                        @can('roles.edit')
-                        <a href="javascript:void(0);" class="dropdown-item edit-role" data-id="{{ $role->id }}"
-                            data-name="{{ $role->name }}">
+                        @if(userCan('roles.edit'))
+                            <a href="javascript:void(0);" class="dropdown-item edit-role" data-id="{{ $role->id }}"
+                                data-name="{{ $role->name }}">
 
-                            <i class="ti ti-edit text-blue"></i>
-                            Edit
-                        </a>
-                        @endcan
-                        @can('roles.edit')
-                        <a class="dropdown-item" href="{{ url('/roles/' . $role->id . '/permissions') }}">
+                                <i class="ti ti-edit text-blue"></i>
+                                Edit
+                            </a>
+                        @endif
+                        @if(userCan('roles.edit'))
+                            <a class="dropdown-item" href="{{ url('/roles/' . $role->id . '/permissions') }}">
 
-                            <i class="ti ti-shield text-success"></i>
-                            Permission
-                        </a>
-                        @endcan
+                                <i class="ti ti-shield text-success"></i>
+                                Permission
+                            </a>
+                        @endif
 
                         <!-- DELETE BUTTON -->
 
-                        @can('roles.delete')
-                        <a href="javascript:void(0);" class="dropdown-item delete-role" data-id="{{ $role->id }}"
-                            data-name="{{ $role->name }}">
+                        @if(userCan('roles.delete'))
+                            <a href="javascript:void(0);" class="dropdown-item delete-role" data-id="{{ $role->id }}"
+                                data-name="{{ $role->name }}">
 
-                            <i class="ti ti-trash text-danger"></i>
-                            Delete
-                        </a>
-                        @endcan
+                                <i class="ti ti-trash text-danger"></i>
+                                Delete
+                            </a>
+                        @endif
 
                     </div>
-                @endcan
+                @endif
             </div>
 
         </td>
