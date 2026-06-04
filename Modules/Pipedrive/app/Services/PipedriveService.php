@@ -33,7 +33,7 @@ class PipedriveService
         string $endpoint,
         array $data = []
     ): array {
-
+        // dd($endpoint);
         $response = Http::timeout(60)
             ->acceptJson()
             ->{$method}(
@@ -115,7 +115,7 @@ class PipedriveService
 
         foreach ($endpoints as $endpoint => $entityType) {
 
-            $response = $this->request('get','/v2/'.$endpoint);
+            $response = $this->request('get', 'v2/' . $endpoint);
 
             if (!$response['status']) {
                 continue;
@@ -158,34 +158,128 @@ class PipedriveService
     |--------------------------------------------------------------------------
     */
 
-    public function syncStages(PipedriveAccount $account): array
-    {
+    // public function syncStages(PipedriveAccount $account): array
+    // {
+    //     $response = Http::timeout(60)
+    //         ->acceptJson()
+    //         ->get(
+    //             "{$this->baseUrl}/api/v1/stages",
+    //             [
+    //                 'api_token' => $this->apiKey,
+    //             ]
+    //         );
 
-        $response = $this->request(
-            'get',
-            'stages'
-        );
+    //     if (!$response->successful()) {
 
-        if (!$response['status']) {
+    //         return [
+    //             'status' => false,
+    //             'message' => 'Pipedrive API Request Failed',
+    //             'http_status' => $response->status(),
+    //             'response' => $response->json(),
+    //         ];
+    //     }
 
-            return $response;
+    //     $stages = $response->json('data') ?? [];
+
+    //     foreach ($stages as $stage) {
+
+    //         PipedriveStage::updateOrCreate(
+    //             [
+    //                 'pipedrive_account_id' => $account->id,
+    //                 'stage_id' => $stage['id'],
+    //             ],
+    //             [
+    //                 'name' => $stage['name'],
+    //                 'pipeline_id' => $stage['pipeline_id'],
+    //             ]
+    //         );
+    //     }
+
+    //     return [
+    //         'status' => true,
+    //         'message' => 'Stages synced successfully',
+    //         'total_stages' => count($stages),
+    //     ];
+    // }
+
+    public function syncStages(
+        PipedriveAccount $account
+    ): array {
+
+        /*
+    |--------------------------------------------------------------------------
+    | Sync Pipelines (V2)
+    |--------------------------------------------------------------------------
+    */
+
+        $pipelineResponse = Http::timeout(60)
+            ->acceptJson()
+            ->get(
+                "{$this->baseUrl}/api/v2/pipelines",
+                [
+                    'api_token' => $this->apiKey,
+                ]
+            );
+
+        if (!$pipelineResponse->successful()) {
+
+            return [
+                'status' => false,
+                'message' => 'Pipeline sync failed',
+                'response' => $pipelineResponse->json(),
+            ];
         }
 
-        $stages = $response['data'] ?? [];
+        $pipelines = $pipelineResponse->json('data') ?? [];
+
+        foreach ($pipelines as $pipeline) {
+
+            \Modules\Pipedrive\Models\PipedrivePipeline::updateOrCreate(
+                [
+                    'pipedrive_account_id' => $account->id,
+                    'pipeline_id' => $pipeline['id'],
+                ],
+                [
+                    'name' => $pipeline['name'],
+                ]
+            );
+        }
+
+        /*
+    |--------------------------------------------------------------------------
+    | Sync Stages (V1)
+    |--------------------------------------------------------------------------
+    */
+
+        $stageResponse = Http::timeout(60)
+            ->acceptJson()
+            ->get(
+                "{$this->baseUrl}/api/v1/stages",
+                [
+                    'api_token' => $this->apiKey,
+                ]
+            );
+
+        if (!$stageResponse->successful()) {
+
+            return [
+                'status' => false,
+                'message' => 'Stage sync failed',
+                'response' => $stageResponse->json(),
+            ];
+        }
+
+        $stages = $stageResponse->json('data') ?? [];
 
         foreach ($stages as $stage) {
 
             PipedriveStage::updateOrCreate(
-
                 [
                     'pipedrive_account_id' => $account->id,
-
                     'stage_id' => $stage['id'],
                 ],
-
                 [
                     'name' => $stage['name'],
-
                     'pipeline_id' => $stage['pipeline_id'],
                 ]
             );
@@ -193,13 +287,11 @@ class PipedriveService
 
         return [
             'status' => true,
-            'message' => 'Stages synced successfully',
+            'message' => 'Pipelines & Stages synced successfully',
+            'total_pipelines' => count($pipelines),
             'total_stages' => count($stages),
         ];
     }
-
-
-
     /*
     |--------------------------------------------------------------------------
     | Create Product
