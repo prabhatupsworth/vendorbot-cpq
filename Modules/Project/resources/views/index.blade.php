@@ -45,9 +45,9 @@
                                 <div class="col-sm-8">
                                     <div class="d-flex align-items-center flex-wrap row-gap-2 justify-content-sm-end">
                                         @if (userCan('projects.create'))
-                                            <a href="javascript:void(0);" class="btn btn-primary" data-bs-toggle="offcanvas"
-                                                data-bs-target="#projectCanvas"><i
-                                                    class="ti ti-square-rounded-plus me-2"></i>Add New Project</a>
+                                            <a  href="javascript:void(0);" class="btn btn-primary add-form" data-bs-toggle="offcanvas"
+                                                data-bs-target="#projectCanvas"  data-title="Add Project">
+                                                <i class="ti ti-square-rounded-plus me-2"></i>Add New Project</a>
                                         @endif
                                     </div>
                                 </div>
@@ -97,7 +97,7 @@
     <!-- /Page Wrapper -->
 
     <!-- Add Edit Project -->
-    <x-offcanvas id="projectCanvas" title="Project" formId="projectForm">
+    <x-offcanvas id="projectCanvas" title="Add Project" formId="projectForm">
 
         <form id="projectForm" class="ajax-form" method="POST" action="{{ route('projects.store') }}">
 

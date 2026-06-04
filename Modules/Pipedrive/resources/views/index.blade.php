@@ -32,7 +32,7 @@
                                 <div class="col-md-8">
                                     <div class="d-flex align-items-center flex-wrap row-gap-2 justify-content-sm-end">
                                         @if (userCan('pipedrive.create'))
-                                            <a href="javascript:void(0);" class="btn btn-primary mb-3"
+                                            <a href="javascript:void(0);" class="btn btn-primary mb-3 add-btn"
                                                 data-bs-toggle="offcanvas" data-bs-target="#offcanvas_add_pipedrive"><i
                                                     class="ti ti-square-rounded-plus me-2"></i>Add
                                                 New</a>
@@ -505,6 +505,11 @@
         </script>
 
         <script>
+            $(document).on("click", ".add-btn", function() {
+
+                $("#offcanvasTitle").text('Add Pipedrive Account');
+
+            });
             document.addEventListener('click', function(e) {
 
                 const btn = e.target.closest('.edit-btn');

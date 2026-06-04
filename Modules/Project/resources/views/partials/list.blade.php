@@ -50,6 +50,7 @@
                 @can('projects.edit')
                     <a href="#" class="dropdown-item edit-form" data-bs-toggle="offcanvas"
                         data-bs-target="#projectCanvas" data-type="edit"
+                        data-title="Edit Project"
                         data-url="{{ route('projects.update', $project->id) }}" data-method="PUT"
                         data-data='@json($project)' data-form="#projectForm">
                         <i class="ti ti-edit text-blue"></i> Edit

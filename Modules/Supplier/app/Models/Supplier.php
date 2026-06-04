@@ -6,6 +6,7 @@ use App\Models\Country;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\Product\Models\ScrapCategory;
+use Modules\Project\Models\Project;
 use Modules\Supplier\Enums\SupplierStatusEnum;
 
 class Supplier extends Model
@@ -68,6 +69,10 @@ class Supplier extends Model
     |--------------------------------------------------------------------------
     */
 
+    public function project()
+    {
+        return $this->belongsTo(Project::class);
+    }
     public function categories()
     {
         return $this->belongsToMany(
