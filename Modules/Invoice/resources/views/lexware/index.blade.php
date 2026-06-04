@@ -32,7 +32,7 @@
                                 <div class="col-md-8">
                                     <div class="d-flex align-items-center flex-wrap row-gap-2 justify-content-sm-end">
                                         @if (userCan('lexware.create'))
-                                            <a href="javascript:void(0);" class="btn btn-primary mb-3"
+                                            <a href="javascript:void(0);" class="btn btn-primary mb-3 add-btn"
                                                 data-bs-toggle="offcanvas" data-bs-target="#offcanvas_add_lexware"><i
                                                     class="ti ti-square-rounded-plus me-2"></i>Add
                                                 New</a>
@@ -143,13 +143,13 @@
                                         Lexware
                                     </option>
 
-                                    <option value="manual" {{ old('type') == 'manual' ? 'selected' : '' }}>
+                                    {{-- <option value="manual" {{ old('type') == 'manual' ? 'selected' : '' }}>
                                         Manual
                                     </option>
 
                                     <option value="other" {{ old('type') == 'other' ? 'selected' : '' }}>
                                         Other
-                                    </option>
+                                    </option> --}}
                                 </select>
                                 @error('type')
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -307,10 +307,12 @@
     @push('scripts')
         {{-- Edit Account Script --}}
         <script>
-              $(document).on("click", ".add-btn", function() {
-
-                $("#offcanvasTitle").text('Add Lexware Account');
-
+               $(document).on("click", ".add-btn", function() {
+                 $("#offcanvasTitle").text('Edit Lexware Account');
+                 document.getElementById('submitBtn').innerText = 'Create';
+                 const form = document.getElementById('lexwareForm');
+                 form.action = `/settings/invoice/lexware/store`;
+                 form.method = "POST";
             });
             const func = new Promise(((resolve, reject) => {
                 setTimeout(() => {
