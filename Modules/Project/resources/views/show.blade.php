@@ -440,8 +440,8 @@
                                             <i class="ti ti-edit"></i> Edit Company
                                         </button>
                                     @else
-                                        <button class="btn btn-sm btn-success" data-bs-toggle="offcanvas"
-                                            data-bs-target="#companyCanvas" data-form="#companyForm">
+                                        <button class="btn btn-sm btn-success add-form" data-bs-toggle="offcanvas"
+                                            data-bs-target="#companyCanvas" data-title="Add Company" data-form="#companyForm" data-url="{{ route('projects.company.store', $project->id) }}">
                                             <i class="ti ti-plus"></i> Add Company
                                         </button>
                                     @endif
@@ -463,8 +463,8 @@
                                 <div class="card-header d-flex justify-content-between align-items-center">
                                     <h5 class="fw-semibold mb-0">Project Users</h5>
 
-                                    <button class="btn btn-sm btn-primary" data-bs-toggle="offcanvas"
-                                        data-bs-target="#userCanvas" data-form="#userForm">
+                                    <button class="btn btn-sm btn-primary add-form" data-bs-toggle="offcanvas"
+                                        data-bs-target="#userCanvas" data-title="Add User" data-form="#userForm" data-url="{{ route('projects.users.add', $project->id) }}">
                                         <i class="ti ti-user-plus"></i> Add User
                                     </button>
                                 </div>
@@ -495,8 +495,8 @@
                                 <div class="card-header d-flex justify-content-between align-items-center">
                                     <h5 class="mb-0 fw-semibold">SMTP Settings</h5>
 
-                                    <button class="btn btn-sm btn-primary create-form" data-bs-toggle="offcanvas"
-                                        data-bs-target="#smtpCanvas">
+                                    <button class="btn btn-sm btn-primary create-form add-form" data-bs-toggle="offcanvas"
+                                        data-bs-target="#smtpCanvas" data-form="#smtpForm" data-url="{{ route('projects.smtp.store', $project->id) }}">
                                         <i class="ti ti-plus"></i> Add SMTP
                                     </button>
                                 </div>
@@ -532,8 +532,8 @@
                                             <i class="ti ti-edit"></i> Edit Geo Filter
                                         </button>
                                     @else
-                                        <button class="btn btn-sm btn-success" data-bs-toggle="offcanvas"
-                                            data-bs-target="#geoCanvas" data-form="#geoForm">
+                                        <button class="btn btn-sm btn-success add-form" data-bs-toggle="offcanvas"
+                                            data-bs-target="#geoCanvas" data-title="Add Geo Filter" data-form="#geoForm" data-url="{{ route('projects.geo.store', $project->id) }}">
                                             <i class="ti ti-plus"></i> Add Geo Filter
                                         </button>
                                     @endif
@@ -598,8 +598,9 @@
 
                                     </div>
 
-                                    <button class="btn btn-primary d-flex align-items-center gap-2 px-3"
-                                        data-bs-toggle="offcanvas" data-bs-target="#fieldMappingCanvas">
+                                    <button class="add-form btn btn-primary d-flex align-items-center gap-2 px-3"
+                                    data-title="Add Mapping"
+                                        data-bs-toggle="offcanvas" data-bs-target="#fieldMappingCanvas" data-form="#fieldMappingForm"  data-url="{{ route('projects.field-mappings.store', $project->id) }}">
 
                                         <i class="ti ti-plus"></i>
 
@@ -672,8 +673,8 @@
                                         </small>
                                     </div>
 
-                                    <button class="btn btn-primary" data-bs-toggle="offcanvas"
-                                        data-bs-target="#automationCanvas">
+                                    <button class="btn btn-primary add-form" data-bs-toggle="offcanvas"
+                                        data-bs-target="#automationCanvas" data-title="Add Stage Action" data-form="#stageMappingForm" data-url="{{ route('projects.stages.store', $project->id) }}">
 
                                         <i class="ti ti-plus me-1"></i>
                                         Add Stage Action

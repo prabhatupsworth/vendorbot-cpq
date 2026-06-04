@@ -29,7 +29,7 @@
                     </button>
                     <button class="btn btn-sm btn-light border edit-form" data-type="edit" data-bs-toggle="offcanvas"
                         data-bs-target="#smtpCanvas" data-data='@json($smtp)' data-form="#smtpForm"
-                        data-method="PUT" data-url="{{ route('projects.smtp.update', [$projectId, $smtp->id]) }}">
+                        data-method="PUT" data-title="Edit SMTP" data-url="{{ route('projects.smtp.update', [$projectId, $smtp->id]) }}">
                         <i class="ti ti-edit"></i>
                     </button>
 
@@ -86,7 +86,7 @@
             No SMTP configured
         </p>
 
-        <button class="btn btn-primary btn-sm create-form" data-bs-toggle="offcanvas" data-bs-target="#smtpCanvas">
+        <button class="btn btn-primary btn-sm create-form" data-bs-toggle="offcanvas" data-bs-target="#smtpCanvas" data-title="Add SMTP" data-form="smtpForm" data-url="{{ route('projects.smtp.store', $project->id) }}">
 
             <i class="ti ti-plus"></i> Add SMTP
 

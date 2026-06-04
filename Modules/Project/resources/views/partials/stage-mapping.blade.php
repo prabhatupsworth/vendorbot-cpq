@@ -71,7 +71,7 @@
              <button class="btn btn-sm btn-light border edit-form" data-bs-toggle="offcanvas"
                  data-bs-target="#automationCanvas"
                  data-url="{{ route('projects.stages.update', [$projectId, $automation->id]) }}" data-method="PUT"
-                 data-data='@json($automation)' data-form="#stageMappingForm">
+                 data-data='@json($automation)' data-title="Edit Stage" data-form="#stageMappingForm">
 
                  <i class="ti ti-edit"></i>
 

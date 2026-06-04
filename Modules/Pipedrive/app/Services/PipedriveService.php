@@ -37,7 +37,7 @@ class PipedriveService
         $response = Http::timeout(60)
             ->acceptJson()
             ->{$method}(
-                "{$this->baseUrl}/api/v2/{$endpoint}",
+                "{$this->baseUrl}/api/{$endpoint}",
                 array_merge(
                     $data,
                     [
@@ -70,11 +70,31 @@ class PipedriveService
 
     public function testConnection(): array
     {
-        return $this->request(
-            'get',
-            'users/me'
-        );
+        $response = Http::timeout(60)
+            ->acceptJson()
+            ->get(
+                "{$this->baseUrl}/api/v1/users/me",
+                [
+                    'api_token' => $this->apiKey,
+                ]
+            );
+
+        if (!$response->successful()) {
+
+            return [
+                'status' => false,
+                'message' => 'Pipedrive API Request Failed',
+                'response' => $response->json(),
+            ];
+        }
+
+        return [
+            'status' => true,
+            'data' => $response->json('data'),
+            'additional_data' => $response->json(),
+        ];
     }
+
 
     /*
     |--------------------------------------------------------------------------
@@ -95,7 +115,7 @@ class PipedriveService
 
         foreach ($endpoints as $endpoint => $entityType) {
 
-            $response = $this->request('get', $endpoint);
+            $response = $this->request('get','/v2/'.$endpoint);
 
             if (!$response['status']) {
                 continue;
@@ -203,7 +223,7 @@ class PipedriveService
 
                 [
                     'price' => $product->price,
-                    'currency' => 'INR',
+                    'currency' => current_project_id(),
                 ]
             ]
         ];
