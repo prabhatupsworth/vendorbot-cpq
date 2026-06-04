@@ -93,6 +93,7 @@ class ProjectGeoFilterController extends Controller
                     'project::partials.geo',
                     [
                         'geo' => $geo,
+                        'projectId' => $projectId
                     ]
                 )->render(),
 

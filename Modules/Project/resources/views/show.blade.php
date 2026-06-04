@@ -92,23 +92,21 @@
                             </div>
 
                             {{-- Right: Status --}}
-                            <div class="d-flex gap-2">
+                            {{-- <div class="d-flex gap-2">
 
-                                {{-- Sync --}}
                                 <span
                                     class="badge
                 {{ $project->pipedrive_sync_status ? 'bg-success' : 'bg-warning text-dark' }}">
                                     {{ $project->pipedrive_sync_status ? 'Synced' : 'Not Synced' }}
                                 </span>
 
-                                {{-- Plugin --}}
                                 <span
                                     class="badge
                 {{ $project->plugin_connected ? 'bg-success' : 'bg-danger' }}">
                                     {{ $project->plugin_connected ? 'Connected' : 'Disconnected' }}
                                 </span>
 
-                            </div>
+                            </div> --}}
                         </div>
                         <div class="card-body">
 
@@ -496,10 +494,10 @@
                                     <h5 class="mb-0 fw-semibold">SMTP Settings</h5>
 
                                     <button class="btn btn-sm btn-primary create-form add-form" data-bs-toggle="offcanvas"
-                                        data-bs-target="#smtpCanvas" data-form="#smtpForm" data-url="{{ route('projects.smtp.store', $project->id) }}">
+                                        data-bs-target="#smtpCanvas" data-title="Add SMTP" data-form="#smtpForm" data-url="{{ route('projects.smtp.store', $project->id) }}">
                                         <i class="ti ti-plus"></i> Add SMTP
                                     </button>
-                                </div>
+                                </div>S
 
                                 <div class="card-body">
                                     <div class="row g-3" id="smtp-section">
@@ -524,7 +522,7 @@
                                 <div class="card-header d-flex justify-content-between align-items-center">
                                     <h5 class="mb-0 fw-semibold">GEO Filter</h5>
 
-                                    @if ($project->geoFilter)
+                                    {{-- @if ($project->geoFilter)
                                         <button class="btn btn-sm btn-primary edit-form" data-bs-toggle="offcanvas"
                                             data-bs-target="#geoCanvas" data-type="edit"
                                             data-url="{{ route('projects.geo.store', $project->id) }}" data-method="POST"
@@ -536,7 +534,7 @@
                                             data-bs-target="#geoCanvas" data-title="Add Geo Filter" data-form="#geoForm" data-url="{{ route('projects.geo.store', $project->id) }}">
                                             <i class="ti ti-plus"></i> Add Geo Filter
                                         </button>
-                                    @endif
+                                    @endif --}}
                                 </div>
                                 <div class="card-body">
 
@@ -546,7 +544,7 @@
                                         @if ($project->geoFilter)
                                             @php $geo = $project->geoFilter; @endphp
 
-                                            @include('project::partials.geo', ['geo' => $geo])
+                                            @include('project::partials.geo', ['geo' => $geo,'projectId'=>$project->id])
                                         @else
                                             <!-- 🔹 EMPTY STATE -->
                                             <div class="text-center py-5 geo-empty-state">

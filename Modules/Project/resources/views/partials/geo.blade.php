@@ -6,15 +6,22 @@
         <div class="d-flex align-items-center gap-2">
             <i class="ti ti-map-pin text-primary"></i>
             <h6 class="mb-0 fw-semibold">Geo Filter Active</h6>
+             @if ($geo->status)
+                <span class="badge bg-success">Enabled</span>
+            @else
+                <span class="badge bg-danger">Disabled</span>
+            @endif
         </div>
 
         <!-- Status -->
-        @if ($geo->status)
-            <span class="badge bg-success">Enabled</span>
-        @else
-            <span class="badge bg-secondary">Disabled</span>
-        @endif
+        <div>
 
+            <button class="btn btn-sm btn-primary edit-form" data-bs-toggle="offcanvas" data-bs-target="#geoCanvas"
+                data-type="edit" data-url="{{ route('projects.geo.store', $projectId) }}" data-method="POST"
+                data-data='@json($geo)' data-form="#geoForm">
+                <i class="ti ti-edit"></i> Edit
+            </button>
+        </div>
     </div>
 
     <!-- 🔹 Range Info -->
