@@ -182,7 +182,32 @@
                                 <div class="card-body">
 
                                     <div class="row g-4">
+                                        <div class="col-md-6">
+                                            <div
+                                                class="d-flex justify-content-between align-items-center p-3 rounded bg-light-subtle border">
 
+                                                <div class="d-flex align-items-start gap-3">
+                                                    <i class="ti ti-fingerprint fs-4 text-primary"></i>
+
+                                                    <div>
+                                                        <small class="text-muted d-block">
+                                                            Project UID
+                                                        </small>
+
+                                                        <div class="fw-semibold text-break">
+                                                            {{ $project->uid }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <button type="button" class="btn btn-sm btn-light border copy-btn"
+                                                    data-copy="{{ $project->uid }}" title="Copy UUID">
+
+                                                    <i class="ti ti-copy"></i>
+                                                </button>
+
+                                            </div>
+                                        </div>
                                         {{-- Website --}}
                                         <div class="col-md-6">
                                             <div class="d-flex align-items-start gap-3 p-3 rounded bg-light-subtle border">
@@ -439,7 +464,9 @@
                                         </button>
                                     @else
                                         <button class="btn btn-sm btn-success add-form" data-bs-toggle="offcanvas"
-                                            data-bs-target="#companyCanvas" data-title="Add Company" data-form="#companyForm" data-url="{{ route('projects.company.store', $project->id) }}">
+                                            data-bs-target="#companyCanvas" data-title="Add Company"
+                                            data-form="#companyForm"
+                                            data-url="{{ route('projects.company.store', $project->id) }}">
                                             <i class="ti ti-plus"></i> Add Company
                                         </button>
                                     @endif
@@ -462,7 +489,8 @@
                                     <h5 class="fw-semibold mb-0">Project Users</h5>
 
                                     <button class="btn btn-sm btn-primary add-form" data-bs-toggle="offcanvas"
-                                        data-bs-target="#userCanvas" data-title="Add User" data-form="#userForm" data-url="{{ route('projects.users.add', $project->id) }}">
+                                        data-bs-target="#userCanvas" data-title="Add User" data-form="#userForm"
+                                        data-url="{{ route('projects.users.add', $project->id) }}">
                                         <i class="ti ti-user-plus"></i> Add User
                                     </button>
                                 </div>
@@ -494,7 +522,8 @@
                                     <h5 class="mb-0 fw-semibold">SMTP Settings</h5>
 
                                     <button class="btn btn-sm btn-primary create-form add-form" data-bs-toggle="offcanvas"
-                                        data-bs-target="#smtpCanvas" data-title="Add SMTP" data-form="#smtpForm" data-url="{{ route('projects.smtp.store', $project->id) }}">
+                                        data-bs-target="#smtpCanvas" data-title="Add SMTP" data-form="#smtpForm"
+                                        data-url="{{ route('projects.smtp.store', $project->id) }}">
                                         <i class="ti ti-plus"></i> Add SMTP
                                     </button>
                                 </div>S
@@ -544,7 +573,10 @@
                                         @if ($project->geoFilter)
                                             @php $geo = $project->geoFilter; @endphp
 
-                                            @include('project::partials.geo', ['geo' => $geo,'projectId'=>$project->id])
+                                            @include('project::partials.geo', [
+                                                'geo' => $geo,
+                                                'projectId' => $project->id,
+                                            ])
                                         @else
                                             <!-- 🔹 EMPTY STATE -->
                                             <div class="text-center py-5 geo-empty-state">
@@ -597,8 +629,9 @@
                                     </div>
 
                                     <button class="add-form btn btn-primary d-flex align-items-center gap-2 px-3"
-                                    data-title="Add Mapping"
-                                        data-bs-toggle="offcanvas" data-bs-target="#fieldMappingCanvas" data-form="#fieldMappingForm"  data-url="{{ route('projects.field-mappings.store', $project->id) }}">
+                                        data-title="Add Mapping" data-bs-toggle="offcanvas"
+                                        data-bs-target="#fieldMappingCanvas" data-form="#fieldMappingForm"
+                                        data-url="{{ route('projects.field-mappings.store', $project->id) }}">
 
                                         <i class="ti ti-plus"></i>
 
@@ -672,7 +705,9 @@
                                     </div>
 
                                     <button class="btn btn-primary add-form" data-bs-toggle="offcanvas"
-                                        data-bs-target="#automationCanvas" data-title="Add Stage Action" data-form="#stageMappingForm" data-url="{{ route('projects.stages.store', $project->id) }}">
+                                        data-bs-target="#automationCanvas" data-title="Add Stage Action"
+                                        data-form="#stageMappingForm"
+                                        data-url="{{ route('projects.stages.store', $project->id) }}">
 
                                         <i class="ti ti-plus me-1"></i>
                                         Add Stage Action
@@ -1297,6 +1332,25 @@
 
                     // console.log($('#user_ids').val());
                 });
+
+            });
+        </script>
+        <script>
+            $(document).on('click', '.copy-btn', function() {
+
+                const text = $(this).data('copy');
+
+                navigator.clipboard.writeText(text);
+
+                const icon = $(this).find('i');
+
+                icon.removeClass('ti-copy')
+                    .addClass('ti-check text-success');
+
+                setTimeout(() => {
+                    icon.removeClass('ti-check text-success')
+                        .addClass('ti-copy');
+                }, 1500);
 
             });
         </script>
