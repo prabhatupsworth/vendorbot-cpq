@@ -1,4 +1,14 @@
+$(document).on("click", ".add-form, .edit-form", function () {
 
+    let btn = $(this);
+
+    let offcanvas = $(btn.data("bs-target"));
+    console.log(btn.data("title"));
+    offcanvas
+        .find(".offcanvas-title")
+        .text(btn.data("title"));
+
+});
 $(document).on("click", ".edit-form", function () {
 
     let btn = $(this);

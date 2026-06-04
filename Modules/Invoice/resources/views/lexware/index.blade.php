@@ -136,7 +136,7 @@
                         <div class="col-md-12">
                             <div class="mb-3">
                                 <label class="col-form-label">Invoice Type <span class="text-danger">*</span></label>
-                                <select class="form-select" name="type" required>
+                                <select class="select" name="type" required>
                                     <option disabled>Invoice Type</option>
 
                                     <option value="lexware" {{ old('type', 'lexware') == 'lexware' ? 'selected' : '' }}>
@@ -194,7 +194,7 @@
                             <div class="mb-3">
                                 <label class="col-form-label">Currency <span class="text-danger">*</span></label>
 
-                                <select class="form-select @error('currency') is-invalid @enderror" name="currency"
+                                <select class="select @error('currency') is-invalid @enderror" name="currency"
                                     required>
                                     <option disabled>Select Currency</option>
 
@@ -307,6 +307,11 @@
     @push('scripts')
         {{-- Edit Account Script --}}
         <script>
+              $(document).on("click", ".add-btn", function() {
+
+                $("#offcanvasTitle").text('Add Lexware Account');
+
+            });
             const func = new Promise(((resolve, reject) => {
                 setTimeout(() => {
                     resolve('resolved');

@@ -4,7 +4,7 @@
 <div class="offcanvas offcanvas-end offcanvas-large" tabindex="-1" id="{{ $id }}">
 
     <div class="offcanvas-header border-bottom">
-        <h4>{{ $title }}</h4>
+        <h4 class="offcanvas-title">{{ $title }}</h4>
         <button class="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle" data-bs-dismiss="offcanvas" aria-label="Close">
             <i class="ti ti-x"></i>
         </button>
