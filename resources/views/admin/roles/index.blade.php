@@ -40,7 +40,7 @@
                                 </div>
                                 <div class="col-sm-8">
                                     <div class="text-sm-end">
-                                        @can('roles.create')
+                                        @if(userCan('roles.create'))
                                         <a href="javascript:void(0);" class="btn btn-primary" data-bs-toggle="modal"
                                             data-bs-target="#add_role"><i class="ti ti-square-rounded-plus me-2"></i>Add New
                                             Roles</a>
