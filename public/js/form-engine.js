@@ -1,18 +1,36 @@
-$(document).on("click", ".add-form, .edit-form", function () {
+$(document).on("click", ".add-form", function () {
 
     let btn = $(this);
 
-    let offcanvas = $(btn.data("bs-target"));
-    console.log(btn.data("title"));
-    offcanvas
-        .find(".offcanvas-title")
-        .text(btn.data("title"));
+    let form = $(btn.attr("data-form"));
 
+    let offcanvas = $(btn.attr("data-bs-target"));
+
+    offcanvas.find(".offcanvas-title")
+        .text(btn.attr("data-title"));
+
+    form[0].reset();
+
+    form.attr("action", btn.attr("data-url"));
+
+    form.attr("method", "POST");
+
+    form.find('input[name="_method"]').remove();
+
+    console.log("Title:", btn.attr("data-title"));
+    console.log("URL:", btn.attr("data-url"));
 });
+
 $(document).on("click", ".edit-form", function () {
 
     let btn = $(this);
+    let offcanvas = $(btn.attr("data-bs-target"));
+
+    offcanvas.find(".offcanvas-title")
+        .text(btn.attr("data-title"));
+
     let form = $(btn.data("form"));
+
     form[0].reset();
 
     form.attr("action", btn.data("url"));

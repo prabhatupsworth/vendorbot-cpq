@@ -33,34 +33,34 @@
 
                     <i class="fa fa-ellipsis-v"></i>
                 </a>
+                @if (userCan('users.edit') || userCan('users.delete'))
+                    <div class="dropdown-menu dropdown-menu-end">
+                        @if (userCan('users.edit'))
+                            <a href="javascript:void(0);" class="dropdown-item d-flex align-items-center edit-btn"
+                                data-id="{{ $user->id }}" data-bs-toggle="offcanvas"
+                                data-bs-target="#offcanvas_edit">
 
-                <div class="dropdown-menu dropdown-menu-end">
+                                <i class="ti ti-edit text-primary me-2"></i>
+                                Edit
+                            </a>
+                        @endif
+                        @if (auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('admin') )
+                            <a href="{{ route('users.permissions', $user->id) }}"
+                                class="dropdown-item d-flex align-items-center">
+                                <i class="ti ti-shield text-success"></i>
+                                Permission
+                            </a>
+                        @endif
+                        @if (userCan('users.delete'))
+                            <a href="javascript:void(0);" class="dropdown-item d-flex align-items-center delete-btn"
+                                data-id="{{ $user->id }}" data-bs-toggle="modal" data-bs-target="#delete_contact">
 
-                    @can('users.edit')
-                        <a href="javascript:void(0);" class="dropdown-item d-flex align-items-center edit-btn"
-                            data-id="{{ $user->id }}" data-bs-toggle="offcanvas" data-bs-target="#offcanvas_edit">
-
-                            <i class="ti ti-edit text-primary me-2"></i>
-                            Edit
-                        </a>
-                    @endcan
-
-                    <a href="{{ route('users.permissions', $user->id) }}"
-                        class="dropdown-item d-flex align-items-center">
-                        <i class="ti ti-shield text-success"></i>
-                        Permission
-                    </a>
-
-                    @can('users.delete')
-                        <a href="javascript:void(0);" class="dropdown-item d-flex align-items-center delete-btn"
-                            data-id="{{ $user->id }}" data-bs-toggle="modal" data-bs-target="#delete_contact">
-
-                            <i class="ti ti-trash text-danger me-2"></i>
-                            Delete
-                        </a>
-                    @endcan
-
-                </div>
+                                <i class="ti ti-trash text-danger me-2"></i>
+                                Delete
+                            </a>
+                        @endif
+                @endif
+            </div>
 
             </div>
 

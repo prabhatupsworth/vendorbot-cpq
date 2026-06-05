@@ -46,7 +46,7 @@
                                     <div class="d-flex align-items-center flex-wrap row-gap-2 justify-content-sm-end">
                                         @if (userCan('projects.create'))
                                             <a  href="javascript:void(0);" class="btn btn-primary add-form" data-bs-toggle="offcanvas"
-                                                data-bs-target="#projectCanvas"  data-title="Add Project">
+                                                data-bs-target="#projectCanvas" data-title="Add Project" data-form="#projectForm" data-url="{{ route('projects.store') }}">
                                                 <i class="ti ti-square-rounded-plus me-2"></i>Add New Project</a>
                                         @endif
                                     </div>

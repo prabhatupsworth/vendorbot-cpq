@@ -39,15 +39,15 @@
             <a href="#" class="action-icon show" data-bs-toggle="dropdown" aria-expanded="true"><i
                     class="fa fa-ellipsis-v"></i>
             </a>
-            @can('projects.view')
+            @if(userCan('projects.view') || userCan('projects.edit') || userCan('projects.delete'))
             <div class="dropdown-menu dropdown-menu-right"
                 style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate3d(-104px, 35px, 0px);"
                 data-popper-placement="bottom-start" data-popper-reference-hidden="" data-popper-escaped="">
-                @can('projects.view')
+                @if(userCan('projects.view'))
                     <a class="dropdown-item" href="{{ route('projects.show', $project->id) }}"><i
                             class="ti ti-eye text-success"></i> View</a>
-                @endcan
-                @can('projects.edit')
+                @endif
+                @if(userCan('projects.edit'))
                     <a href="#" class="dropdown-item edit-form" data-bs-toggle="offcanvas"
                         data-bs-target="#projectCanvas" data-type="edit"
                         data-title="Edit Project"
@@ -55,15 +55,15 @@
                         data-data='@json($project)' data-form="#projectForm">
                         <i class="ti ti-edit text-blue"></i> Edit
                     </a>
-                @endcan
+                @endif
 
-                @can('projects.delete')
+                @if(userCan('projects.delete'))
                     <a class="dropdown-item delete-btn" href="#"
                         data-url="{{ route('projects.destroy', $project->id) }}"><i class="ti ti-trash text-danger"></i>
                         Delete</a>
-                @endcan
+                @endif
             </div>
-            @endcan
+            @endif
         </div>
     </td>
 </tr>

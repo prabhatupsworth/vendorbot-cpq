@@ -92,23 +92,21 @@
                             </div>
 
                             {{-- Right: Status --}}
-                            <div class="d-flex gap-2">
+                            {{-- <div class="d-flex gap-2">
 
-                                {{-- Sync --}}
                                 <span
                                     class="badge
                 {{ $project->pipedrive_sync_status ? 'bg-success' : 'bg-warning text-dark' }}">
                                     {{ $project->pipedrive_sync_status ? 'Synced' : 'Not Synced' }}
                                 </span>
 
-                                {{-- Plugin --}}
                                 <span
                                     class="badge
                 {{ $project->plugin_connected ? 'bg-success' : 'bg-danger' }}">
                                     {{ $project->plugin_connected ? 'Connected' : 'Disconnected' }}
                                 </span>
 
-                            </div>
+                            </div> --}}
                         </div>
                         <div class="card-body">
 
@@ -184,7 +182,32 @@
                                 <div class="card-body">
 
                                     <div class="row g-4">
+                                        <div class="col-md-6">
+                                            <div
+                                                class="d-flex justify-content-between align-items-center p-3 rounded bg-light-subtle border">
 
+                                                <div class="d-flex align-items-start gap-3">
+                                                    <i class="ti ti-fingerprint fs-4 text-primary"></i>
+
+                                                    <div>
+                                                        <small class="text-muted d-block">
+                                                            Project UID
+                                                        </small>
+
+                                                        <div class="fw-semibold text-break">
+                                                            {{ $project->uid }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <button type="button" class="btn btn-sm btn-light border copy-btn"
+                                                    data-copy="{{ $project->uid }}" title="Copy UUID">
+
+                                                    <i class="ti ti-copy"></i>
+                                                </button>
+
+                                            </div>
+                                        </div>
                                         {{-- Website --}}
                                         <div class="col-md-6">
                                             <div class="d-flex align-items-start gap-3 p-3 rounded bg-light-subtle border">
@@ -440,8 +463,10 @@
                                             <i class="ti ti-edit"></i> Edit Company
                                         </button>
                                     @else
-                                        <button class="btn btn-sm btn-success" data-bs-toggle="offcanvas"
-                                            data-bs-target="#companyCanvas" data-form="#companyForm">
+                                        <button class="btn btn-sm btn-success add-form" data-bs-toggle="offcanvas"
+                                            data-bs-target="#companyCanvas" data-title="Add Company"
+                                            data-form="#companyForm"
+                                            data-url="{{ route('projects.company.store', $project->id) }}">
                                             <i class="ti ti-plus"></i> Add Company
                                         </button>
                                     @endif
@@ -463,8 +488,9 @@
                                 <div class="card-header d-flex justify-content-between align-items-center">
                                     <h5 class="fw-semibold mb-0">Project Users</h5>
 
-                                    <button class="btn btn-sm btn-primary" data-bs-toggle="offcanvas"
-                                        data-bs-target="#userCanvas" data-form="#userForm">
+                                    <button class="btn btn-sm btn-primary add-form" data-bs-toggle="offcanvas"
+                                        data-bs-target="#userCanvas" data-title="Add User" data-form="#userForm"
+                                        data-url="{{ route('projects.users.add', $project->id) }}">
                                         <i class="ti ti-user-plus"></i> Add User
                                     </button>
                                 </div>
@@ -495,11 +521,12 @@
                                 <div class="card-header d-flex justify-content-between align-items-center">
                                     <h5 class="mb-0 fw-semibold">SMTP Settings</h5>
 
-                                    <button class="btn btn-sm btn-primary create-form" data-bs-toggle="offcanvas"
-                                        data-bs-target="#smtpCanvas">
+                                    <button class="btn btn-sm btn-primary create-form add-form" data-bs-toggle="offcanvas"
+                                        data-bs-target="#smtpCanvas" data-title="Add SMTP" data-form="#smtpForm"
+                                        data-url="{{ route('projects.smtp.store', $project->id) }}">
                                         <i class="ti ti-plus"></i> Add SMTP
                                     </button>
-                                </div>
+                                </div>S
 
                                 <div class="card-body">
                                     <div class="row g-3" id="smtp-section">
@@ -524,7 +551,7 @@
                                 <div class="card-header d-flex justify-content-between align-items-center">
                                     <h5 class="mb-0 fw-semibold">GEO Filter</h5>
 
-                                    @if ($project->geoFilter)
+                                    {{-- @if ($project->geoFilter)
                                         <button class="btn btn-sm btn-primary edit-form" data-bs-toggle="offcanvas"
                                             data-bs-target="#geoCanvas" data-type="edit"
                                             data-url="{{ route('projects.geo.store', $project->id) }}" data-method="POST"
@@ -532,11 +559,11 @@
                                             <i class="ti ti-edit"></i> Edit Geo Filter
                                         </button>
                                     @else
-                                        <button class="btn btn-sm btn-success" data-bs-toggle="offcanvas"
-                                            data-bs-target="#geoCanvas" data-form="#geoForm">
+                                        <button class="btn btn-sm btn-success add-form" data-bs-toggle="offcanvas"
+                                            data-bs-target="#geoCanvas" data-title="Add Geo Filter" data-form="#geoForm" data-url="{{ route('projects.geo.store', $project->id) }}">
                                             <i class="ti ti-plus"></i> Add Geo Filter
                                         </button>
-                                    @endif
+                                    @endif --}}
                                 </div>
                                 <div class="card-body">
 
@@ -546,7 +573,10 @@
                                         @if ($project->geoFilter)
                                             @php $geo = $project->geoFilter; @endphp
 
-                                            @include('project::partials.geo', ['geo' => $geo])
+                                            @include('project::partials.geo', [
+                                                'geo' => $geo,
+                                                'projectId' => $project->id,
+                                            ])
                                         @else
                                             <!-- 🔹 EMPTY STATE -->
                                             <div class="text-center py-5 geo-empty-state">
@@ -598,8 +628,10 @@
 
                                     </div>
 
-                                    <button class="btn btn-primary d-flex align-items-center gap-2 px-3"
-                                        data-bs-toggle="offcanvas" data-bs-target="#fieldMappingCanvas">
+                                    <button class="add-form btn btn-primary d-flex align-items-center gap-2 px-3"
+                                        data-title="Add Mapping" data-bs-toggle="offcanvas"
+                                        data-bs-target="#fieldMappingCanvas" data-form="#fieldMappingForm"
+                                        data-url="{{ route('projects.field-mappings.store', $project->id) }}">
 
                                         <i class="ti ti-plus"></i>
 
@@ -672,8 +704,10 @@
                                         </small>
                                     </div>
 
-                                    <button class="btn btn-primary" data-bs-toggle="offcanvas"
-                                        data-bs-target="#automationCanvas">
+                                    <button class="btn btn-primary add-form" data-bs-toggle="offcanvas"
+                                        data-bs-target="#automationCanvas" data-title="Add Stage Action"
+                                        data-form="#stageMappingForm"
+                                        data-url="{{ route('projects.stages.store', $project->id) }}">
 
                                         <i class="ti ti-plus me-1"></i>
                                         Add Stage Action
@@ -1298,6 +1332,25 @@
 
                     // console.log($('#user_ids').val());
                 });
+
+            });
+        </script>
+        <script>
+            $(document).on('click', '.copy-btn', function() {
+
+                const text = $(this).data('copy');
+
+                navigator.clipboard.writeText(text);
+
+                const icon = $(this).find('i');
+
+                icon.removeClass('ti-copy')
+                    .addClass('ti-check text-success');
+
+                setTimeout(() => {
+                    icon.removeClass('ti-check text-success')
+                        .addClass('ti-copy');
+                }, 1500);
 
             });
         </script>

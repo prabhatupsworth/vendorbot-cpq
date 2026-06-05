@@ -56,7 +56,7 @@
                 <!-- Edit -->
                 <button class="btn btn-sm btn-light border edit-form" data-bs-toggle="offcanvas"
                     data-bs-target="#fieldMappingCanvas" data-id="{{ $mapping->id }}" data-method="POST"
-                    data-data='@json($mapping)' data-form="#fieldMappingForm">
+                    data-data='@json($mapping)' data-form="#fieldMappingForm" data-title="Edit Mapping">
 
                     <i class="ti ti-edit"></i>
 

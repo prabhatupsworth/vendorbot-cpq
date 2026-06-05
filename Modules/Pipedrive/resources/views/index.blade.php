@@ -445,14 +445,14 @@
                             fieldsTableBody.innerHTML = '';
 
                             document.getElementById('load_more').href = `/history/pipedrive/${id}`;
-
+                            console.log(data.stages,'stages');
                             // 🔥 STAGES TABLE
                             if (data.stages && data.stages.length > 0) {
                                 data.stages.forEach(stage => {
                                     let row = `
                             <tr>
                                 <td>${stage.name} (${stage.stage_id})</td>
-                                <td>${stage.pipeline.name}</td>
+                                <td>${stage.pipeline.name }</td>
                             </tr>
                         `;
                                     stagesTableBody.insertAdjacentHTML('beforeend', row);
