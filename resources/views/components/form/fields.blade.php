@@ -36,6 +36,7 @@
             @else
 
                 <x-form.input
+                    :type="$field['type']"
                     :label="$field['label']"
                     :name="$field['name']"
                     :value="$field['value'] ?? null"
