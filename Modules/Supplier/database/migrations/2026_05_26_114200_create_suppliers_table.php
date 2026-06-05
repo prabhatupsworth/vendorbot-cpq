@@ -6,14 +6,15 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('suppliers', function (Blueprint $table) {
 
             $table->id();
+
+            $table->foreignId('project_id')
+                ->constrained('projects')
+                ->cascadeOnDelete();
 
             $table->string('google_id')
                 ->nullable()
@@ -26,7 +27,7 @@ return new class extends Migration
                 ->nullable();
 
             $table->boolean('status')
-                ->default(0);
+                ->default(false);
 
             $table->string('email')
                 ->nullable()
@@ -78,12 +79,15 @@ return new class extends Migration
                 ->nullable();
 
             $table->timestamps();
+
+            // Prevent duplicate email within same project
+            $table->unique(
+                ['project_id', 'email'],
+                'project_email_unique'
+            );
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('suppliers');

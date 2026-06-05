@@ -285,7 +285,7 @@
 <!-- /Edit User -->
 
 <!-- Delete User -->
-<div class="modal fade" id="delete_contact" role="dialog">
+{{-- <div class="modal fade" id="delete_contact" role="dialog">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-body">
@@ -320,11 +320,11 @@
             </div>
         </div>
     </div>
-</div>
+</div> --}}
 <!-- /Delete User -->
 
 @push('scripts')
-   
+
     <script>
         $(document).on('click', '.edit-btn', function() {
 
@@ -356,7 +356,7 @@
             });
         });
     </script>
-    <script>
+    {{-- <script>
         $(document).on('click', '.delete-btn', function() {
 
             let userId = $(this).data('id');
@@ -367,7 +367,7 @@
             $('#deleteUserForm').attr('action', '/users/' + userId);
 
         });
-    </script>
+    </script> --}}
 
     <script>
         let searchTimer;

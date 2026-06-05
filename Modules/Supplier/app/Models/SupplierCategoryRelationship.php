@@ -18,6 +18,8 @@ class SupplierCategoryRelationship extends Model
 
         'category_id',
 
+        'project_id',
+
         'is_main'
     ];
 

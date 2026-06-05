@@ -98,7 +98,7 @@ Route::middleware('auth')->group(function () {
             ->middleware('permission:users.edit')
             ->name('update');
 
-        Route::delete('/{id}', [UserController::class, 'destroy'])->name('users.destroy');
+        Route::delete('/{id}', [UserController::class, 'destroy'])->name('destroy');
     });
 
     /*
