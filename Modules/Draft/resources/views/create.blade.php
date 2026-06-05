@@ -26,7 +26,7 @@
 
                         <h3 class="page-title fw-bold">
 
-                            Create Draft
+                            Create Email
 
                         </h3>
 
@@ -148,16 +148,14 @@
 
                                         <label class="form-label">
 
-                                            Draft Content
+                                            Email Content
 
-                                            <span class="text-danger">*</span>
+                                            <span class="text-danger"></span>
 
                                         </label>
 
                                         <textarea id="content" name="content" rows="12" class="form-control @error('content') is-invalid @enderror"
-                                            placeholder="Write draft content here..." required>{{ old('content') }}</textarea>
-
-
+                                            placeholder="Write draft content here...">{{ old('content') }}</textarea>
 
                                         @error('content')
                                             <div class="invalid-feedback d-block">

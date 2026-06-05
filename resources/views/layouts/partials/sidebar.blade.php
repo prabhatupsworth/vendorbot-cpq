@@ -87,7 +87,7 @@
                     <li>
 
                         <h6 class="submenu-hdr">
-                            Drafts Management
+                            Emails Management
                         </h6>
 
                         <ul>
@@ -102,7 +102,7 @@
 
                                             <i class="ti ti-mail"></i>
 
-                                            <span> Drafts</span>
+                                            <span>Emails</span>
 
                                         </a>
 

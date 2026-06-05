@@ -14,7 +14,7 @@
                     <div class="col-lg-6">
 
                         <h3 class="page-title fw-bold">
-                            Drafts
+                            Emails
                         </h3>
 
                         <p class="text-muted mb-0">
@@ -187,7 +187,7 @@
 
                             @empty
 
-                                <x-table.empty colspan="7" title="No Drafts Found" subtitle="Create your first draft." />
+                                <x-table.empty colspan="7" title="No Emails Found" subtitle="Create your first Email." />
                             @endforelse
 
                         </x-table.tbody>

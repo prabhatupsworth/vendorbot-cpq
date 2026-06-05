@@ -23,7 +23,7 @@
                     <div class="col-lg-6">
 
                         <h3 class="page-title fw-bold">
-                            Edit Draft
+                            Edit Email
                         </h3>
 
                         <p class="text-muted mb-0">
