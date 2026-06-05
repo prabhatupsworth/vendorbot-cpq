@@ -477,8 +477,36 @@
                                                     @endphp
 
                                                     <td>
+                                                        @if (collect($perms)->contains('name', $permissionName))
+                                                            <label class="permission-checkbox">
+
+                                                                <input type="checkbox" name="permissions[]"
+                                                                    value="{{ $permissionName }}"
+                                                                    {{ in_array($permissionName, $userPermissions) && !in_array($permissionName, $deniedPermissions)
+                                                                        ? 'checked'
+                                                                        : 'disabled' }}>
+                                                                <span class="checkmark"></span>
+
+                                                            </label>
+                                                        @else
+                                                            <span class="not-available">
+                                                                —
+                                                            </span>
+                                                        @endif
+
+
                                                         {{-- @php
-                                                            $isSuperAdmin = auth()->user()->hasRole('super_admin');
+                                                            $loggedInPermissions = auth()
+                                                                ->user()
+                                                                ->getAllPermissions()
+                                                                ->pluck('name')
+                                                                ->toArray();
+
+                                                            $isSuperAdmin = auth()->user()->hasRole('Super Admin');
+
+                                                            $canManagePermission =
+                                                                $isSuperAdmin ||
+                                                                in_array($permissionName, $loggedInPermissions);
                                                         @endphp
 
                                                         @if (collect($perms)->contains('name', $permissionName))
@@ -487,57 +515,17 @@
                                                                 <input type="checkbox" name="permissions[]"
                                                                     value="{{ $permissionName }}"
                                                                     {{ in_array($permissionName, $userPermissions) && !in_array($permissionName, $deniedPermissions) ? 'checked' : '' }}
-                                                                    {{ !$isSuperAdmin ? 'disabled' : '' }}>
+                                                                    {{ !$canManagePermission ? 'disabled' : '' }}>
+
                                                                 <span class="checkmark"></span>
 
                                                             </label>
                                                         @else
-                                                            <span class="not-available">
-                                                                —
-                                                            </span>
+                                                            <span class="not-available">—</span>
                                                         @endif --}}
-@php
-    $loggedInPermissions = auth()->user()
-        ->getAllPermissions()
-        ->pluck('name')
-        ->toArray();
-
-    $isSuperAdmin = auth()->user()->hasRole('Super Admin');
-
-    $canManagePermission = $isSuperAdmin || in_array($permissionName, $loggedInPermissions);
-@endphp
-
-@if (collect($perms)->contains('name', $permissionName))
-    <label class="permission-checkbox">
-
-        <input
-            type="checkbox"
-            name="permissions[]"
-            value="{{ $permissionName }}"
-            {{ in_array($permissionName, $userPermissions) && !in_array($permissionName, $deniedPermissions) ? 'checked' : '' }}
-            {{ !$canManagePermission ? 'disabled' : '' }}
-        >
-
-        <span class="checkmark"></span>
-
-    </label>
-@else
-    <span class="not-available">—</span>
-@endif
                                                     </td>
                                                 @endforeach
 
-                                                {{-- <td>
-
-                                                    <label class="switch">
-
-                                                        <input type="checkbox" class="module-check">
-
-                                                        <span class="slider"></span>
-
-                                                    </label>
-
-                                                </td> --}}
 
                                             </tr>
                                         @endforeach

@@ -7,10 +7,9 @@ return [
         'projects' => ['view', 'create', 'edit', 'delete'],
         'products' => ['view', 'create', 'edit', 'delete'],
         'coupons' => ['view', 'create', 'edit', 'delete'],
-        'draft' => ['view', 'create', 'edit', 'delete'],
+        'email' => ['view', 'create', 'edit', 'delete'],
         'roles' => ['view', 'create', 'edit', 'delete'],
-        'pipedrive' => ['view', 'create', 'edit', 'delete'],
-        'lexware' => ['view', 'create', 'edit', 'delete'],
-        'settings' => ['view', 'update'],
+        'crm_integrations' => ['view', 'create', 'edit', 'delete'],
+        'invoice_management' => ['view', 'create', 'edit', 'delete'],
     ]
 ];
