@@ -386,8 +386,8 @@
 
                             <ul style="{{ request()->routeIs('settings.*') ? 'display:block;' : 'display:none;' }}">
 
-                                @if (userCanModule('pipedrive'))
-                                    @if (userCan('pipedrive.view'))
+                                @if (userCanModule('crm_integrations'))
+                                    @if (userCan('crm_integrations.view'))
 
                                         @if (moduleEnabled('Pipedrive') && Route::has('settings.pipedrive.index'))
                                             <li>
@@ -407,8 +407,8 @@
                                 @endif
 
 
-                                @if (userCanModule('lexware'))
-                                    @if (userCan('lexware.view'))
+                                @if (userCanModule('invoice_management'))
+                                    @if (userCan('invoice_management.view'))
 
                                         @if (moduleEnabled('Invoice') && Route::has('settings.invoice.lexware.index'))
                                             <li>

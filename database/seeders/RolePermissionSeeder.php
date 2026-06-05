@@ -49,10 +49,8 @@ class RolePermissionSeeder extends Seeder
 
                 // 🔥 AUTO ASSIGN ALL PERMISSIONS
         // ================================
-        $allPermissions = Permission::pluck('name')->toArray();
 
-        $role->syncPermissions($allPermissions);
-
+        $role->givePermissionTo(Permission::all());
         // ✅ Reset cache again
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
