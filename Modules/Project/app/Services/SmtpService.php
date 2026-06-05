@@ -4,6 +4,7 @@ namespace Modules\Project\Services;
 
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Modules\Project\Models\Smtp;
 
 use Modules\Project\Repositories\SmtpRepository;
 
@@ -26,8 +27,19 @@ class SmtpService
         //     $this->smtpRepository
         //         ->updateDefaultType($projectId);
         // }
+       
 
         $data['project_id'] = $projectId;
+
+        if(@$data['type'])
+        {
+            $smtpData = Smtp::where('project_id',$projectId)->where('type',$data['type'])->first();
+            if(@$smtpData->id)
+            {
+                return 'type_already';
+            }
+        }
+      
 
         return $this->smtpRepository
             ->store($data);

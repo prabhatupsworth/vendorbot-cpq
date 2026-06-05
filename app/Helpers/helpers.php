@@ -34,8 +34,26 @@ if (! function_exists('current_project_id')) {
 
     function current_project_id()
     {
-        return
-            Auth::user()?->current_project_id;
+        $user = Auth::user()?->fresh();
+        if (! $user) {
+            return null;
+        }
+        if ($user->current_project_id) {
+            return $user->current_project_id;
+        }
+
+        $projectId = $user->projects()->value('projects.id');
+       
+        if ($projectId) {
+
+            $user->update([
+                'current_project_id' => $projectId
+            ]);
+
+            return $projectId;
+        }
+
+        return Auth::user()?->fresh()?->current_project_id;
     }
 }
 
