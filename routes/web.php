@@ -17,6 +17,14 @@ use Modules\Product\Http\Controllers\ProductController;
 | Guest Routes (Not Logged In)
 |--------------------------------------------------------------------------
 */
+Route::fallback(function () {
+
+    if (auth()->check()) {
+        return redirect()->route('dashboard');
+    }
+
+    return redirect()->route('login');
+});
 
 Route::middleware('guest')->group(function () {
 
