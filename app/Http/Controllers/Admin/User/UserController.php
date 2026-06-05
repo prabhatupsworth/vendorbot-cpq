@@ -216,7 +216,10 @@ class UserController extends Controller
 
         // 🔒 Optional: prevent deleting yourself
         if (auth()->id() === $user->id) {
-            return redirect()->back()->with('error', 'You cannot delete yourself.');
+            return response()->json([
+                'success' => false,
+                'message' => 'You cannot delete superadmin.'
+            ]);
         }
 
         // 🧹 Delete profile image (if exists)

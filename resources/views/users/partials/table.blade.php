@@ -51,7 +51,7 @@
                                 Permission
                             </a>
                         @endif
-                        @if (userCan('users.delete'))
+                        @if (userCan('users.delete') && !$user->roles->contains('name', 'super_admin'))
                             <a href="javascript:void(0);" class="dropdown-item d-flex align-items-center delete-btn"
                                 data-id="{{ $user->id }}" data-url="{{ route('users.destroy', $user->id) }}">
 
