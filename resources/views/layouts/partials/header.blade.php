@@ -31,7 +31,7 @@
 
             <!-- Search -->
             <li class="nav-item nav-search-inputs me-auto">
-                <div class="top-nav-search">
+                <!-- <div class="top-nav-search">
                     <a href="javascript:void(0);" class="responsive-search">
                         <i class="fa fa-search"></i>
                     </a>
@@ -43,7 +43,7 @@
                             </div>
                         </div>
                     </form>
-                </div>
+                </div> -->
             </li>
             <!-- /Search -->
             <x-project-switcher />
@@ -203,27 +203,27 @@
                             </div>
                         </div>
                     </li>
-                    <li class="nav-item">
+                    <!-- <li class="nav-item">
                         <a href="#" class="btn btn-help">
                             <i class="ti ti-help-hexagon"></i>
                         </a>
-                    </li>
-                    <li class="nav-item">
+                    </li> -->
+                    <!-- <li class="nav-item">
                         <a href="#" class="btn btn-chart-pie">
                             <i class="ti ti-chart-pie"></i>
                         </a>
-                    </li>
+                    </li> -->
                 </ul>
             </li>
             <!-- /Nav List -->
 
             <!-- Email -->
-            <li class="nav-item nav-item-email nav-item-box">
+            <!-- <li class="nav-item nav-item-email nav-item-box">
                 <a href="javascript:void(0);">
                     <i class="ti ti-message-circle-exclamation"></i>
                     <span class="badge rounded-pill">14</span>
                 </a>
-            </li>
+            </li> -->
             <!-- /Email -->
 
             <!-- Notifications -->
