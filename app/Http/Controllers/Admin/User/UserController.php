@@ -13,26 +13,82 @@ use Spatie\Permission\PermissionRegistrar;
 class UserController extends Controller
 {
     // 🔹 List Users
+    // public function index(Request $request)
+    // {
+    //     $roles = Role::all();
+
+    //     // search value
+    //     $search = $request->search;
+
+    //     // base query
+    //     $query = User::with('roles');
+
+    //     if (!auth()->user()->hasRole('super_admin')) {
+
+    //         $query->whereDoesntHave('roles', function ($q) {
+    //             $q->whereIn('name', ['super_admin', 'admin']);
+    //         });
+    //     }
+
+    //     $users = $query->latest()->paginate(10);
+
+    //     // search filter
+    //     if (!empty($search)) {
+
+    //         $query->where(function ($q) use ($search) {
+
+    //             $q->where('name', 'LIKE', "%{$search}%")
+    //                 ->orWhere('email', 'LIKE', "%{$search}%");
+    //         });
+    //     }
+
+    //     // users list
+    //     $users = $query->latest()->get();
+
+    //     // AJAX response
+    //     if ($request->ajax()) {
+
+    //         $html = view(
+    //             'users.partials.table',
+    //             compact('users')
+    //         )->render();
+
+    //         return response()->json([
+    //             'html' => $html
+    //         ]);
+    //     }
+
+    //     // normal page load
+    //     return view(
+    //         'users.index',
+    //         compact('users', 'roles')
+    //     );
+    // }
+
+
     public function index(Request $request)
     {
         $roles = Role::all();
 
-        // search value
         $search = $request->search;
 
-        // base query
         $query = User::with('roles');
 
         if (!auth()->user()->hasRole('super_admin')) {
 
+            $query->whereHas('projects', function ($q) {
+
+                $q->where(
+                    'projects.id',
+                    current_project_id()
+                );
+            });
+
             $query->whereDoesntHave('roles', function ($q) {
-                $q->whereIn('name', ['super_admin', 'admin']);
+                $q->whereIn('name', ['super_admin']);
             });
         }
 
-        $users = $query->latest()->paginate(10);
-
-        // search filter
         if (!empty($search)) {
 
             $query->where(function ($q) use ($search) {
@@ -42,23 +98,18 @@ class UserController extends Controller
             });
         }
 
-        // users list
         $users = $query->latest()->get();
 
-        // AJAX response
         if ($request->ajax()) {
 
-            $html = view(
-                'users.partials.table',
-                compact('users')
-            )->render();
-
             return response()->json([
-                'html' => $html
+                'html' => view(
+                    'users.partials.table',
+                    compact('users')
+                )->render()
             ]);
         }
 
-        // normal page load
         return view(
             'users.index',
             compact('users', 'roles')
