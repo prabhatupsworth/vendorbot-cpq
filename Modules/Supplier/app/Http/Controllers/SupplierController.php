@@ -300,10 +300,10 @@ class SupplierController extends Controller
     public function update(Request $request, $id)
     {
         /*
-    |--------------------------------------------------------------------------
-    | Validation
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | Validation
+        |--------------------------------------------------------------------------
+        */
         // dd($request->all());
         $request->validate([
 
@@ -528,11 +528,15 @@ class SupplierController extends Controller
             'types'        => ['required', 'array'],
             'types.*'      => ['required', 'string'],
         ]);
+
+
+
+
         /*
-    |--------------------------------------------------------------------------
-    | Scrap.io API URL
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | Scrap.io API URL
+        |--------------------------------------------------------------------------
+        */
 
         $url = 'https://scrap.io/api/v2/map/search';
 
@@ -542,10 +546,10 @@ class SupplierController extends Controller
         ];
 
         /*
-    |--------------------------------------------------------------------------
-    | Request Body
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | Request Body
+        |--------------------------------------------------------------------------
+        */
 
         $params = [
 
@@ -566,12 +570,18 @@ class SupplierController extends Controller
             'per_page' => 50
         ];
         /*
-    |--------------------------------------------------------------------------
-    | Cursor Pagination
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | Cursor Pagination
+        |--------------------------------------------------------------------------
+        */
 
         $cursor = null;
+
+        $projectId = current_project_id();
+
+        $allSuppliersData = [];
+        $allSupplierTypes = [];
+        $categories = ScrapCategory::pluck('id', 'scraper_category_id')->toArray();
 
         do {
 
@@ -580,10 +590,10 @@ class SupplierController extends Controller
             }
 
             /*
-        |--------------------------------------------------------------------------
-        | cURL Request
-        |--------------------------------------------------------------------------
-        */
+            |--------------------------------------------------------------------------
+            | cURL Request
+            |--------------------------------------------------------------------------
+            */
 
             $curl = curl_init();
 
@@ -610,18 +620,18 @@ class SupplierController extends Controller
             );
 
             /*
-        |--------------------------------------------------------------------------
-        | Execute Request
-        |--------------------------------------------------------------------------
-        */
+            |--------------------------------------------------------------------------
+            | Execute Request
+            |--------------------------------------------------------------------------
+            */
 
             $response = curl_exec($curl);
 
             /*
-        |--------------------------------------------------------------------------
-        | Error Handling
-        |--------------------------------------------------------------------------
-        */
+            |--------------------------------------------------------------------------
+            | Error Handling
+            |--------------------------------------------------------------------------
+            */
 
             if (curl_errno($curl)) {
 
@@ -636,18 +646,18 @@ class SupplierController extends Controller
             curl_close($curl);
 
             /*
-        |--------------------------------------------------------------------------
-        | Decode Response
-        |--------------------------------------------------------------------------
-        */
+            |--------------------------------------------------------------------------
+            | Decode Response
+            |--------------------------------------------------------------------------
+            */
 
             $json = json_decode($response, true);
 
             /*
-        |--------------------------------------------------------------------------
-        | Next Cursor
-        |--------------------------------------------------------------------------
-        */
+            |--------------------------------------------------------------------------
+            | Next Cursor
+            |--------------------------------------------------------------------------
+            */
 
             $cursor = data_get(
                 $json,
@@ -655,213 +665,274 @@ class SupplierController extends Controller
             );
 
             /*
-        |--------------------------------------------------------------------------
-        | Response Data
-        |--------------------------------------------------------------------------
-        */
+            |--------------------------------------------------------------------------
+            | Response Data
+            |--------------------------------------------------------------------------
+            */
 
             $data = $json['data'] ?? [];
 
             foreach ($data as $supplierData) {
-
-                DB::transaction(function () use ($supplierData) {
-
-                    /*
+        
+                $mainEmail = $supplierData['website_data']['emails'][0]['email']
+                    ?? null;
+        
+                if (empty($mainEmail)) {
+                    continue;
+                }
+        
+                /*
                 |--------------------------------------------------------------------------
-                | Main Email
+                | Working Hours
                 |--------------------------------------------------------------------------
                 */
-
-                    $mainEmail = null;
-
-                    if (
-                        !empty($supplierData['website_data']['emails']) &&
-                        isset(
-                            $supplierData['website_data']['emails'][0]['email']
+        
+                $workingHours = $supplierData['working_hours'] ?? [];
+        
+                $daysMap = [
+                    'monday'    => 'mo',
+                    'tuesday'   => 'di',
+                    'wednesday' => 'mi',
+                    'thursday'  => 'do',
+                    'friday'    => 'fr',
+                    'saturday'  => 'sa',
+                    'sunday'    => 'so',
+                ];
+        
+                $daysOff = [];
+        
+                foreach ($daysMap as $apiDay => $shortDay) {
+        
+                    $value = $workingHours[$apiDay] ?? null;
+        
+                    $daysOff[$shortDay] =
+                        (
+                            is_string($value)
+                            && strtolower($value) === 'closed'
                         )
-                    ) {
-
-                        $mainEmail =
-                            $supplierData['website_data']['emails'][0]['email'];
-                    }
-
-                    /*
+                        ? 0
+                        : 1;
+                }
+        
+                /*
                 |--------------------------------------------------------------------------
-                | Insert / Update Supplier
+                | Supplier Data
                 |--------------------------------------------------------------------------
                 */
-                    $workingHours =
-                        $supplierData['working_hours'] ?? [];
-
-                    $daysMap = [
-
-                        'monday' => 'mo',
-
-                        'tuesday' => 'di',
-
-                        'wednesday' => 'mi',
-
-                        'thursday' => 'do',
-
-                        'friday' => 'fr',
-
-                        'saturday' => 'sa',
-
-                        'sunday' => 'so',
-                    ];
-
-                    $daysOff = [];
-
-                    foreach ($daysMap as $apiDay => $shortDay) {
-
-                        $value = $workingHours[$apiDay] ?? null;
-
-                        /*
-                        |--------------------------------------------------------------------------
-                        | If Closed => 0
-                        | Otherwise => 1
-                        |--------------------------------------------------------------------------
-                         */
-
-                        if (
-                            is_string($value) &&
-                            strtolower($value) === 'closed'
-                        ) {
-
-                            $daysOff[$shortDay] = 0;
-                        } else {
-
-                            $daysOff[$shortDay] = 1;
-                        }
-                    }
-                    $email = $supplierData['emails'][0]['email'] ?? null;
-                    $city  = $supplierData['location_city'] ?? null;
-                    $supplier = Supplier::updateOrCreate(
-
-                        [
-                            'email' => $email,
-                            'city'  => $city,
-                        ],
-
-                        [
-
-                            'name' =>
-                            $supplierData['name'] ?? null,
-
-                            'city' =>
-                            $supplierData['location_city']
-                                ?? null,
-
-                            'email' =>
-                            $mainEmail,
-
-                            'phone' =>
-                            $supplierData['phone']
-                                ?? null,
-
-                            'url' =>
-                            $supplierData['website']
-                                ?? null,
-
-                            'social_facebook' =>
-                            $supplierData['website_data']['facebook'][0]
-                                ?? null,
-
-                            'social_instagram' =>
-                            $supplierData['website_data']['instagram'][0]
-                                ?? null,
-
-                            'country' =>
-                            isset($supplierData['location_country_code'])
-                                ? strtolower(
-                                    $supplierData['location_country_code']
-                                )
-                                : null,
-
-                            'zip' =>
-                            $supplierData['location_postal_code']
-                                ?? null,
-
-                            'street' =>
-                            $supplierData['location_street_1']
-                                ?? null,
-
-                            'lon' =>
-                            $supplierData['location_longitude']
-                                ?? null,
-
-                            'lat' =>
-                            $supplierData['location_latitude']
-                                ?? null,
-
-                            'daysoff' => json_encode($daysOff),
-
-                        ]
-                    );
-
-                    /*
-                |--------------------------------------------------------------------------
-                | Remove Old Categories
-                |--------------------------------------------------------------------------
-                */
-
-                    SupplierCategoryRelationship::where(
-                        'supplier_id',
-                        $supplier->id
-                    )->delete();
-
-                    /*
-                |--------------------------------------------------------------------------
-                | Save Categories
-                |--------------------------------------------------------------------------
-                */
-
-                    foreach (
-                        $supplierData['types'] ?? []
-                        as $type
-                    ) {
-
-                        $category = ScrapCategory::firstOrCreate(
-
-                            [
-                                'scraper_category_id' => $type['type']
-                            ],
-
-                            [
-                                'name' => ucwords(
-                                    str_replace('-', ' ', $type['type'])
-                                ),
-
-                                'description' =>
-                                ucwords(
-                                    str_replace('-', ' ', $type['type'])
-                                ) . ' category imported from Scrap API',
-
-                                'active' => 1
-                            ]
-                        );
-                        SupplierCategoryRelationship::create([
-
-                            'supplier_id' =>
-                            $supplier->id,
-
-                            'category_id' =>
-                            $category->id,
-
-                            'is_main' =>
-                            $type['is_main']
-                                ?? false,
-                        ]);
-                    }
-                });
+        
+                $allSuppliersData[] = [
+                    'project_id' => $projectId,
+        
+                    'email' => $mainEmail,
+        
+                    'name' =>
+                    $supplierData['name'] ?? null,
+        
+                    'city' =>
+                    $supplierData['location_city'] ?? null,
+        
+                    'phone' =>
+                    $supplierData['phone'] ?? null,
+        
+                    'url' =>
+                    $supplierData['website'] ?? null,
+        
+                    'social_facebook' =>
+                    $supplierData['website_data']['facebook'][0]
+                        ?? null,
+        
+                    'social_instagram' =>
+                    $supplierData['website_data']['instagram'][0]
+                        ?? null,
+        
+                    'country' =>
+                    strtolower(
+                        $supplierData['location_country_code']
+                            ?? ''
+                    ),
+        
+                    'zip' =>
+                    $supplierData['location_postal_code']
+                        ?? null,
+        
+                    'street' =>
+                    $supplierData['location_street_1']
+                        ?? null,
+        
+                    'lon' =>
+                    $supplierData['location_longitude']
+                        ?? null,
+        
+                    'lat' =>
+                    $supplierData['location_latitude']
+                        ?? null,
+        
+                    'daysoff' =>
+                    json_encode($daysOff),
+        
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+        
+                $allSupplierTypes[$mainEmail] =
+                    $supplierData['types'] ?? [];
             }
+
+
         } while (!empty($cursor));
 
+        DB::transaction(function () use (
+            $projectId,
+            $allSuppliersData,
+            $allSupplierTypes
+        ) {
+        
+            /*
+            |--------------------------------------------------------------------------
+            | Suppliers Upsert (1000 Chunk)
+            |--------------------------------------------------------------------------
+            */
+        
+            collect($allSuppliersData)
+                ->chunk(1000)
+                ->each(function ($chunk) {
+        
+                    Supplier::upsert(
+                        $chunk->toArray(),
+                        ['project_id', 'email'],
+                        [
+                            'name',
+                            'city',
+                            'phone',
+                            'url',
+                            'social_facebook',
+                            'social_instagram',
+                            'country',
+                            'zip',
+                            'street',
+                            'lon',
+                            'lat',
+                            'daysoff',
+                            'updated_at'
+                        ]
+                    );
+                });
+        
+            /*
+            |--------------------------------------------------------------------------
+            | Categories
+            |--------------------------------------------------------------------------
+            */
+        
+            $categories = ScrapCategory::pluck(
+                'id',
+                'scraper_category_id'
+            )->toArray();
+        
+            /*
+            |--------------------------------------------------------------------------
+            | Supplier IDs
+            |--------------------------------------------------------------------------
+            */
+        
+            $supplierIds = Supplier::where(
+                    'project_id',
+                    $projectId
+                )
+                ->whereIn(
+                    'email',
+                    array_keys($allSupplierTypes)
+                )
+                ->pluck('id', 'email')
+                ->toArray();
+        
+            /*
+            |--------------------------------------------------------------------------
+            | Build Relations
+            |--------------------------------------------------------------------------
+            */
+        
+            $relations = [];
+        
+            foreach ($allSupplierTypes as $email => $types) {
+        
+                $supplierId = $supplierIds[$email] ?? null;
+        
+                if (!$supplierId) {
+                    continue;
+                }
+        
+                foreach ($types as $type) {
+        
+                    $typeCode = $type['type'];
+        
+                    if (!isset($categories[$typeCode])) {
+        
+                        $category = ScrapCategory::create([
+        
+                            'scraper_category_id' => $typeCode,
+        
+                            'name' => ucwords(
+                                str_replace('-', ' ', $typeCode)
+                            ),
+        
+                            'description' => ucwords(
+                                str_replace('-', ' ', $typeCode)
+                            ) . ' category imported from Scrap API',
+        
+                            'active' => 1
+                        ]);
+        
+                        $categories[$typeCode] = $category->id;
+                    }
+        
+                    $relations[] = [
+        
+                        'project_id' => $projectId,
+        
+                        'supplier_id' => $supplierId,
+        
+                        'category_id' => $categories[$typeCode],
+        
+                        'is_main' => $type['is_main'] ?? false,
+        
+                        'created_at' => now(),
+        
+                        'updated_at' => now(),
+                    ];
+                }
+            }
+        
+            /*
+            |--------------------------------------------------------------------------
+            | Relation Upsert (2000 Chunk)
+            |--------------------------------------------------------------------------
+            */
+        
+            collect($relations)
+                ->chunk(2000)
+                ->each(function ($chunk) {
+        
+                    SupplierCategoryRelationship::upsert(
+                        $chunk->toArray(),
+                        [
+                            'project_id',
+                            'supplier_id',
+                            'category_id'
+                        ],
+                        [
+                            'is_main',
+                            'updated_at'
+                        ]
+                    );
+                });
+        });
+
         /*
-    |--------------------------------------------------------------------------
-    | Success Response
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | Success Response
+        |--------------------------------------------------------------------------
+        */
 
         return redirect()
             ->back()

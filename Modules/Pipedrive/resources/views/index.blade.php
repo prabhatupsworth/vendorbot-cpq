@@ -76,6 +76,7 @@
                                                         @endif
 
                                                         @if (userCan('pipedrive.delete'))
+                                                           @if($account->sync_stages != 1)
                                                             <form
                                                                 action="{{ route('settings.pipedrive.destroy', $account->id) }}"
                                                                 method="POST" class="d-inline">
@@ -88,6 +89,7 @@
                                                                     <i class="ti ti-trash"></i>
                                                                 </button>
                                                             </form>
+                                                            @endif
                                                         @endif
                                                     </div>
                                                 </div>
