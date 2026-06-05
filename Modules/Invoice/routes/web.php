@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Modules\Invoice\Http\Controllers\Lexware\LexwareController;
 
-Route::middleware('permission:lexware.view')
+Route::middleware('permission:invoice_management.view')
     ->prefix('settings/invoice/lexware')
     ->name('settings.invoice.lexware.')
     ->controller(LexwareController::class)
@@ -33,7 +33,7 @@ Route::middleware('permission:lexware.view')
         |--------------------------------------------------------------------------
         */
 
-        Route::middleware('permission:lexware.create')
+        Route::middleware('permission:invoice_management.create')
             ->group(function () {
 
                 Route::post('/store', 'store')
@@ -46,7 +46,7 @@ Route::middleware('permission:lexware.view')
         |--------------------------------------------------------------------------
         */
 
-        Route::middleware('permission:lexware.edit')
+        Route::middleware('permission:invoice_management.edit')
             ->group(function () {
 
                 Route::post('/{account}/update', 'update')
@@ -54,7 +54,7 @@ Route::middleware('permission:lexware.view')
             });
 
 
-        Route::middleware('permission:lexware.delete')
+        Route::middleware('permission:invoice_management.delete')
             ->group(function () {
 
                 Route::delete('/{account}/delete', 'destroy')

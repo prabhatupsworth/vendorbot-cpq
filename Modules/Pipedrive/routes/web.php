@@ -5,7 +5,7 @@ use Modules\Pipedrive\Http\Controllers\PipedriveController;
 
 Route::middleware([
     'auth',
-    'permission:pipedrive.view'
+    'permission:crm_integrations.view'
 ])
     ->prefix('settings/pipedrive')
     ->name('settings.pipedrive.')
@@ -27,7 +27,7 @@ Route::middleware([
         |--------------------------------------------------------------------------
         */
 
-        Route::middleware('permission:pipedrive.create')
+        Route::middleware('permission:crm_integrations.create')
             ->group(function () {
 
                 Route::post('/', 'store')
@@ -40,7 +40,7 @@ Route::middleware([
         |--------------------------------------------------------------------------
         */
 
-        Route::middleware('permission:pipedrive.edit')
+        Route::middleware('permission:crm_integrations.edit')
             ->group(function () {
 
                 /*
