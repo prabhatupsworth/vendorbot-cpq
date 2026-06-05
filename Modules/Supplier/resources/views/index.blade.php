@@ -35,10 +35,11 @@
                     <div class="col-lg-6 text-end">
 
                         <div class="d-flex justify-content-end gap-2">
-                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#importSupplierModal">
-                                Import Supplier
-                            </button>
-                            @can('suppliers.create')
+                            @if(userCan('suppliers.create'))
+                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#importSupplierModal">
+                                    Import Supplier
+                                </button>
+
                                 <a href="{{ route('suppliers.create') }}" class="btn btn-primary">
 
                                     <i class="ti ti-square-rounded-plus me-2"> </i>
@@ -46,7 +47,7 @@
                                     Add Supplier
 
                                 </a>
-                            @endcan
+                            @endif
                         </div>
 
                     </div>
