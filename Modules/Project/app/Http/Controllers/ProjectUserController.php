@@ -24,10 +24,17 @@ class ProjectUserController extends Controller
         $project = Project::findOrFail($projectId);
 
         // Sync users (add new + remove unchecked)
-        $project->users()->sync($validated['user_ids']);
+        // $project->users()->sync($validated['user_ids']);
+        $project->users()->syncWithoutDetaching($validated['user_ids']);
 
         // Reload relationship
-        $project->load('users');
+        $project->load([
+            'users' => function ($q) {
+                $q->whereDoesntHave('roles', function ($roleQuery) {
+                    $roleQuery->where('name', 'super_admin');
+                });
+            }
+        ]);
 
         $html = view('project::partials.users-card', [
             'users'     => $project->users,

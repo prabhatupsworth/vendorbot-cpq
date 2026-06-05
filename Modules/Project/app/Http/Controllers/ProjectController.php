@@ -310,8 +310,13 @@ class ProjectController extends Controller
                 'pipedriveAccount:id,account_name',
                 'invoiceAccount:id,type',
                 'companyDetails',
-                'users:id,name,email',
-                'geoFilter'
+                'geoFilter',
+                'users' => function ($q) {
+                    $q->select('users.id', 'users.name', 'users.email')
+                        ->whereDoesntHave('roles', function ($roleQuery) {
+                            $roleQuery->where('name', 'super_admin');
+                        });
+                }
             ]);
 
             if (!$user->hasRole('super-admin')) {
@@ -346,7 +351,9 @@ class ProjectController extends Controller
         |--------------------------------------------------------------------------
         */
 
-            $allUsers = User::pluck('name', 'id')->toArray();
+            $allUsers = User::whereDoesntHave('roles', function ($query) {
+                $query->where('name', 'super_admin');
+            })->pluck('name', 'id')->toArray();
 
             /*
         |--------------------------------------------------------------------------
@@ -433,6 +440,9 @@ class ProjectController extends Controller
     {
         return response()->json([
             'selected_users' => $project->users()
+                ->whereDoesntHave('roles', function ($query) {
+                    $query->where('name', 'super_admin');
+                })
                 ->pluck('users.id')
                 ->toArray()
         ]);

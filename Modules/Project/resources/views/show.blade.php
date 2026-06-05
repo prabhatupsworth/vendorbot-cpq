@@ -526,7 +526,7 @@
                                         data-url="{{ route('projects.smtp.store', $project->id) }}">
                                         <i class="ti ti-plus"></i> Add SMTP
                                     </button>
-                                </div>S
+                                </div>
 
                                 <div class="card-body">
                                     <div class="row g-3" id="smtp-section">
@@ -1006,9 +1006,9 @@
                             'name' => 'user_ids[]',
                             'label' => 'Select User',
                             'type' => 'select',
-                            'multiple' => true,
+                            // 'multiple' => true,
                             'options' => $allUsers ?? [],
-                            'value' => $selectedUsers ?? [],
+                            // 'value' => $selectedUsers ?? [],
                             'required' => true,
                             'col' => 6,
                         ],
