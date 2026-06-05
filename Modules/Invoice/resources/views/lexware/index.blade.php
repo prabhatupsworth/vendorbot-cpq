@@ -31,7 +31,7 @@
 
                                 <div class="col-md-8">
                                     <div class="d-flex align-items-center flex-wrap row-gap-2 justify-content-sm-end">
-                                        @if (userCan('lexware.create'))
+                                        @if (userCan('invoice_management.create'))
                                             <a href="javascript:void(0);" class="btn btn-primary mb-3 add-btn"
                                                 data-bs-toggle="offcanvas" data-bs-target="#offcanvas_add_lexware"><i
                                                     class="ti ti-square-rounded-plus me-2"></i>Add
@@ -53,7 +53,7 @@
                                                         src="{{ asset('template/assets/img/icons/lexware.svg') }}"
                                                         alt="Icon">
                                                     <div>
-                                                        @if (userCan('lexware.edit'))
+                                                        @if (userCan('invoice_management.edit'))
                                                             <button
                                                                 class="btn btn-sm btn-icon btn-primary rounded-pill edit-btn"
                                                                 data-bs-toggle="offcanvas" data-id="{{ $setting->id }}"
@@ -62,7 +62,7 @@
                                                             </button>
                                                         @endif
 
-                                                        @if (userCan('lexware.view'))
+                                                        @if (userCan('invoice_management.view'))
                                                             <button
                                                                 class="btn btn-light btn-icon btn-sm rounded-pill view-details"
                                                                 data-bs-toggle="offcanvas"
@@ -71,7 +71,7 @@
                                                             </button>
                                                         @endif
 
-                                                        @if (userCan('lexware.delete'))
+                                                        @if (userCan('invoice_management.delete'))
                                                             <form
                                                                 action="{{ route('settings.invoice.lexware.destroy', $setting->id) }}"
                                                                 method="POST" class="d-inline">

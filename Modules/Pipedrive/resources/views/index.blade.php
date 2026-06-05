@@ -31,7 +31,7 @@
 
                                 <div class="col-md-8">
                                     <div class="d-flex align-items-center flex-wrap row-gap-2 justify-content-sm-end">
-                                        @if (userCan('pipedrive.create'))
+                                        @if (userCan('crm_integrations.create'))
                                             <a href="javascript:void(0);" class="btn btn-primary mb-3 add-btn"
                                                 data-bs-toggle="offcanvas" data-bs-target="#offcanvas_add_pipedrive"><i
                                                     class="ti ti-square-rounded-plus me-2"></i>Add
@@ -53,7 +53,7 @@
                                                         src="{{ asset('template/assets/img/icons/pipedrive.png') }}"
                                                         alt="Icon">
                                                     <div>
-                                                        @if (userCan('pipedrive.edit'))
+                                                        @if (userCan('crm_integrations.edit'))
                                                             <button
                                                                 class="btn btn-sm btn-icon btn-primary rounded-pill edit-btn"
                                                                 data-bs-toggle="offcanvas"
@@ -65,7 +65,7 @@
                                                             </button>
                                                         @endif
 
-                                                        @if (userCan('pipedrive.view'))
+                                                        @if (userCan('crm_integrations.view'))
                                                             <button
                                                                 class="btn btn-light btn-icon btn-sm rounded-pill view-details"
                                                                 data-bs-toggle="offcanvas"
@@ -75,7 +75,7 @@
                                                             </button>
                                                         @endif
 
-                                                        @if (userCan('pipedrive.delete'))
+                                                        @if (userCan('crm_integrations.delete'))
                                                             <form
                                                                 action="{{ route('settings.pipedrive.destroy', $account->id) }}"
                                                                 method="POST" class="d-inline">
