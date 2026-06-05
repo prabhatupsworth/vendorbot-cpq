@@ -55,6 +55,15 @@ class ProjectSmtpController extends Controller
                 $request->validated()
             );
 
+        if($smtp == 'type_already')
+        {
+            return response()->json([
+
+                'status' => false,
+                'message' => 'SMTP settings for this type have already been created',
+            ]);
+        }
+
         $this->activityLog([
 
             'module' => 'projects',

@@ -243,7 +243,7 @@
                                 @endphp
 
                                 @if ($canShowRole)
-                                    <option value="{{ $role->name }}">
+                                    <option value="{{ $role->name }}" >
                                         {{ ucwords(str_replace('_', ' ', $role->name)) }}
                                     </option>
                                 @endif
@@ -324,6 +324,7 @@
 <!-- /Delete User -->
 
 @push('scripts')
+   
     <script>
         $(document).on('click', '.edit-btn', function() {
 
@@ -338,34 +339,9 @@
                 $('#edit_name').val(data.name);
                 $('#edit_email').val(data.email);
                 $('#edit_role').val(data.role);
-
-
-                if (data.status == 1) {
-                    $('#edit_active').prop('checked', true);
-                } else {
-                    $('#edit_inactive').prop('checked', true);
-                }
-
-                // 🔥 IMPORTANT (this is the missing part)
-                setImagePreview('edit_profile_image', data.profile_image_url);
-
-            });
-        });
-    </script>
-    <script>
-        $(document).on('click', '.edit-btn', function() {
-
-            let id = $(this).data('id');
-
-            // set form action dynamically
-            $('#editUserForm').attr('action', '/users/' + id);
-
-            // fetch user data
-            $.get('/users/' + id + '/edit', function(data) {
-                console.log(data);
-                $('#edit_name').val(data.name);
-                $('#edit_email').val(data.email);
-                $('#edit_role').val(data.role);
+                $('#edit_role')
+                    .val(data.role)
+                    .trigger('change');
 
 
                 if (data.status == 1) {

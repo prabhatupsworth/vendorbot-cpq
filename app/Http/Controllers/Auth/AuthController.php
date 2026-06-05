@@ -32,6 +32,8 @@ class AuthController extends Controller
         if (Auth::attempt($credentials,$remember)) {
             $request->session()->regenerate();
 
+            current_project_id();
+
             return redirect()->route('dashboard')->with('success', 'Logged in successfully');
         }
 

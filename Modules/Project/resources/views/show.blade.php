@@ -1061,7 +1061,7 @@
                         [
                             'name' => 'username',
                             'label' => 'Username',
-                            'type' => 'text',
+                            'type' => 'email',
                             'col' => 6,
                         ],
 

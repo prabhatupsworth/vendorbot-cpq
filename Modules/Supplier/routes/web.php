@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Modules\Supplier\Http\Controllers\SupplierController;
 
 Route::middleware(['web', 'auth'])->group(function () {
-    Route::get('suppliers/import', [SupplierController::class, 'importSuppliers'])->name('suppliers.import');
+    Route::post('suppliers/import', [SupplierController::class, 'importSuppliers'])->name('suppliers.import');
 
     Route::get('suppliers', [SupplierController::class, 'index'])->name('suppliers.index');
     Route::get('suppliers/create', [SupplierController::class, 'create'])->name('suppliers.create');

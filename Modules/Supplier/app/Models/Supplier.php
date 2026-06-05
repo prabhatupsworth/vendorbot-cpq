@@ -3,6 +3,7 @@
 namespace Modules\Supplier\Models;
 
 use App\Models\Country;
+use App\Traits\BelongsToProject;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\Product\Models\ScrapCategory;
@@ -12,12 +13,15 @@ use Modules\Supplier\Enums\SupplierStatusEnum;
 class Supplier extends Model
 {
     use HasFactory;
+    use BelongsToProject;
 
     protected $table = 'suppliers';
 
     protected $fillable = [
 
         'google_id',
+
+        'project_id',
 
         'name',
 

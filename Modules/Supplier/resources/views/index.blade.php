@@ -35,12 +35,9 @@
                     <div class="col-lg-6 text-end">
 
                         <div class="d-flex justify-content-end gap-2">
-
-                            <a href="{{ route('suppliers.index') }}" class="btn btn-light">
-
-                                <i class="ti ti-refresh"></i>
-
-                            </a>
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#importSupplierModal">
+                                Import Supplier
+                            </button>
                             @can('suppliers.create')
                                 <a href="{{ route('suppliers.create') }}" class="btn btn-primary">
 
@@ -428,6 +425,8 @@
                 </div>
 
             </div>
+
+            @include('supplier::partials.supplier-import-modal')
 
         </div>
 
