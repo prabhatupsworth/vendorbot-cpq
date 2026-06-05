@@ -177,12 +177,22 @@ $(document).on("click", ".delete-btn", function () {
 
             success: function (res) {
                 UI.handle(res);
-                Swal.fire({
-                    icon: 'success',
-                    title: res.message,
-                    timer: 1500,
-                    showConfirmButton: false
-                });
+
+                if (res.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: res.message,
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: res.message,
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                }
             },
 
             error: function (xhr) {

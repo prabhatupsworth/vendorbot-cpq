@@ -1060,6 +1060,7 @@
 
                         [
                             'name' => 'username',
+                            'placeholder' => 'example@gmail.com',
                             'label' => 'Username',
                             'type' => 'email',
                             'col' => 6,
@@ -1084,6 +1085,7 @@
                         ],
 
                         [
+                            'placeholder' => 'example@gmail.com',
                             'name' => 'from_email',
                             'label' => 'From Email',
                             'type' => 'email',

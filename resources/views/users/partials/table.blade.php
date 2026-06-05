@@ -44,7 +44,7 @@
                                 Edit
                             </a>
                         @endif
-                        @if (auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('admin') )
+                        @if (auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('admin'))
                             <a href="{{ route('users.permissions', $user->id) }}"
                                 class="dropdown-item d-flex align-items-center">
                                 <i class="ti ti-shield text-success"></i>
@@ -53,7 +53,7 @@
                         @endif
                         @if (userCan('users.delete'))
                             <a href="javascript:void(0);" class="dropdown-item d-flex align-items-center delete-btn"
-                                data-id="{{ $user->id }}" data-bs-toggle="modal" data-bs-target="#delete_contact">
+                                data-id="{{ $user->id }}" data-url="{{ route('users.destroy', $user->id) }}">
 
                                 <i class="ti ti-trash text-danger me-2"></i>
                                 Delete

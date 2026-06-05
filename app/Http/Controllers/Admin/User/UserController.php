@@ -183,6 +183,17 @@ class UserController extends Controller
         // 🔄 Clear permission cache (safe)
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
-        return redirect()->route('users.index')->with('success', 'User deleted successfully');
+        return response()->json([
+            'success' => true,
+            'action'  => 'replace',
+            'target'  => '#user-table-body',
+            'html'    => view(
+                'users.partials.table',
+                [
+                    'users' => User::latest()->get(),
+                ]
+            )->render(),
+            'message' => 'User deleted successfully'
+        ]);
     }
 }
