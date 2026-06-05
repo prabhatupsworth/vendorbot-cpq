@@ -395,7 +395,7 @@
                                                 <a href="{{ route('settings.pipedrive.index') }}"
                                                     class="{{ request()->routeIs('settings.pipedrive.index') ? 'active' : '' }}">
 
-                                                    Pipedrive
+                                                    CRM Integrations
 
                                                 </a>
 
@@ -416,7 +416,7 @@
                                                 <a href="{{ route('settings.invoice.lexware.index') }}"
                                                     class="{{ request()->routeIs('settings.invoice.lexware.index') ? 'active' : '' }}">
 
-                                                    Lexware
+                                                    Invoice Management
 
                                                 </a>
 

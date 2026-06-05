@@ -29,6 +29,7 @@
 
         <td class="text-end">
 
+        @if(!in_array($role->name,['super_admin']))
             <div class="dropdown table-action">
 
                 <a href="#" class="action-icon" data-bs-toggle="dropdown">
@@ -36,38 +37,46 @@
                     <i class="fa fa-ellipsis-v"></i>
                 </a>
                 @if (userCan('roles.edit'))
+                  
                     <div class="dropdown-menu dropdown-menu-end">
                         @if(userCan('roles.edit'))
+                            @if(!in_array($role->name,['super_admin','admin','user']))
                             <a href="javascript:void(0);" class="dropdown-item edit-role" data-id="{{ $role->id }}"
                                 data-name="{{ $role->name }}">
 
                                 <i class="ti ti-edit text-blue"></i>
                                 Edit
                             </a>
+                            @endif
                         @endif
                         @if(userCan('roles.edit'))
+                           
                             <a class="dropdown-item" href="{{ url('/roles/' . $role->id . '/permissions') }}">
 
                                 <i class="ti ti-shield text-success"></i>
                                 Permission
                             </a>
+                           
                         @endif
 
                         <!-- DELETE BUTTON -->
 
                         @if(userCan('roles.delete'))
+                           @if(!in_array($role->name,['super_admin','admin','user']))
                             <a href="javascript:void(0);" class="dropdown-item delete-role" data-id="{{ $role->id }}"
                                 data-name="{{ $role->name }}">
 
                                 <i class="ti ti-trash text-danger"></i>
                                 Delete
                             </a>
+                            @endif
                         @endif
 
                     </div>
+                    
                 @endif
             </div>
-
+            @endif
         </td>
 
     </tr>

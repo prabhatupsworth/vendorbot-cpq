@@ -29,76 +29,91 @@ class ProjectController extends Controller
 
     public function index(Request $request)
     {
-
-
-        $query = Project::query();
         $user = auth()->user();
-        // 🔥 role based visibility
-        if (!$user->hasRole('super_admin')) {
-            $query->whereHas('users', function ($q) use ($user) {
-                $q->where('users.id', $user->id);
-            });
+        if ($user->hasRole('super_admin')) {
+            $query = Project::query();
+            
+            // 🔥 role based visibility
+            if (!$user->hasRole('super_admin')) {
+                $query->whereHas('users', function ($q) use ($user) {
+                    $q->where('users.id', $user->id);
+                });
+            }
+
+            // 🔍 search
+            if ($request->filled('search')) {
+
+                $search = $request->search;
+
+                $query->where(function ($q) use ($search) {
+
+                    $q->where('name', 'like', "%{$search}%")
+                        ->orWhere('website_url', 'like', "%{$search}%")
+                        ->orWhere('event_name', 'like', "%{$search}%");
+                });
+            }
+
+            $projects = $query
+                ->with([
+                    'pipedriveAccount',
+                    'invoiceAccount'
+                ])
+                ->latest()
+                ->paginate(10)
+                ->withQueryString();
+
+            // ajax
+            if ($request->ajax()) {
+
+                $html = view(
+                    'project::partials.table',
+                    compact('projects')
+                )->render();
+
+                return response()->json([
+                    'html' => $html
+                ]);
+            }
+
+            $pipedriveAccounts = PipedriveAccount::pluck(
+                'account_name',
+                'id'
+            );
+
+            $invoiceAccounts = InvoiceAccount::pluck(
+                'type',
+                'id'
+            );
+
+            $currencies = Currency::pluck('name', 'code')->toArray();
+
+            $languages = Language::pluck('name', 'code')->toArray();
+
+            return view(
+                'project::index',
+                compact(
+                    'projects',
+                    'currencies',
+                    'languages',
+                    'pipedriveAccounts',
+                    'invoiceAccounts'
+                )
+            );
+
         }
 
-        // 🔍 search
-        if ($request->filled('search')) {
-
-            $search = $request->search;
-
-            $query->where(function ($q) use ($search) {
-
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('website_url', 'like', "%{$search}%")
-                    ->orWhere('event_name', 'like', "%{$search}%");
-            });
+        $project_id = current_project_id();
+        $project = Project::where('id',$project_id)->whereHas('users', function ($q) use ($user) {
+            $q->where('users.id', $user->id);
+        })->first();
+    
+        if (!@$project->id) {
+            return redirect()->route('projects.index')->with('error', 'Project not assigend');
         }
+    
+        return $this->show($project->id);
 
-        $projects = $query
-            ->with([
-                'pipedriveAccount',
-                'invoiceAccount'
-            ])
-            ->latest()
-            ->paginate(10)
-            ->withQueryString();
 
-        // ajax
-        if ($request->ajax()) {
-
-            $html = view(
-                'project::partials.table',
-                compact('projects')
-            )->render();
-
-            return response()->json([
-                'html' => $html
-            ]);
-        }
-
-        $pipedriveAccounts = PipedriveAccount::pluck(
-            'account_name',
-            'id'
-        );
-
-        $invoiceAccounts = InvoiceAccount::pluck(
-            'type',
-            'id'
-        );
-
-        $currencies = Currency::pluck('name', 'code')->toArray();
-
-        $languages = Language::pluck('name', 'code')->toArray();
-
-        return view(
-            'project::index',
-            compact(
-                'projects',
-                'currencies',
-                'languages',
-                'pipedriveAccounts',
-                'invoiceAccounts'
-            )
-        );
     }
     // ✅ STORE
     public function store(ProjectRequest $request)
