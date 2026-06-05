@@ -34,8 +34,7 @@ if (! function_exists('current_project_id')) {
 
     function current_project_id()
     {
-        return
-            Auth::user()?->current_project_id;
+        return Auth::user()?->current_project_id;
     }
 }
 

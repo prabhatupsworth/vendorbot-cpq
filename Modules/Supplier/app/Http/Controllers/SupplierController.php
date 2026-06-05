@@ -86,12 +86,20 @@ class SupplierController extends Controller
         $categories = ScrapCategory::orderBy('name')
             ->get();
 
+        $countries = Country::where('status', 1)
+            ->pluck('name', 'code');
+        $importCategories = ScrapCategory::where('active', 1)
+            ->orderBy('name')
+            ->pluck('name', 'scraper_category_id');
+
         return view(
             'supplier::index',
             compact(
                 'suppliers',
                 'statuses',
-                'categories'
+                'categories',
+                'countries',
+                'importCategories'
             )
         );
     }
@@ -132,7 +140,7 @@ class SupplierController extends Controller
     public function store(Request $request)
     {
 
-            $request->validate([
+        $request->validate([
 
             'name' => 'required|string|max:255',
 
@@ -296,7 +304,7 @@ class SupplierController extends Controller
     | Validation
     |--------------------------------------------------------------------------
     */
-// dd($request->all());
+        // dd($request->all());
         $request->validate([
 
             'name' => 'required|string|max:255',
@@ -495,7 +503,8 @@ class SupplierController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id) {
+    public function destroy($id)
+    {
 
         $supplier = Supplier::findOrFail($id);
 
@@ -510,8 +519,15 @@ class SupplierController extends Controller
     }
 
 
-    public function importSuppliers()
+    public function importSuppliers(Request  $request)
     {
+
+        $validated = $request->validate([
+            'country_code' => ['required', 'string'],
+            'city'         => ['required', 'string'],
+            'types'        => ['required', 'array'],
+            'types.*'      => ['required', 'string'],
+        ]);
         /*
     |--------------------------------------------------------------------------
     | Scrap.io API URL
@@ -533,13 +549,9 @@ class SupplierController extends Controller
 
         $params = [
 
-            'country_code' => 'de',
-            'city' => 'berlin',
-
-            'types' => [
-                'pizza-restaurant',
-                'italian-restaurant'
-            ],
+            'country_code' => $validated['country_code'],
+            'city'         => $validated['city'],
+            'types' => $validated['types'],
 
             'gmap_is_closed' => false,
 
@@ -722,12 +734,13 @@ class SupplierController extends Controller
                             $daysOff[$shortDay] = 1;
                         }
                     }
-
+                    $email = $supplierData['emails'][0]['email'] ?? null;
+                    $city  = $supplierData['location_city'] ?? null;
                     $supplier = Supplier::updateOrCreate(
 
                         [
-                            'google_id' =>
-                            $supplierData['google_id']
+                            'email' => $email,
+                            'city'  => $city,
                         ],
 
                         [
@@ -850,11 +863,8 @@ class SupplierController extends Controller
     |--------------------------------------------------------------------------
     */
 
-        return response()->json([
-
-            'success' => true,
-
-            'message' => 'Suppliers Imported Successfully'
-        ]);
+        return redirect()
+            ->back()
+            ->with('success', 'Suppliers Imported Successfully');
     }
 }

@@ -49,7 +49,8 @@
 
 @push('scripts')
     <script>
-        $(document).on('submit', '#testMailForm', function(e) {
+        $('#testMailForm').on('submit', function(e) {
+
 
             const form = $(this);
 
