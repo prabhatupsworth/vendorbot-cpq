@@ -225,7 +225,7 @@
                                     @endif
 
                                     @if (userCan('products.create'))
-                                     <li>
+                                        <li>
 
                                             <a href="{{ route('products.create') }}"
                                                 class="{{ request()->routeIs('products.create') ? 'active' : '' }}">
@@ -245,7 +245,6 @@
                                             </a>
 
                                         </li>
-
                                     @endif
 
                                 </ul>
@@ -319,6 +318,7 @@
                 {{-- USER MANAGEMENT --}}
 
                 @if (userCanModule('users'))
+
                     <li>
 
                         <h6 class="submenu-hdr">
@@ -326,114 +326,122 @@
                         </h6>
 
                         <ul>
+                            <li class="submenu">
 
-                            @if (userCan('users.view'))
-                                <li>
+                                <a href="javascript:void(0);"
+                                    class="{{ request()->routeIs('users.*') || request()->routeIs('roles.*') ? 'subdrop active' : '' }}">
 
-                                    <a href="{{ route('users.index') }}"
-                                        class="{{ request()->routeIs('users.*') ? 'active' : '' }}">
+                                    <i class="ti ti-users"></i>
 
-                                        <i class="ti ti-users"></i>
+                                    <span>User Management</span>
 
-                                        <span>Users</span>
+                                    <span class="menu-arrow"></span>
 
-                                    </a>
+                                </a>
 
-                                </li>
-                            @endif
+                                <ul
+                                    style="{{ request()->routeIs('users.*') || request()->routeIs('roles.*') ? 'display:block;' : 'display:none;' }}">
 
-                            @if (auth()->user()->hasRole('super_admin'))
-                                <li>
+                                    @if (userCan('users.view'))
+                                        <li>
+                                            <a href="{{ route('users.index') }}"
+                                                class="{{ request()->routeIs('users.index') ? 'active' : '' }}">
+                                                Users
+                                            </a>
+                                        </li>
+                                    @endif
 
-                                    <a href="{{ route('roles.index') }}"
-                                        class="{{ request()->routeIs('roles.*') ? 'active' : '' }}">
+                                    @if (auth()->user()->hasRole('super_admin'))
+                                        <li>
+                                            <a href="{{ route('roles.index') }}"
+                                                class="{{ request()->routeIs('roles.*') ? 'active' : '' }}">
+                                                Roles & Permissions
+                                            </a>
+                                        </li>
+                                    @endif
 
-                                        <i class="ti ti-navigation-cog"></i>
+                                </ul>
 
-                                        <span>Roles & Permissions</span>
+                            </li>
+                        </ul>
 
-                                    </a>
+                    </li>
 
-                                </li>
-                            @endif
+                @endif
+                {{-- SETTINGS --}}
+                @if (userCanModule('crm_integrations') || userCanModule('invoice_management'))
+                    <li>
+
+                        <h6 class="submenu-hdr">
+                            Settings
+                        </h6>
+
+                        <ul>
+
+                            <li class="submenu">
+
+                                <a href="javascript:void(0);"
+                                    class="{{ request()->routeIs('settings.*') ? 'subdrop active' : '' }}">
+
+                                    <i class="ti ti-settings"></i>
+
+                                    <span>System Settings</span>
+
+                                    <span class="menu-arrow"></span>
+
+                                </a>
+
+                                <ul
+                                    style="{{ request()->routeIs('settings.*') ? 'display:block;' : 'display:none;' }}">
+
+                                    @if (userCanModule('crm_integrations'))
+                                        @if (userCan('crm_integrations.view'))
+
+                                            @if (moduleEnabled('Pipedrive') && Route::has('settings.pipedrive.index'))
+                                                <li>
+
+                                                    <a href="{{ route('settings.pipedrive.index') }}"
+                                                        class="{{ request()->routeIs('settings.pipedrive.index') ? 'active' : '' }}">
+
+                                                        CRM Integrations
+
+                                                    </a>
+
+                                                </li>
+                                            @endif
+
+                                        @endif
+
+                                    @endif
+
+
+                                    @if (userCanModule('invoice_management'))
+                                        @if (userCan('invoice_management.view'))
+
+                                            @if (moduleEnabled('Invoice') && Route::has('settings.invoice.lexware.index'))
+                                                <li>
+
+                                                    <a href="{{ route('settings.invoice.lexware.index') }}"
+                                                        class="{{ request()->routeIs('settings.invoice.lexware.index') ? 'active' : '' }}">
+
+                                                        Invoice Management
+
+                                                    </a>
+
+                                                </li>
+                                            @endif
+
+                                        @endif
+                                    @endif
+
+                                </ul>
+
+                            </li>
 
                         </ul>
 
                     </li>
                 @endif
-                {{-- SETTINGS --}}
-
-                <li>
-
-                    <h6 class="submenu-hdr">
-                        Settings
-                    </h6>
-
-                    <ul>
-
-                        <li class="submenu">
-
-                            <a href="javascript:void(0);"
-                                class="{{ request()->routeIs('settings.*') ? 'subdrop active' : '' }}">
-
-                                <i class="ti ti-settings"></i>
-
-                                <span>System Settings</span>
-
-                                <span class="menu-arrow"></span>
-
-                            </a>
-
-                            <ul style="{{ request()->routeIs('settings.*') ? 'display:block;' : 'display:none;' }}">
-
-                                @if (userCanModule('crm_integrations'))
-                                    @if (userCan('crm_integrations.view'))
-
-                                        @if (moduleEnabled('Pipedrive') && Route::has('settings.pipedrive.index'))
-                                            <li>
-
-                                                <a href="{{ route('settings.pipedrive.index') }}"
-                                                    class="{{ request()->routeIs('settings.pipedrive.index') ? 'active' : '' }}">
-
-                                                    CRM Integrations
-
-                                                </a>
-
-                                            </li>
-                                        @endif
-
-                                    @endif
-
-                                @endif
-
-
-                                @if (userCanModule('invoice_management'))
-                                    @if (userCan('invoice_management.view'))
-
-                                        @if (moduleEnabled('Invoice') && Route::has('settings.invoice.lexware.index'))
-                                            <li>
-
-                                                <a href="{{ route('settings.invoice.lexware.index') }}"
-                                                    class="{{ request()->routeIs('settings.invoice.lexware.index') ? 'active' : '' }}">
-
-                                                    Invoice Management
-
-                                                </a>
-
-                                            </li>
-                                        @endif
-
-                                    @endif
-                                @endif
-
-                            </ul>
-
-                        </li>
-
-                    </ul>
-
-                </li>
-
             </ul>
 
         </div>
