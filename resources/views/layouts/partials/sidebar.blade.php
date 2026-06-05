@@ -342,7 +342,7 @@
                                 </li>
                             @endif
 
-                            @if (userCan('roles.view'))
+                            @if (auth()->user()->hasRole('super_admin'))
                                 <li>
 
                                     <a href="{{ route('roles.index') }}"

@@ -44,7 +44,7 @@
                                 Edit
                             </a>
                         @endif
-                        @if (userCan('users.edit'))
+                        @if (auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('admin') )
                             <a href="{{ route('users.permissions', $user->id) }}"
                                 class="dropdown-item d-flex align-items-center">
                                 <i class="ti ti-shield text-success"></i>

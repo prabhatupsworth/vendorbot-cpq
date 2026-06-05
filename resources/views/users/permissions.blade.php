@@ -229,6 +229,26 @@
             box-shadow: 0 8px 20px rgba(79, 70, 229, .2);
         }
 
+        .permission-checkbox input:disabled+.checkmark {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+            cursor: not-allowed;
+            opacity: .6;
+        }
+
+        .permission-checkbox input:disabled:checked+.checkmark {
+            background: #94a3b8;
+            border-color: #94a3b8;
+        }
+
+        .permission-checkbox input:disabled:checked+.checkmark::after {
+            border-color: #fff;
+        }
+
+        .permission-checkbox:has(input:disabled) {
+            cursor: not-allowed;
+        }
+
         /* MOBILE RESPONSIVE */
         @media (max-width: 768px) {
 
@@ -393,12 +413,12 @@
                                                 </div>
                                             </th>
 
-                                            <th>
+                                            {{-- <th>
                                                 <div class="permission-head full">
                                                     <i class="ti ti-shield-check"></i>
                                                     <span>Module Access</span>
                                                 </div>
-                                            </th>
+                                            </th> --}}
 
                                         </tr>
 
@@ -457,15 +477,17 @@
                                                     @endphp
 
                                                     <td>
+                                                        {{-- @php
+                                                            $isSuperAdmin = auth()->user()->hasRole('super_admin');
+                                                        @endphp
 
                                                         @if (collect($perms)->contains('name', $permissionName))
                                                             <label class="permission-checkbox">
 
                                                                 <input type="checkbox" name="permissions[]"
                                                                     value="{{ $permissionName }}"
-                                                                    {{ in_array($permissionName, $userPermissions) && !in_array($permissionName, $deniedPermissions)
-                                                                        ? 'checked'
-                                                                        : '' }}>
+                                                                    {{ in_array($permissionName, $userPermissions) && !in_array($permissionName, $deniedPermissions) ? 'checked' : '' }}
+                                                                    {{ !$isSuperAdmin ? 'disabled' : '' }}>
                                                                 <span class="checkmark"></span>
 
                                                             </label>
@@ -473,12 +495,39 @@
                                                             <span class="not-available">
                                                                 —
                                                             </span>
-                                                        @endif
+                                                        @endif --}}
+@php
+    $loggedInPermissions = auth()->user()
+        ->getAllPermissions()
+        ->pluck('name')
+        ->toArray();
 
+    $isSuperAdmin = auth()->user()->hasRole('Super Admin');
+
+    $canManagePermission = $isSuperAdmin || in_array($permissionName, $loggedInPermissions);
+@endphp
+
+@if (collect($perms)->contains('name', $permissionName))
+    <label class="permission-checkbox">
+
+        <input
+            type="checkbox"
+            name="permissions[]"
+            value="{{ $permissionName }}"
+            {{ in_array($permissionName, $userPermissions) && !in_array($permissionName, $deniedPermissions) ? 'checked' : '' }}
+            {{ !$canManagePermission ? 'disabled' : '' }}
+        >
+
+        <span class="checkmark"></span>
+
+    </label>
+@else
+    <span class="not-available">—</span>
+@endif
                                                     </td>
                                                 @endforeach
 
-                                                <td>
+                                                {{-- <td>
 
                                                     <label class="switch">
 
@@ -488,7 +537,7 @@
 
                                                     </label>
 
-                                                </td>
+                                                </td> --}}
 
                                             </tr>
                                         @endforeach
