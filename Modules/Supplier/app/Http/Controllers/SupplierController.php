@@ -110,13 +110,7 @@ class SupplierController extends Controller
     public function create()
     {
 
-        if (!current_project_id()) {
 
-            return back()->with(
-                'error',
-                'Please select a project first.'
-            );
-        }
         $countries = Country::orderBy('name')->get();
 
         $categories = ScrapCategory::orderBy('name')->get();
@@ -147,6 +141,26 @@ class SupplierController extends Controller
      */
     public function store(Request $request)
     {
+        if (!current_project_id()) {
+
+            return back()->with(
+                'error',
+                'Please select a project first.'
+            );
+        }
+
+
+        $exists = Supplier::where([
+            'project_id' => current_project_id(),
+            'email'      => $request->email,
+        ])->exists();
+
+        if ($exists) {
+
+            return back()->withErrors([
+                'email' => 'Supplier already exists.'
+            ]);
+        }
 
         $request->validate([
 
@@ -216,7 +230,7 @@ class SupplierController extends Controller
         */
 
         $supplier = Supplier::create([
-
+            'project_id' => current_project_id(),
             'name' => $request->name,
 
             'city' => $request->city,

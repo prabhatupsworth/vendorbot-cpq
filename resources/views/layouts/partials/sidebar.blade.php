@@ -83,7 +83,7 @@
                 @endif
 
                 {{-- DRAFTS --}}
-                @if (userCanModule('draft'))
+                @if (userCanModule('emails'))
                     <li>
 
                         <h6 class="submenu-hdr">
@@ -92,7 +92,7 @@
 
                         <ul>
 
-                            @if (userCan('draft.view'))
+                            @if (userCan('emails.view'))
 
                                 @if (moduleEnabled('Draft') && Route::has('draft.index'))
                                     <li>
