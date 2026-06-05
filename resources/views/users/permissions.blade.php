@@ -480,11 +480,22 @@
                                                         @if (collect($perms)->contains('name', $permissionName))
                                                             <label class="permission-checkbox">
 
+                                                                @php
+                                                                    $inRole = in_array(
+                                                                        $permissionName,
+                                                                        $rolePermissions,
+                                                                    );
+
+                                                                    $isDenied = in_array(
+                                                                        $permissionName,
+                                                                        $deniedPermissions,
+                                                                    );
+                                                                @endphp
+
                                                                 <input type="checkbox" name="permissions[]"
                                                                     value="{{ $permissionName }}"
-                                                                    {{ in_array($permissionName, $userPermissions) && !in_array($permissionName, $deniedPermissions)
-                                                                        ? 'checked'
-                                                                        : 'disabled' }}>
+                                                                    {{ $inRole && !$isDenied ? 'checked' : '' }}
+                                                                    {{ !$inRole ? 'disabled' : '' }}>
                                                                 <span class="checkmark"></span>
 
                                                             </label>

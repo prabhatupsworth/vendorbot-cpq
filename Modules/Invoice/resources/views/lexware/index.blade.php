@@ -72,6 +72,8 @@
                                                         @endif
 
                                                         @if (userCan('invoice_management.delete'))
+                                                            @if(!$setting->projects()->exists())
+
                                                             <form
                                                                 action="{{ route('settings.invoice.lexware.destroy', $setting->id) }}"
                                                                 method="POST" class="d-inline">
@@ -82,6 +84,8 @@
                                                                     <i class="ti ti-trash text-white"></i>
                                                                 </button>
                                                             </form>
+
+                                                            @endif
                                                         @endif
                                                     </div>
                                                 </div>

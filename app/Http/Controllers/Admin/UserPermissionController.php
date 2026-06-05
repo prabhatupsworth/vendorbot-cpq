@@ -13,7 +13,8 @@ class UserPermissionController extends Controller
 {
     public function permissions($id)
     {
-        $user = User::with('roles')->findOrFail($id);
+        $user = User::with('roles.permissions')
+            ->findOrFail($id);
 
         $modules = Permission::all()->groupBy(function ($item) {
             return explode('.', $item->name)[0];
@@ -39,13 +40,23 @@ class UserPermissionController extends Controller
             )
         );
 
+        // Role permissions
+        $rolePermissions = $user->roles
+            ->flatMap(function ($role) {
+                return $role->permissions->pluck('name');
+            })
+            ->unique()
+            ->values()
+            ->toArray();
+
         return view(
             'users.permissions',
             compact(
                 'user',
                 'modules',
                 'userPermissions',
-                'deniedPermissions'
+                'deniedPermissions',
+                'rolePermissions'
             )
         );
     }
