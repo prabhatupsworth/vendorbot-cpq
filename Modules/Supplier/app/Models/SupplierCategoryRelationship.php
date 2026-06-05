@@ -5,11 +5,12 @@ namespace Modules\Supplier\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\Product\Models\ScrapCategory;
+use App\Traits\BelongsToProject;
 
 class SupplierCategoryRelationship extends Model
 {
     use HasFactory;
-
+    use BelongsToProject;
     protected $table = 'supplier_category_relationship';
 
     protected $fillable = [
