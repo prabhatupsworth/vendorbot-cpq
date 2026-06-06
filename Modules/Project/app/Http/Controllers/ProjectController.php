@@ -172,11 +172,11 @@ class ProjectController extends Controller
 
             return response()->json([
                 'status' => true,
-                'action' => 'prepend',
+                'action' => 'replace',
                 'target' => '#project-table-body',
                 'message' => 'Project created successfully',
-                'html' => view('project::partials.list', [
-                    'project' => $project,
+                'html' => view('project::partials.table', [
+                    'projects' => Project::latest()->get(),
                 ])->render(),
             ]);
         } catch (ValidationException $e) {
@@ -299,7 +299,6 @@ class ProjectController extends Controller
                 'status' => 'success',
                 'message' => 'Project deleted successfully.',
             ]);
-            // return redirect()->back()->with('success', 'Project deleted successfully');
             return response()->json([
                 'status' => true,
                 'action' => 'delete',
