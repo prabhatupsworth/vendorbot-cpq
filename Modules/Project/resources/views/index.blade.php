@@ -80,7 +80,7 @@
 
                                     <tbody id="project-table-body">
 
-                                        @include('project::partials.table')
+                                        @include('project::partials.table',['projects'=>$projects])
 
                                     </tbody>
                                 </table>

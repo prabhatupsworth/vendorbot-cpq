@@ -99,7 +99,6 @@ $(document).on("submit", ".ajax-form", function (e) {
         contentType: false, // ✅ IMPORTANT
 
         success: function (res) {
-            console.log(res);
             Swal.fire({
                 icon: 'success',
                 title: res.message,
@@ -178,7 +177,7 @@ $(document).on("click", ".delete-btn", function () {
             success: function (res) {
                 UI.handle(res);
 
-                if (res.success) {
+                if (res.status) {
                     Swal.fire({
                         icon: 'success',
                         title: res.message,
