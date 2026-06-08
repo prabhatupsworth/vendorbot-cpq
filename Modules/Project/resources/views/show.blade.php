@@ -454,8 +454,23 @@
                                 {{-- Header --}}
                                 <div
                                     class="card-header bg-white border-bottom d-flex justify-content-between align-items-center">
-                                    <h5 class="fw-bold mb-0">Company Details</h5>
+                                    <div>
+                                    <h5 class="fw-bold mb-0">
+                                        Company Details
+                                        <i class="fa-solid fa-circle-info ms-1"
 
+                                        data-bs-toggle="tooltip"
+
+                                        data-bs-placement="right"
+
+                                        title="Company details used in projects and invoice email generation">
+                                        </i>
+
+                                    </h5>
+                                    <small class="text-muted">
+                                        Used in project setup and invoice emails
+                                    </small>
+                                    </div>
                                     {{-- ✅ Button Toggle --}}
                                 </div>
 
@@ -714,8 +729,8 @@
                                         </h5>
 
                                         <!-- <small class="text-muted">
-                                                Configure actions for each pipeline stage.
-                                            </small> -->
+                                                    Configure actions for each pipeline stage.
+                                                </small> -->
                                     </div>
 
                                     <button class="btn btn-primary add-form" data-bs-toggle="offcanvas"
