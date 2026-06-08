@@ -291,9 +291,10 @@ class ProductController extends Controller
     {
         try {
 
-            $scrapCategories = ScrapCategory::where('active', true)
-                ->orderBy('name')
-                ->pluck('name', 'id')
+            $projectId = current_project_id();
+            $scrapCategories = ScrapCategory::whereHas('supplierRelations', function ($q) use ($projectId) {
+                $q->where('project_id', $projectId);
+            })->pluck('name', 'id')
                 ->toArray();
 
             return view(

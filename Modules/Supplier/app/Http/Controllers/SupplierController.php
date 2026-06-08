@@ -10,7 +10,9 @@ use Modules\Product\Models\ScrapCategory;
 use Modules\Supplier\Enums\SupplierStatusEnum;
 use Modules\Supplier\Models\Supplier;
 use Modules\Supplier\Models\SupplierCategoryRelationship;
-
+use Modules\Supplier\Models\SupplierSyncHistory;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 class SupplierController extends Controller
 {
 
@@ -94,6 +96,11 @@ class SupplierController extends Controller
             ->orderBy('name')
             ->pluck('name', 'scraper_category_id');
 
+        $lastSync = SupplierSyncHistory::where(
+            'project_id',
+            current_project_id()
+        )->latest()->first();
+
         return view(
             'supplier::index',
             compact(
@@ -101,7 +108,8 @@ class SupplierController extends Controller
                 'statuses',
                 'categories',
                 'countries',
-                'importCategories'
+                'importCategories',
+                'lastSync'
             )
         );
     }
@@ -963,5 +971,43 @@ class SupplierController extends Controller
         return redirect()
             ->back()
             ->with('success', 'Suppliers Imported Successfully');
+    }
+
+    public function resync(Request $request)
+    {
+        try {
+
+            $validated = $request->validate([
+                'sync_period' => [
+                    'required',
+                    'in:15_days,30_days,3_months,6_months'
+                ],
+            ]);
+
+            SupplierSyncHistory::create([
+                'project_id'  => current_project_id(),
+                'sync_period' => $validated['sync_period'],
+            ]);
+
+            return back()->with(
+                'success',
+                'Supplier re-sync period saved successfully.'
+            );
+        } catch (ValidationException $e) {
+
+            throw $e;
+        } catch (\Exception $e) {
+
+            Log::error(
+                'Supplier Re-Sync Error: ' . $e->getMessage()
+            );
+
+            return back()
+                ->withInput()
+                ->with(
+                    'error',
+                    'Failed to save supplier re-sync settings.'
+                );
+        }
     }
 }

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 <style>
-    .select2-container .select2-search--inline .select2-search__field{
+    .select2-container .select2-search--inline .select2-search__field {
         height: 25px !important;
     }
 </style>
@@ -35,8 +35,17 @@
                     <div class="col-lg-6 text-end">
 
                         <div class="d-flex justify-content-end gap-2">
-                            @if(userCan('suppliers.create'))
-                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#importSupplierModal">
+                            @if (userCan('suppliers.create'))
+                                <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                                    data-bs-target="#resyncModal">
+
+                                    <i class="ti ti-refresh"></i>
+                                    Re-Sync Suppliers
+
+                                </button>
+
+                                <button class="btn btn-primary" data-bs-toggle="modal"
+                                    data-bs-target="#importSupplierModal">
                                     Import Supplier
                                 </button>
 
@@ -49,7 +58,29 @@
                                 </a>
                             @endif
                         </div>
+                        @if ($lastSync)
+                            <div class="alert alert-info d-flex align-items-center py-2 mt-2">
 
+                                <i class="ti ti-refresh me-2"></i>
+
+                                <div>
+
+                                    Supplier sync was last executed on
+
+                                    <strong>
+                                        {{ $lastSync->created_at->format('d M Y h:i A') }}
+                                    </strong>
+
+                                    for
+
+                                    <strong>
+                                        {{ str_replace('_', ' ', $lastSync->sync_period) }}
+                                    </strong>.
+
+                                </div>
+
+                            </div>
+                        @endif
                     </div>
 
                 </div>
@@ -428,9 +459,115 @@
             </div>
 
             @include('supplier::partials.supplier-import-modal')
+            <div class="modal fade" id="resyncModal" tabindex="-1">
 
+                <div class="modal-dialog">
+
+                    <div class="modal-content">
+
+                        <div class="modal-header">
+
+                            <h5 class="modal-title">
+
+                                Re-Sync Suppliers
+
+                            </h5>
+
+                            <button type="button" class="btn-close" data-bs-dismiss="modal">
+                            </button>
+
+                        </div>
+
+                        <form id="resyncForm" method="POST" action="{{ route('suppliers.resync', $supplier->id) }}">
+
+                            @csrf
+
+                            <div class="modal-body">
+
+                                <div class="mb-3">
+
+                                    <label class="form-label">
+
+                                        Select Sync Period
+
+                                    </label>
+
+                                    <select name="sync_period" class="select" required>
+
+                                        <option value="">
+                                            Select Period
+                                        </option>
+
+                                        <option value="15_days" @selected(optional($lastSync)->sync_period === '15_days')>
+                                            Last 15 Days
+                                        </option>
+
+                                        <option value="30_days" @selected(optional($lastSync)->sync_period === '30_days')>
+                                            Last 30 Days
+                                        </option>
+
+                                        <option value="3_months" @selected(optional($lastSync)->sync_period === '3_months')>
+                                            Last 3 Months
+                                        </option>
+
+                                        <option value="6_months" @selected(optional($lastSync)->sync_period === '6_months')>
+                                            Last 6 Months
+                                        </option>
+
+                                    </select>
+
+                                </div>
+
+                            </div>
+
+                            <div class="modal-footer">
+
+                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">
+
+                                    Cancel
+
+                                </button>
+
+                                <button id="syncSubmitBtn" type="submit" class="btn btn-warning">
+
+                                    <i class="ti ti-refresh"></i>
+
+                                    Save
+
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
         </div>
 
     </div>
+
+    @push('scripts')
+        <script>
+            $(document).on('submit', '#resyncForm', function(e) {
+
+                let btn = $('#syncSubmitBtn');
+
+                if (btn.data('processing')) {
+                    e.preventDefault();
+                    return false;
+                }
+
+                btn.data('processing', true);
+
+                btn.prop('disabled', true);
+
+                btn.html(`<span class="spinner-border spinner-border-sm me-2"></span>Syncing...`);
+
+            });
+        </script>
+    @endpush
 
 @endsection

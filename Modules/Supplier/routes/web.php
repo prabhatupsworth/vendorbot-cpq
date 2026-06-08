@@ -5,7 +5,7 @@ use Modules\Supplier\Http\Controllers\SupplierController;
 
 Route::middleware(['web', 'auth'])->group(function () {
     Route::post('suppliers/import', [SupplierController::class, 'importSuppliers'])->name('suppliers.import');
-
+    Route::post('/suppliers/{supplier}/resync',[SupplierController::class, 'resync'])->name('suppliers.resync');
     Route::get('suppliers', [SupplierController::class, 'index'])->name('suppliers.index');
     Route::get('suppliers/create', [SupplierController::class, 'create'])->name('suppliers.create');
     Route::post('suppliers', [SupplierController::class, 'store'])->name('suppliers.store');
