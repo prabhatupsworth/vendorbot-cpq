@@ -282,11 +282,23 @@ class SupplierController extends Controller
         |--------------------------------------------------------------------------
         */
 
+        // if ($request->filled('categories')) {
+
+        //     $supplier->categories()->sync(
+        //         $request->categories
+        //     );
+        // }
         if ($request->filled('categories')) {
 
-            $supplier->categories()->sync(
-                $request->categories
-            );
+            $syncData = [];
+        
+            foreach ($request->categories as $categoryId) {
+                $syncData[$categoryId] = [
+                    'project_id' => current_project_id(),
+                ];
+            }
+        
+            $supplier->categories()->sync($syncData);
         }
 
         return redirect()
@@ -501,7 +513,9 @@ class SupplierController extends Controller
 
                 $syncCategories[$categoryId] = [
                     
-                    'is_main' => 0
+                    'is_main' => 0,
+                    'project_id' => current_project_id(),
+                    
                 ];
             }
         }
