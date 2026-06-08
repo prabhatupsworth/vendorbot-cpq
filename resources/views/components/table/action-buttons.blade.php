@@ -31,7 +31,7 @@
             @if ($emailUrl && $emailPermission)
                 @if (userCan($emailPermission))
                     <a href="{{ $emailUrl }}" class="dropdown-item">
-                        <i class="ti ti-mail text-info"></i> Email
+                        <i class="ti ti-mail text-info"></i> Test Mail
                     </a>
                 @endif
             @endif

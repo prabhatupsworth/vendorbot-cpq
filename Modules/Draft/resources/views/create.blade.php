@@ -125,7 +125,7 @@
 
                                     <input type="text" name="subject"
                                         class="form-control @error('subject') is-invalid @enderror"
-                                        placeholder="Enter draft subject" value="{{ old('subject') }}" required>
+                                        placeholder="Enter subject" value="{{ old('subject') }}" required>
 
                                     @error('subject')
                                         <div class="invalid-feedback">

@@ -78,7 +78,6 @@
                             <div class="col-md-6">
                                 <label class="form-label">
                                     CRM Product ID
-                                    <span class="text-danger">*</span>
                                 </label>
 
                                 <input type="text"
@@ -86,7 +85,7 @@
                                     class="form-control"
                                     value="{{ old('crm_product_id', $product->crm_product_id) }}"
                                     placeholder="Enter CRM product ID"
-                                    required>
+                                    >
                             </div>
 
                             <div class="col-md-6">
