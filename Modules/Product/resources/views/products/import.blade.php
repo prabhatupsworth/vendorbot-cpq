@@ -72,11 +72,9 @@
                                 <div class="mb-3">
                                      <label class="form-label">
                                         Scrap Categories
-                                        <span class="text-danger">*</span>
-
                                     </label>
                                     <select class="js-example-placeholder-multiple select2 js-states" id="scrap_categories"
-                                        name="scrap_categories[]" multiple required>
+                                        name="scrap_categories[]" multiple>
 
                                         @foreach ($scrapCategories as $id => $category)
                                             <option value="{{ $id }}">

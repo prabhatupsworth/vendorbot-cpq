@@ -325,7 +325,7 @@ class ProductController extends Controller
             ],
 
             'scrap_categories' => [
-                'required',
+                'nullable',
                 'array'
             ],
         ]);
@@ -361,44 +361,35 @@ class ProductController extends Controller
             $response = Http::timeout(120)
                 ->acceptJson()
                 ->get(
-
-                    "{$account->base_url}/api/v2/products/{$validated['crm_product_id']}",
-
+                    "https://api.pipedrive.com/v1/products/{$validated['crm_product_id']}",
                     [
-                        'api_token' =>
-                        $account->api_key
+                        'api_token' => $account->api_key,
                     ]
                 );
 
-            /*
-        |--------------------------------------------------------------------------
-        | API Failed
-        |--------------------------------------------------------------------------
-        */
-
-
-            if (!$response->successful()) {
+            if ($response->status() === 404) {
 
                 return back()->with(
                     'error',
-                    'Failed to fetch product from Pipedrive'
+                    'The selected product no longer exists in Pipedrive. Please refresh products and try again.'
                 );
             }
 
-            /*
-        |--------------------------------------------------------------------------
-        | Product Data
-        |--------------------------------------------------------------------------
-        */
-
-            $data = $response->json('data');
-
-
-            if (!$data) {
+            if (! $response->successful()) {
 
                 return back()->with(
                     'error',
-                    'Product not found'
+                    'Failed to fetch product from Pipedrive.'
+                );
+            }
+
+            $data = $response->json('data');
+
+            if (! $data) {
+
+                return back()->with(
+                    'error',
+                    'The selected product was not found in Pipedrive.'
                 );
             }
 
@@ -431,11 +422,11 @@ class ProductController extends Controller
                 [
                     'project_id' => current_project_id(),
 
-                    'title' =>
-                    $data['name'],
+                    'title' => $data['name'],
 
-                    'description' =>
-                    $data['description'] ?? null,
+                    'product_code' => $data['product_code'],
+
+                    'description' => $data['description'] ?? null,
 
                     'price' => $price,
 
