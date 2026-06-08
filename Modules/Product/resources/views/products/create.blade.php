@@ -72,10 +72,9 @@
                                 <div class="col-md-6">
                                     <label class="form-label">
                                         CRM Product ID
-                                        <span class="text-danger">*</span>
                                     </label>
                                     <input type="text" name="crm_product_id" class="form-control"
-                                        placeholder="Enter CRM product ID" required>
+                                        placeholder="Enter CRM product ID">
                                 </div>
 
                                 <div class="col-md-6">

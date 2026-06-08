@@ -11,25 +11,24 @@
                     <span class="badge bg-primary text-uppercase">
                         {{ $smtp->type }}
                     </span>
-                    @if ($smtp->connected)
-                        <span class="badge bg-success">
-                            Connected
-                        </span>
-                    @else
-                        <span class="badge bg-danger">
-                            Not Connected
-                        </span>
-                    @endif
+
                 </div>
                 <div class="d-flex gap-2">
-                    <button class="btn btn-sm btn-light border text-info edit-form" data-bs-toggle="offcanvas"
-                        data-bs-target="#smtpTestCanvas" data-form="#smtpTestForm" data-method="POST"
-                        data-url="{{ route('projects.smtp.test', [$projectId, $smtp->id]) }}">
-                        <i class="ti ti-mail-forward"></i>
-                    </button>
+                    <span data-bs-toggle="tooltip" title="Send a test email to verify SMTP connection">
+
+                        <button class="btn btn-sm btn-light border text-info edit-form" data-bs-toggle="offcanvas"
+                            data-bs-target="#smtpTestCanvas" data-form="#smtpTestForm" data-method="POST"
+                            data-url="{{ route('projects.smtp.test', [$projectId, $smtp->id]) }}">
+
+                            <i class="ti ti-mail-forward"></i>
+                            Test SMTP
+                        </button>
+
+                    </span>
                     <button class="btn btn-sm btn-light border edit-form" data-type="edit" data-bs-toggle="offcanvas"
                         data-bs-target="#smtpCanvas" data-data='@json($smtp)' data-form="#smtpForm"
-                        data-method="PUT" data-title="Edit SMTP" data-url="{{ route('projects.smtp.update', [$projectId, $smtp->id]) }}">
+                        data-method="PUT" data-title="Edit SMTP"
+                        data-url="{{ route('projects.smtp.update', [$projectId, $smtp->id]) }}">
                         <i class="ti ti-edit"></i>
                     </button>
 
@@ -63,13 +62,27 @@
                     <strong>{{ $smtp->from_name }}</strong><br>
                     <span class="text-muted">{{ $smtp->from_email }}</span>
                 </div>
-                @if ($smtp->is_active)
-                    <span class="badge bg-success">Active</span>
-                @else
-                    <span class="badge bg-primary text-uppercase">
-                        Inactive
-                    </span>
-                @endif
+                <div>
+                    @if ($smtp->is_active)
+                        <span class="badge bg-success">Active</span>
+                    @else
+                        <span class="badge bg-primary text-uppercase">
+                            Inactive
+                        </span>
+                    @endif
+
+                    @if ($smtp->connected)
+                        <span class="badge bg-success">
+                            Connected
+                        </span>
+                    @else
+                        <span class="badge bg-danger">
+                            Not Connected
+                        </span>
+                    @endif
+
+
+                </div>
 
             </div>
 
@@ -86,7 +99,9 @@
             No SMTP configured
         </p>
 
-        <button class="btn btn-primary btn-sm add-form" data-title="Add SMTP" data-bs-toggle="offcanvas" data-bs-target="#smtpCanvas"  data-form="smtpForm" data-url="{{ route('projects.smtp.store', $project->id) }}">
+        <button class="btn btn-primary btn-sm add-form" data-title="Add SMTP" data-bs-toggle="offcanvas"
+            data-bs-target="#smtpCanvas" data-form="smtpForm"
+            data-url="{{ route('projects.smtp.store', $project->id) }}">
 
             <i class="ti ti-plus"></i> Add SMTP
 

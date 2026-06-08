@@ -74,7 +74,7 @@
 
                                                 </span>
 
-                                                <input required type="text" name="name" class="form-control @error('name') is-invalid @enderror"
+                                                <input placeholder="Enter supplier name" required type="text" name="name" class="form-control @error('name') is-invalid @enderror"
                                                     value="{{ old('name') }}">
                                                 @error('name')
                                                     <div class="invalid-feedback">
@@ -107,7 +107,7 @@
 
                                                 </span>
 
-                                                <input type="text" name="city" class="form-control"
+                                                <input placeholder="Enter city" type="text" name="city" class="form-control"
                                                     value="{{ old('city') }}">
 
                                             </div>
@@ -222,7 +222,7 @@
 
                                                 </span>
 
-                                                <input type="text" name="cp_name" class="form-control"
+                                                <input placeholder="Enter contact person" type="text" name="cp_name" class="form-control"
                                                     value="{{ old('cp_name') }}">
 
                                             </div>
@@ -249,7 +249,7 @@
 
                                                 </span>
 
-                                                <input type="number" name="capacity" class="form-control"
+                                                <input placeholder="Enter Capacity" type="number" name="capacity" class="form-control"
                                                     value="{{ old('capacity') }}">
 
                                             </div>
@@ -303,7 +303,7 @@
 
                                                 </span>
 
-                                                <input required type="email" name="email" class="form-control @error('email') is-invalid @enderror"
+                                                <input placeholder="Enter email" required type="email" name="email" class="form-control @error('email') is-invalid @enderror"
                                                     value="{{ old('email') }}">
                                                  @error('email')
                                                     <div class="invalid-feedback">

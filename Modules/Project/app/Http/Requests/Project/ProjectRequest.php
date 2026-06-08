@@ -24,7 +24,7 @@ class ProjectRequest extends FormRequest
             'flow_type' => 'required|in:simple,full',
             'invoice_enabled' => 'nullable|boolean',
             'pipedrive_account_id' => 'nullable|exists:pipedrive_accounts,id',
-            'pipeline_id' => 'nullable|exists:pipedrive_pipelines,id',
+            'pipeline_id' => ['required_with:pipedrive_account_id','exists:pipedrive_pipelines,id',],
             'invoice_account_id' => 'nullable|exists:invoice_accounts,id',
         ];
     }
@@ -35,6 +35,8 @@ class ProjectRequest extends FormRequest
         return [
             'name.required' => 'Project name is required',
             'flow_type.in' => 'Invalid flow type selected',
+            'pipeline_id.required_with' =>
+            'Please select a CRM Pipeline when a CRM Account is selected.',
         ];
     }
 

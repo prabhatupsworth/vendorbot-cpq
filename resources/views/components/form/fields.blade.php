@@ -37,6 +37,7 @@
 
                 <x-form.input
                     :type="$field['type']"
+                    :step="$field['step'] ?? null"
                     :label="$field['label']"
                     :name="$field['name']"
                     :value="$field['value'] ?? null"

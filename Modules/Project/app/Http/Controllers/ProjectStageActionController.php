@@ -18,7 +18,6 @@ class ProjectStageActionController extends Controller
      */
     public function store(Request $request, int $projectId)
     {
-
         try {
 
             $validated = $request->validate([
@@ -26,33 +25,29 @@ class ProjectStageActionController extends Controller
                 'action_type' => 'required',
             ]);
 
+            /*
+        |--------------------------------------------------------------------------
+        | Prevent Duplicate Mapping
+        |--------------------------------------------------------------------------
+        */
+
             $exists = StageAction::where('project_id', $projectId)
                 ->where('stage_id', $validated['stage_id'])
+                ->where('action_type', $validated['action_type'])
                 ->exists();
 
             if ($exists) {
+
                 throw ValidationException::withMessages([
                     'stage_id' => [
-                        'This stage is already mapped.'
+                        'This stage and action type is already mapped.'
                     ]
                 ]);
             }
 
-            $config = $this->generateConfig(
-                $validated['action_type'],
-                $request
-            );
-
-            $stage = StageAction::create([
-                'project_id'    => $projectId,
-                'stage_id'      => $validated['stage_id'],
-                'action_type'   => $validated['action_type'],
-                'action_config' => $config,
-            ]);
-
             /*
         |--------------------------------------------------------------------------
-        | Dynamic Config
+        | Generate Config
         |--------------------------------------------------------------------------
         */
 
@@ -63,20 +58,15 @@ class ProjectStageActionController extends Controller
 
             /*
         |--------------------------------------------------------------------------
-        | Create Automation
+        | Create Stage Action
         |--------------------------------------------------------------------------
         */
 
             $stage = StageAction::create([
-
                 'project_id'    => $projectId,
-
                 'stage_id'      => $validated['stage_id'],
-
                 'action_type'   => $validated['action_type'],
-
                 'action_config' => $config,
-
             ]);
 
             /*
@@ -100,7 +90,6 @@ class ProjectStageActionController extends Controller
                 'performed_at' => now(),
                 'status'       => 'success',
                 'message'      => 'Stage Action created successfully.',
-
             ]);
 
             /*
@@ -110,36 +99,27 @@ class ProjectStageActionController extends Controller
         */
 
             return response()->json([
-
                 'status'  => true,
-
                 'action'  => 'append',
-
                 'target'  => '#satege-mapping',
-
                 'message' => 'Stage Action created successfully',
-
                 'html'    => view('project::partials.stage-mapping', [
-
                     'automation' => $stage,
-
-                    'projectId'  => $projectId
-
+                    'projectId'  => $projectId,
                 ])->render()
-
             ]);
+        } catch (ValidationException $e) {
+
+            throw $e;
         } catch (\Exception $e) {
 
             Log::error(
-                'Automation Store Error: ' . $e->getMessage()
+                'Stage Action Store Error: ' . $e->getMessage()
             );
 
             return response()->json([
-
                 'status'  => false,
-
-                'message' => $e->getMessage() ?? 'Failed to create action'
-
+                'message' => 'Failed to create Stage Action'
             ], 500);
         }
     }
