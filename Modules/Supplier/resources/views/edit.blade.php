@@ -56,9 +56,9 @@
 
                             <div>
 
-                                    <span class="badge bg-{{ $supplier->status?->badge() }}">
-                                            {{ $supplier->status?->label() }}
-                                        </span>
+                                <span class="badge bg-{{ $supplier->status?->badge() }}">
+                                    {{ $supplier->status?->label() }}
+                                </span>
 
                             </div>
 
@@ -119,8 +119,18 @@
 
                                                 </span>
 
-                                                <input type="text" name="name" class="form-control"
+                                                <input placeholder="Enter supplier name" type="text" name="name"
+                                                    class="form-control @error('name') is-invalid @enderror"
                                                     value="{{ old('name', $supplier->name) }}">
+
+                                                @error('name')
+                                                    <div class="invalid-feedback">
+
+                                                        {{ $message }}
+
+                                                    </div>
+                                                @enderror
+
 
                                             </div>
 
@@ -146,8 +156,17 @@
 
                                                 </span>
 
-                                                <input type="text" name="city" class="form-control"
+                                                <input placeholder="Enter city" type="text" name="city"
+                                                    class="form-control form-control @error('city') is-invalid @enderror"
                                                     value="{{ old('city', $supplier->city) }}">
+
+                                                @error('city')
+                                                    <div class="invalid-feedback">
+
+                                                        {{ $message }}
+
+                                                    </div>
+                                                @enderror
 
                                             </div>
 
@@ -165,7 +184,8 @@
                                                 Country
                                             </label>
 
-                                            <select name="country" class="form-select select2">
+                                            <select name="country"
+                                                class="form-select select2 @error('country') is-invalid @enderror">
 
                                                 <option value="">
                                                     Select Country
@@ -179,6 +199,13 @@
                                                         ({{ strtoupper($country->code) }})
                                                     </option>
                                                 @endforeach
+                                                @error('country')
+                                                    <div class="invalid-feedback">
+
+                                                        {{ $message }}
+
+                                                    </div>
+                                                @enderror
 
                                             </select>
 
@@ -187,13 +214,13 @@
                                     </div>
 
 
-                                     <div class="col-md-6">
+                                    <div class="col-md-6">
                                         <div class="mb-4">
 
                                             <label class="form-label">
                                                 Status
                                             </label>
-                                            <select name="status" class="select">
+                                            <select name="status" class="select @error('status') is-invalid @enderror">
 
                                                 @foreach (\Modules\Supplier\Enums\SupplierStatusEnum::cases() as $status)
                                                     <option value="{{ $status->value }}"
@@ -205,6 +232,13 @@
                                                 @endforeach
 
                                             </select>
+                                            @error('status')
+                                                <div class="invalid-feedback">
+
+                                                    {{ $message }}
+
+                                                </div>
+                                            @enderror
                                         </div>
                                     </div>
 
@@ -216,7 +250,8 @@
                                                 Salutation to the contact person
                                             </label>
 
-                                            <select name="cp_title" class="form-select select2"
+                                            <select name="cp_title"
+                                                class="form-select select2 @error('status') is-invalid @enderror"
                                                 aria-label="Title Contact person">
 
                                                 <option value="">
@@ -239,7 +274,13 @@
                                                 </option>
 
                                             </select>
+                                            @error('cp_title')
+                                                <div class="invalid-feedback">
 
+                                                    {{ $message }}
+
+                                                </div>
+                                            @enderror
                                         </div>
 
                                     </div>
@@ -262,9 +303,16 @@
 
                                                 </span>
 
-                                                <input type="text" name="cp_name" class="form-control"
+                                                <input placeholder="Enter contact person name" type="text" name="cp_name"
+                                                    class="form-control @error('cp_name') is-invalid @enderror"
                                                     value="{{ old('cp_name', $supplier->cp_name) }}">
+                                                @error('cp_name')
+                                                    <div class="invalid-feedback">
 
+                                                        {{ $message }}
+
+                                                    </div>
+                                                @enderror
                                             </div>
 
                                         </div>
@@ -289,9 +337,16 @@
 
                                                 </span>
 
-                                                <input type="number" name="capacity" class="form-control"
+                                                <input placeholder="Enter capacity" type="number" name="capacity"
+                                                    class="form-control  @error('capacity') is-invalid @enderror"
                                                     value="{{ old('capacity', $supplier->capacity) }}">
+                                                @error('capacity')
+                                                    <div class="invalid-feedback">
 
+                                                        {{ $message }}
+
+                                                    </div>
+                                                @enderror
                                             </div>
 
                                         </div>
@@ -343,8 +398,16 @@
 
                                                 </span>
 
-                                                <input type="email" name="email" class="form-control"
+                                                <input placeholder="Enter email" type="email" name="email"
+                                                    class="form-control @error('email') is-invalid @enderror"
                                                     value="{{ old('email', $supplier->email) }}">
+                                                @error('email')
+                                                    <div class="invalid-feedback">
+
+                                                        {{ $message }}
+
+                                                    </div>
+                                                @enderror
 
                                             </div>
 
@@ -370,8 +433,16 @@
 
                                                 </span>
 
-                                                <input type="text" name="phone" class="form-control"
+                                                <input placeholder="Enter phone" type="text" name="phone"
+                                                    class="form-control @error('phone') is-invalid @enderror"
                                                     value="{{ old('phone', $supplier->phone) }}">
+                                                @error('phone')
+                                                    <div class="invalid-feedback">
+
+                                                        {{ $message }}
+
+                                                    </div>
+                                                @enderror
 
                                             </div>
 
@@ -397,9 +468,16 @@
 
                                                 </span>
 
-                                                <input type="text" name="url" class="form-control"
+                                                <input placeholder="Enter website url" type="text" name="url"
+                                                    class="form-control  @error('url') is-invalid @enderror"
                                                     value="{{ old('url', $supplier->url) }}">
+                                                @error('url')
+                                                    <div class="invalid-feedback">
 
+                                                        {{ $message }}
+
+                                                    </div>
+                                                @enderror
                                             </div>
 
                                         </div>
@@ -424,8 +502,17 @@
 
                                                 </span>
 
-                                                <input type="text" name="social_facebook" class="form-control"
+                                                <input placeholder="Enter facebook url" type="text"
+                                                    name="social_facebook"
+                                                    class="form-control  @error('social_facebook') is-invalid @enderror"
                                                     value="{{ old('social_facebook', $supplier->social_facebook) }}">
+                                                @error('social_facebook')
+                                                    <div class="invalid-feedback">
+
+                                                        {{ $message }}
+
+                                                    </div>
+                                                @enderror
 
                                             </div>
 
@@ -451,8 +538,17 @@
 
                                                 </span>
 
-                                                <input type="text" name="social_instagram" class="form-control"
+                                                <input placeholder="Enter Instagram url" type="text"
+                                                    name="social_instagram"
+                                                    class="form-control  @error('social_instagram') is-invalid @enderror"
                                                     value="{{ old('social_instagram', $supplier->social_instagram) }}">
+                                                @error('social_instagram')
+                                                    <div class="invalid-feedback">
+
+                                                        {{ $message }}
+
+                                                    </div>
+                                                @enderror
 
                                             </div>
 
@@ -496,8 +592,17 @@
                                                 Street
                                             </label>
 
-                                            <input type="text" name="street" class="form-control"
+                                            <input placeholder="Enter street" type="text" name="street"
+                                                class="form-control @error('street') is-invalid @enderror"
                                                 value="{{ old('street', $supplier->street) }}">
+
+                                            @error('street')
+                                                <div class="invalid-feedback">
+
+                                                    {{ $message }}
+
+                                                </div>
+                                            @enderror
 
                                         </div>
 
@@ -513,8 +618,17 @@
                                                 Postcode
                                             </label>
 
-                                            <input type="text" name="zip" class="form-control"
+                                            <input placeholder="Enter postal code" type="text" name="zip"
+                                                class="form-control @error('zip') is-invalid @enderror"
                                                 value="{{ old('zip', $supplier->zip) }}">
+
+                                            @error('zip')
+                                                <div class="invalid-feedback">
+
+                                                    {{ $message }}
+
+                                                </div>
+                                            @enderror
 
                                         </div>
 
@@ -530,8 +644,16 @@
                                                 Latitude
                                             </label>
 
-                                            <input type="text" name="lat" class="form-control"
+                                            <input placeholder="Enter lat" type="text" name="lat"
+                                                class="form-control @error('lat') is-invalid @enderror"
                                                 value="{{ old('lat', $supplier->lat) }}">
+                                            @error('lat')
+                                                <div class="invalid-feedback">
+
+                                                    {{ $message }}
+
+                                                </div>
+                                            @enderror
 
                                         </div>
 
@@ -547,8 +669,17 @@
                                                 Longitude
                                             </label>
 
-                                            <input type="text" name="lon" class="form-control"
-                                                value="{{ old('lon', $supplier->lon) }}">
+                                            <input type="text" name="lon"
+                                                class="form-control @error('lon') is-invalid @enderror"
+                                                value="{{ old('lon', $supplier->lon) }}" placeholder="Enter Lon">
+
+                                            @error('lon')
+                                                <div class="invalid-feedback">
+
+                                                    {{ $message }}
+
+                                                </div>
+                                            @enderror
 
                                         </div>
 
@@ -578,7 +709,7 @@
 
                             <div class="card-body">
 
-                                <select name="categories[]" class="form-select select2" multiple>
+                                <select name="categories[]" class="form-select select2 @error('categories') is-invalid @enderror" multiple>
 
                                     @foreach ($categories as $category)
                                         <option value="{{ $category->id }}"
@@ -590,6 +721,13 @@
                                     @endforeach
 
                                 </select>
+                                @error('categories')
+                                    <div class="invalid-feedback">
+
+                                        {{ $message }}
+
+                                    </div>
+                                @enderror
 
                             </div>
 
@@ -612,7 +750,14 @@
 
                             <div class="card-body">
 
-                                <textarea name="notice" class="form-control" rows="4">{{ old('notice', $supplier->notice) }}</textarea>
+                                <textarea placeholder="Enter notice" name="notice" class="form-control @error('notice') is-invalid @enderror" rows="4">{{ old('notice', $supplier->notice) }}</textarea>
+                                @error('notice')
+                                    <div class="invalid-feedback">
+
+                                        {{ $message }}
+
+                                    </div>
+                                @enderror
 
                             </div>
 
@@ -636,7 +781,14 @@
 
                             <div class="card-body">
 
-                                <textarea name="notice_intern" class="form-control" rows="4">{{ old('notice_intern', $supplier->notice_intern) }}</textarea>
+                                <textarea placeholder="Enter notice intern" name="notice_intern" class="form-control @error('notice_intern') is-invalid @enderror" rows="4">{{ old('notice_intern', $supplier->notice_intern) }}</textarea>
+                                @error('notice_intern')
+                                    <div class="invalid-feedback">
+
+                                        {{ $message }}
+
+                                    </div>
+                                @enderror
 
                             </div>
 

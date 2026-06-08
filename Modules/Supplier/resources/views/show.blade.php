@@ -313,7 +313,7 @@
 
                                         <div class="form-check">
 
-                                            <input class="form-check-input" type="checkbox" checked="{{ $isOpen }}"
+                                            <input class="form-check-input" type="checkbox" {{ $isOpen ? 'checked' : '' }}
                                                 disabled>
 
                                             <label class="form-check-label small">
