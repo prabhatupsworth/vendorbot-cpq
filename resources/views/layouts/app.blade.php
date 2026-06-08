@@ -315,19 +315,19 @@
     </script>
 
     <script>
-
     document.addEventListener('DOMContentLoaded', function () {
 
-    vartooltipTriggerList= [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipTriggerList = [].slice.call(
+            document.querySelectorAll('[data-bs-toggle="tooltip"]')
+        );
 
-    tooltipTriggerList.map(function (tooltipTriggerEl) {
-
-    returnnewbootstrap.Tooltip(tooltipTriggerEl);
-
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
         });
 
     });
     </script>
+
  
 </body>
 
