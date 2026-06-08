@@ -290,11 +290,23 @@ class SupplierController extends Controller
         |--------------------------------------------------------------------------
         */
 
+        // if ($request->filled('categories')) {
+
+        //     $supplier->categories()->sync(
+        //         $request->categories
+        //     );
+        // }
         if ($request->filled('categories')) {
 
-            $supplier->categories()->sync(
-                $request->categories
-            );
+            $syncData = [];
+        
+            foreach ($request->categories as $categoryId) {
+                $syncData[$categoryId] = [
+                    'project_id' => current_project_id(),
+                ];
+            }
+        
+            $supplier->categories()->sync($syncData);
         }
 
         return redirect()
@@ -508,8 +520,10 @@ class SupplierController extends Controller
             foreach ($request->categories as $categoryId) {
 
                 $syncCategories[$categoryId] = [
-
-                    'is_main' => 0
+                    
+                    'is_main' => 0,
+                    'project_id' => current_project_id(),
+                    
                 ];
             }
         }
@@ -760,6 +774,7 @@ class SupplierController extends Controller
                     'project_id' => $projectId,
 
                     'email' => $mainEmail,
+                    'google_id' => $supplierData['google_id'], 
 
                     'name' =>
                     $supplierData['name'] ?? null,
@@ -835,6 +850,7 @@ class SupplierController extends Controller
                         $chunk->toArray(),
                         ['project_id', 'email'],
                         [
+                            'google_id',
                             'name',
                             'city',
                             'phone',
