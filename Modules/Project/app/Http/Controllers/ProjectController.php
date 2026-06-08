@@ -20,7 +20,7 @@ use Modules\Project\Models\Project;
 use Modules\Project\Models\Smtp;
 use App\Traits\ActivityLogTrait;
 use Illuminate\Validation\ValidationException;
-
+use Modules\Project\Models\StageAction;
 
 class ProjectController extends Controller
 {
@@ -32,7 +32,7 @@ class ProjectController extends Controller
         $user = auth()->user();
         if ($user->hasRole('super_admin')) {
             $query = Project::query();
-            
+
             // 🔥 role based visibility
             if (!$user->hasRole('super_admin')) {
                 $query->whereHas('users', function ($q) use ($user) {
@@ -99,21 +99,18 @@ class ProjectController extends Controller
                     'invoiceAccounts'
                 )
             );
-
         }
 
         $project_id = current_project_id();
-        $project = Project::where('id',$project_id)->whereHas('users', function ($q) use ($user) {
+        $project = Project::where('id', $project_id)->whereHas('users', function ($q) use ($user) {
             $q->where('users.id', $user->id);
         })->first();
-    
+
         if (!@$project->id) {
             return redirect()->route('projects.index')->with('error', 'Project not assigend');
         }
-    
+
         return $this->show($project->id);
-
-
     }
     // ✅ STORE
     public function store(ProjectRequest $request)
@@ -239,8 +236,38 @@ class ProjectController extends Controller
                 ]
             ]);
         }
+
+
         try {
             $project = Project::findOrFail($id);
+
+            $hasStageMapping = StageAction::where(
+                'project_id',
+                $project->id
+            )->exists();
+
+            if ($hasStageMapping) {
+
+                if (
+                    $project->pipedrive_account_id != $request->pipedrive_account_id
+                ) {
+                    throw ValidationException::withMessages([
+                        'pipedrive_account_id' => [
+                            'CRM Account cannot be changed because stage mappings already exist.'
+                        ]
+                    ]);
+                }
+
+                if (
+                    $project->pipeline_id != $request->pipeline_id
+                ) {
+                    throw ValidationException::withMessages([
+                        'pipeline_id' => [
+                            'CRM Pipeline cannot be changed because stage mappings already exist.'
+                        ]
+                    ]);
+                }
+            }
 
             $project->update([
                 'name' => $validated['name'],

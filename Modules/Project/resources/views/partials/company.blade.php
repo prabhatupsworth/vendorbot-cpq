@@ -1,4 +1,11 @@
    @if ($company)
+       <div class="d-flex justify-content-end">
+        <button class="btn btn-sm btn-primary edit-form mb-4" data-bs-toggle="offcanvas" data-bs-target="#companyCanvas"
+           data-type="edit" data-url="{{ route('projects.company.store', $projectId) }}" data-method="POST"
+           data-data='@json($company)' data-bs-toggle="offcanvas" data-form="#companyForm">
+           <i class="ti ti-edit"></i> Edit
+       </button>
+       </div>
        {{-- ✅ SHOW COMPANY DATA --}}
        <div class="row g-4">
 
@@ -7,8 +14,7 @@
                <div class="text-center p-4 border rounded bg-light-subtle h-100">
 
                    @if ($company->logo)
-                       <img src="{{ asset($company->logo) }}" class="img-fluid rounded mb-3"
-                           style="max-height:120px;">
+                       <img src="{{ asset($company->logo) }}" class="img-fluid rounded mb-3" style="max-height:120px;">
                    @else
                        <div class="text-muted py-4">
                            <i class="ti ti-photo fs-1"></i>
@@ -79,7 +85,9 @@
                Add company information to manage billing, invoices, and integrations.
            </p>
 
-           <button class="btn btn-success" data-title="Add Company" data-form="#companyForm" data-url="{{ route('projects.company.store', $project->id) }}" data-bs-toggle="offcanvas" data-bs-target="#companyCanvas">
+           <button class="btn btn-success" data-title="Add Company" data-form="#companyForm"
+               data-url="{{ route('projects.company.store', $project->id) }}" data-bs-toggle="offcanvas"
+               data-bs-target="#companyCanvas">
                <i class="ti ti-plus"></i> Add Company
            </button>
 

@@ -42,6 +42,7 @@ class ProjectCompanyDetailController extends Controller
                 'company' => $company,
                 'html' => view('project::partials.company', [
                     'company' => $company,
+                    'projectId' => $projectId
                 ])->render(),
                 'message' => 'Company saved successfully',
                 'data' => $company

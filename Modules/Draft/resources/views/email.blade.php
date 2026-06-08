@@ -23,7 +23,7 @@
                     </div>
 
                     <div class="col-lg-6 text-end">
-                        @if (userCan('draft.create'))
+                        @if (userCan('email.create'))
                             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#testMailModal">
                                 Send Test Email
                             </button>

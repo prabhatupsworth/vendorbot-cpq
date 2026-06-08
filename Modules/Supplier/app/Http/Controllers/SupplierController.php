@@ -83,8 +83,10 @@ class SupplierController extends Controller
 
         $statuses = SupplierStatusEnum::cases();
 
-        $categories = ScrapCategory::orderBy('name')
-            ->get();
+        $projectId = current_project_id();
+        $categories = ScrapCategory::whereHas('supplierRelations', function ($q) use ($projectId) {
+            $q->where('project_id', $projectId);
+        })->get();
 
         $countries = Country::where('status', 1)
             ->pluck('name', 'code');
