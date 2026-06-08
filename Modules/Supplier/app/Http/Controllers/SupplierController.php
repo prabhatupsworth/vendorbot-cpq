@@ -149,19 +149,23 @@ class SupplierController extends Controller
             );
         }
 
+        if ($request->filled('email')) {
 
-        $exists = Supplier::where([
-            'project_id' => current_project_id(),
-            'email'      => $request->email,
-        ])->exists();
+            $exists = Supplier::where(
+                'project_id',
+                current_project_id()
+            )
+                ->where('email', $request->email)
+                ->exists();
 
-        if ($exists) {
-
-            return back()->withErrors([
-                'email' => 'Supplier already exists.'
-            ]);
+            if ($exists) {
+                return back()
+                    ->withErrors([
+                        'email' => 'Supplier already exists.'
+                    ])
+                    ->withInput();
+            }
         }
-
         $request->validate([
 
             'name' => 'required|string|max:255',
