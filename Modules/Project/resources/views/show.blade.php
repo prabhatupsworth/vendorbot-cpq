@@ -371,7 +371,13 @@
                             <div class="card shadow-sm border-0">
 
                                 <div class="card-header bg-white border-bottom d-flex justify-content-between">
-                                    <h5 class="fw-bold mb-0">Project Status</h5>
+                                    <h5 class="fw-bold mb-0">Project Status 
+                                        <i class="fa-solid fa-circle-info"
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="top"
+                                        title="Connect your website to this Project. Once connected, it will automatically appear in the connected list. Connected At shows when the connection was established, and Last Ping shows the most recent successful communication with the website.">
+                                        </i>
+                                    </h5>
                                 </div>
 
                                 <div class="card-body">
@@ -454,7 +460,11 @@
 
                                 <!-- Header -->
                                 <div class="card-header d-flex justify-content-between align-items-center">
-                                    <h5 class="fw-semibold mb-0">Project Users</h5>
+                                    <h5 class="fw-semibold mb-0">Project Users <i class="fa-solid fa-circle-info ms-1"
+                                    data-bs-toggle="tooltip"
+                                    data-bs-placement="right"
+                                    title="Assigned users can access this project's data and work on all project-related modules based on their role permissions.">
+                                    </i></h5>
 
                                     <button class="btn btn-sm btn-primary add-form" data-bs-toggle="offcanvas"
                                         data-bs-target="#userCanvas" data-title="Add User" data-form="#userForm"
@@ -487,7 +497,11 @@
                             <div class="card border-0 shadow-sm">
 
                                 <div class="card-header d-flex justify-content-between align-items-center">
-                                    <h5 class="mb-0 fw-semibold">SMTP Settings</h5>
+                                    <h5 class="mb-0 fw-semibold">SMTP Settings <i class="fa-solid fa-circle-info ms-1"
+                                    data-bs-toggle="tooltip"
+                                    data-bs-placement="right"
+                                    title="All emails use the Default SMTP account by default. You can assign separate SMTP accounts for Supplier, Customer, and Invoice emails. Emails will be sent using the assigned SMTP account; otherwise, the Default SMTP account will be used.">
+                                    </i></h5>
 
                                     <button class="btn btn-sm btn-primary create-form add-form" data-bs-toggle="offcanvas"
                                         data-bs-target="#smtpCanvas" data-title="Add SMTP" data-form="#smtpForm"
@@ -517,7 +531,20 @@
 
                                 <!-- 🔹 Header -->
                                 <div class="card-header d-flex justify-content-between align-items-center">
-                                    <h5 class="mb-0 fw-semibold">GEO Filter</h5>
+                                    
+                                    <div>
+                                        <h5 class="mb-0 fw-semibold">GEO Filter <i class="fa-solid fa-circle-info ms-1"
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="right"
+                                        title="Use latitude, longitude, and radius to find suppliers within a specific geographic area. Only suppliers inside the defined radius will be included.">
+                                        </i>
+                                      
+                                         </h5>
+                                         <small class="text-muted">
+                                         Supplier Search Radius
+                                        </small>
+                                    </div>
+                                    
 
                                     {{-- @if ($project->geoFilter)
                                         <button class="btn btn-sm btn-primary edit-form" data-bs-toggle="offcanvas"
@@ -587,7 +614,11 @@
                                     <div>
 
                                         <h5 class="fw-bold mb-1">
-                                            Field Mapping
+                                            Field Mapping <i class="fa-solid fa-circle-info ms-1"
+                                            data-bs-toggle="tooltip"
+                                            data-bs-placement="right"
+                                            title="Map CRM fields to your system fields. During synchronization, data from the selected CRM field will automatically populate the mapped system field.">
+                                            </i>
                                         </h5>
 
                                         <small class="text-muted">
@@ -623,7 +654,7 @@
                                                     </th>
 
                                                     <th>
-                                                        Pipedrive Field
+                                                        CRM Field
                                                     </th>
 
                                                     <th width="150" class="text-end pe-4">
@@ -664,12 +695,16 @@
 
                                     <div>
                                         <h5 class="fw-semibold mb-1">
-                                            Stage Actions
+                                            Stage Actions <i class="fa-solid fa-circle-info ms-1"
+                                            data-bs-toggle="tooltip"
+                                            data-bs-placement="right"
+                                            title="Map CRM stages to Vendorbot CPQ workflow actions. As a deal progresses through the CPQ process, Vendorbot automatically updates the CRM deal stage based on the configured stage mappings.">
+                                            </i>
                                         </h5>
 
-                                        <small class="text-muted">
+                                        <!-- <small class="text-muted">
                                             Configure actions for each pipeline stage.
-                                        </small>
+                                        </small> -->
                                     </div>
 
                                     <button class="btn btn-primary add-form" data-bs-toggle="offcanvas"
@@ -695,7 +730,7 @@
                                             <thead class="table-light">
 
                                                 <tr>
-                                                    <th>Pipeline Stage</th>
+                                                    <th>CRM Stage</th>
                                                     <th>Trigger</th>
                                                     <th>Action Type</th>
                                                     <th>Status</th>
@@ -1190,7 +1225,7 @@
                         ],
                         [
                             'name' => 'pipedrive_field_key',
-                            'label' => 'Pipedrive Field',
+                            'label' => 'CRM Field',
                             'type' => 'select',
                             'options' => $pipedriveFields ?? [],
                             'required' => true,
@@ -1226,7 +1261,7 @@
                         ],
                         [
                             'name' => 'stage_id',
-                            'label' => 'Stage',
+                            'label' => 'CRM Stage',
                             'type' => 'select',
                             'options' => $stages ?? [],
                             'required' => true,

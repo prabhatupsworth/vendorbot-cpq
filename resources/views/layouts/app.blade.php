@@ -313,6 +313,22 @@
                 .catch(error => console.error(error));
         });
     </script>
+
+    <script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+    vartooltipTriggerList= [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+
+    tooltipTriggerList.map(function (tooltipTriggerEl) {
+
+    returnnewbootstrap.Tooltip(tooltipTriggerEl);
+
+        });
+
+    });
+    </script>
+ 
 </body>
 
 </html>

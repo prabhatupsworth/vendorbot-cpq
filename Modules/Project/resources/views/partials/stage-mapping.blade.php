@@ -18,9 +18,9 @@
                      {{ $automation->stage?->name ?? 'N/A' }}
                  </h6>
 
-                 <small class="text-muted">
-                     Pipeline Stage
-                 </small>
+                 <!-- <small class="text-muted">
+                     CRM Stage
+                 </small> -->
 
              </div>
 
