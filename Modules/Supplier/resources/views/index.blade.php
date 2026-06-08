@@ -478,7 +478,7 @@
 
                         </div>
 
-                        <form id="resyncForm" method="POST" action="{{ route('suppliers.resync', $supplier->id) }}">
+                        <form id="resyncForm" method="POST" action="{{ route('suppliers.resync') }}">
 
                             @csrf
 
