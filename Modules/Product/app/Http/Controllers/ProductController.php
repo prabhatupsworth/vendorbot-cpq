@@ -414,7 +414,7 @@ class ProductController extends Controller
 
                     'title' => $data['name'],
 
-                    'product_code' => $data['product_code'],
+                    'product_code' => $data['code'],
 
                     'description' => $data['description'] ?? null,
 
@@ -435,11 +435,9 @@ class ProductController extends Controller
         | Attach Categories
         |--------------------------------------------------------------------------
         */
-
-            $product->scrapCategories()
-                ->sync(
-                    $validated['scrap_categories']
-                );
+            $product->scrapCategories()->sync(
+                $validated['scrap_categories'] ?? []
+            );
 
             return redirect()
                 ->back()
