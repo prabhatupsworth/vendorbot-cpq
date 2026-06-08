@@ -23,7 +23,7 @@
 
                     <small class="text-muted">
 
-                        Internal System Field
+                        System Field
 
                     </small>
 

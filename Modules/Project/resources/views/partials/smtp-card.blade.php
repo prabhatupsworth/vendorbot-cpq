@@ -9,19 +9,24 @@
 
                 <div>
                     <span class="badge bg-primary text-uppercase">
-                        {{ $smtp->type }}
-                    </span>
+                        {{ $smtp->type }}             </span>
+                        <i class="fa-solid fa-circle-info ms-1"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="right"
+                        title="Send a test email to verify the SMTP connection. After successful verification, the SMTP status will be marked as Connected.">
+                        </i>
+        
 
                 </div>
                 <div class="d-flex gap-2">
-                    <span data-bs-toggle="tooltip" title="Send a test email to verify SMTP connection">
+                    <span data-bs-toggle="tooltip" title="Send a test email to verify the SMTP connection. After successful verification, the SMTP status will be marked as Connected.">
 
                         <button class="btn btn-sm btn-light border text-info edit-form" data-bs-toggle="offcanvas"
                             data-bs-target="#smtpTestCanvas" data-form="#smtpTestForm" data-method="POST"
                             data-url="{{ route('projects.smtp.test', [$projectId, $smtp->id]) }}">
 
                             <i class="ti ti-mail-forward"></i>
-                            Test SMTP
+                            Test SMTP 
                         </button>
 
                     </span>
