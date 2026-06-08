@@ -333,9 +333,8 @@
 
                                                 <div>
                                                     <small class="text-muted">VAT</small>
-
                                                     <div class="fw-semibold">
-                                                        {{ number_format($project->vat ?? 0, 2) }}%
+                                                        {{ number_format($project->vat ?? 0, 0) }}%
                                                     </div>
                                                 </div>
                                             </div>
