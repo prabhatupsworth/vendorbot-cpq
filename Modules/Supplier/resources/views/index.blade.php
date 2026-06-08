@@ -3,6 +3,17 @@
     .select2-container .select2-search--inline .select2-search__field{
         height: 25px !important;
     }
+    .google-strike:before {
+    content: " ";
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 0px;
+    width: 30px;
+    height: 2px;
+    background-color: #fff;
+    transform: rotate(45deg);
+}
 </style>
 @section('content')
 

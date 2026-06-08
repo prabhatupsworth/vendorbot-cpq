@@ -500,7 +500,7 @@ class SupplierController extends Controller
             foreach ($request->categories as $categoryId) {
 
                 $syncCategories[$categoryId] = [
-
+                    
                     'is_main' => 0
                 ];
             }
@@ -752,6 +752,7 @@ class SupplierController extends Controller
                     'project_id' => $projectId,
 
                     'email' => $mainEmail,
+                    'google_id' => $supplierData['google_id'], 
 
                     'name' =>
                     $supplierData['name'] ?? null,
@@ -827,6 +828,7 @@ class SupplierController extends Controller
                         $chunk->toArray(),
                         ['project_id', 'email'],
                         [
+                            'google_id',
                             'name',
                             'city',
                             'phone',
