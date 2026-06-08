@@ -351,6 +351,7 @@ class ProductController extends Controller
                 );
             }
 
+
             /*
         |--------------------------------------------------------------------------
         | Fetch Product From Pipedrive
@@ -374,6 +375,7 @@ class ProductController extends Controller
         | API Failed
         |--------------------------------------------------------------------------
         */
+
 
             if (!$response->successful()) {
 
