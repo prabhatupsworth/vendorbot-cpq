@@ -67,7 +67,7 @@
                 <div class="modal-footer">
 
                     <button id="sendMailBtn" type="submit" class="btn btn-primary">
-                        Send
+                        Import
                     </button>
 
                 </div>
@@ -96,7 +96,7 @@
             $('#sendMailBtn')
                 .prop('disabled', true)
                 .html(
-                    '<span class="spinner-border spinner-border-sm me-1"></span>Sending...'
+                    '<span class="spinner-border spinner-border-sm me-1"></span>Importing...'
                 );
         });
 
