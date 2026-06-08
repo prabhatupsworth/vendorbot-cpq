@@ -63,6 +63,7 @@
 
                                             <label class="form-label">
                                                 Supplier Name
+                                                 <span class="text-danger">*</span>
                                             </label>
 
                                             <div class="input-group">
@@ -73,9 +74,15 @@
 
                                                 </span>
 
-                                                <input type="text" name="name" class="form-control"
+                                                <input required type="text" name="name" class="form-control @error('name') is-invalid @enderror"
                                                     value="{{ old('name') }}">
+                                                @error('name')
+                                                    <div class="invalid-feedback">
 
+                                                        {{ $message }}
+
+                                                    </div>
+                                                @enderror
                                             </div>
 
                                         </div>
@@ -285,6 +292,7 @@
 
                                             <label class="form-label">
                                                 Email
+                                                 <span class="text-danger">*</span>
                                             </label>
 
                                             <div class="input-group">
@@ -295,8 +303,15 @@
 
                                                 </span>
 
-                                                <input type="email" name="email" class="form-control"
+                                                <input required type="email" name="email" class="form-control @error('email') is-invalid @enderror"
                                                     value="{{ old('email') }}">
+                                                 @error('email')
+                                                    <div class="invalid-feedback">
+
+                                                        {{ $message }}
+
+                                                    </div>
+                                                @enderror
 
                                             </div>
 
