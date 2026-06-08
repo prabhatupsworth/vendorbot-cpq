@@ -592,7 +592,7 @@
                                                 Street
                                             </label>
 
-                                            <input type="text" name="street"
+                                            <input placeholder="Enter street" type="text" name="street"
                                                 class="form-control @error('street') is-invalid @enderror"
                                                 value="{{ old('street', $supplier->street) }}">
 
