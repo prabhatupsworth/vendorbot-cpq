@@ -23,6 +23,13 @@
                     </div>
 
                     <div class="col-lg-6 text-end">
+                        <a href="{{ route('draft.index') }}" class="btn btn-light">
+
+                            <i class="ti ti-arrow-left me-1"></i>
+
+                            Back
+
+                        </a>
                         @if (userCan('email.create'))
                             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#testMailModal">
                                 Send Test Email

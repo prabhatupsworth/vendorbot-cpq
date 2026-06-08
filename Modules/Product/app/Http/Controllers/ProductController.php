@@ -102,8 +102,6 @@ class ProductController extends Controller
     {
         $validated = $request->validate([
 
-            'crm_product_id' => 'required|string|max:255',
-
             'title' => 'required|string|max:255',
 
             'sub_title' => 'nullable|string|max:255',
@@ -129,10 +127,6 @@ class ProductController extends Controller
         try {
 
             $product = Product::create([
-
-                // 'project_id' => current_project_id(),
-
-                'crm_product_id' => $validated['crm_product_id'],
 
                 'title' => $validated['title'],
 
@@ -184,8 +178,6 @@ class ProductController extends Controller
 
         $validated = $request->validate([
 
-            'crm_product_id' => 'required|string|max:255',
-
             'title' => 'required|string|max:255',
 
             'sub_title' => 'nullable|string|max:255',
@@ -210,8 +202,6 @@ class ProductController extends Controller
         try {
 
             $product->update([
-
-                'crm_product_id' => $validated['crm_product_id'],
 
                 'title' => $validated['title'],
 

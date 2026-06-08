@@ -25,7 +25,7 @@
 
                         <h3 class="page-title fw-bold">
 
-                            Draft Details
+                            Email Details
 
                         </h3>
 
