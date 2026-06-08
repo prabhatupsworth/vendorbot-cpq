@@ -183,8 +183,22 @@
 
                                     <div class="row g-4">
                                         <div class="col-md-6">
+                                            <div class="d-flex align-items-start gap-3 p-3 rounded bg-light-subtle border">
+                                                <i class="ti ti-git-branch fs-4 text-primary"></i>
+                                                <div>
+                                                    <small class="text-muted">Flow Type</small>
+                                                    <div>
+                                                        <span class="badge bg-primary text-uppercase">
+                                                            {{ $project->flow_type ?? '-' }}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
                                             <div
                                                 class="d-flex justify-content-between align-items-center p-3 rounded bg-light-subtle border">
+
 
                                                 <div class="d-flex align-items-start gap-3">
                                                     <i class="ti ti-fingerprint fs-4 text-primary"></i>
@@ -371,11 +385,10 @@
                             <div class="card shadow-sm border-0">
 
                                 <div class="card-header bg-white border-bottom d-flex justify-content-between">
-                                    <h5 class="fw-bold mb-0">Project Status 
-                                        <i class="fa-solid fa-circle-info"
-                                        data-bs-toggle="tooltip"
-                                        data-bs-placement="top"
-                                        title="Connect your website to this Project. Once connected, it will automatically appear in the connected list. Connected At shows when the connection was established, and Last Ping shows the most recent successful communication with the website.">
+                                    <h5 class="fw-bold mb-0">Project Status
+                                        <i class="fa-solid fa-circle-info" data-bs-toggle="tooltip"
+                                            data-bs-placement="top"
+                                            title="Connect your website to this Project. Once connected, it will automatically appear in the connected list. Connected At shows when the connection was established, and Last Ping shows the most recent successful communication with the website.">
                                         </i>
                                     </h5>
                                 </div>
@@ -441,14 +454,32 @@
                                 {{-- Header --}}
                                 <div
                                     class="card-header bg-white border-bottom d-flex justify-content-between align-items-center">
-                                    <h5 class="fw-bold mb-0">Company Details</h5>
+                                    <div>
+                                    <h5 class="fw-bold mb-0">
+                                        Company Details
+                                        <i class="fa-solid fa-circle-info ms-1"
 
+                                        data-bs-toggle="tooltip"
+
+                                        data-bs-placement="right"
+
+                                        title="Company details used in projects and invoice email generation">
+                                        </i>
+
+                                    </h5>
+                                    <small class="text-muted">
+                                        Used in project setup and invoice emails
+                                    </small>
+                                    </div>
                                     {{-- ✅ Button Toggle --}}
                                 </div>
 
                                 <div class="card-body" id="company-section">
 
-                                    @include('project::partials.company', ['company' => $company,'projectId'=>$project->id])
+                                    @include('project::partials.company', [
+                                        'company' => $company,
+                                        'projectId' => $project->id,
+                                    ])
 
                                 </div>
                             </div>
@@ -461,10 +492,9 @@
                                 <!-- Header -->
                                 <div class="card-header d-flex justify-content-between align-items-center">
                                     <h5 class="fw-semibold mb-0">Project Users <i class="fa-solid fa-circle-info ms-1"
-                                    data-bs-toggle="tooltip"
-                                    data-bs-placement="right"
-                                    title="Assigned users can access this project's data and work on all project-related modules based on their role permissions.">
-                                    </i></h5>
+                                            data-bs-toggle="tooltip" data-bs-placement="right"
+                                            title="Assigned users can access this project's data and work on all project-related modules based on their role permissions.">
+                                        </i></h5>
 
                                     <button class="btn btn-sm btn-primary add-form" data-bs-toggle="offcanvas"
                                         data-bs-target="#userCanvas" data-title="Add User" data-form="#userForm"
@@ -498,10 +528,9 @@
 
                                 <div class="card-header d-flex justify-content-between align-items-center">
                                     <h5 class="mb-0 fw-semibold">SMTP Settings <i class="fa-solid fa-circle-info ms-1"
-                                    data-bs-toggle="tooltip"
-                                    data-bs-placement="right"
-                                    title="All emails use the Default SMTP account by default. You can assign separate SMTP accounts for Supplier, Customer, and Invoice emails. Emails will be sent using the assigned SMTP account; otherwise, the Default SMTP account will be used.">
-                                    </i></h5>
+                                            data-bs-toggle="tooltip" data-bs-placement="right"
+                                            title="All emails use the Default SMTP account by default. You can assign separate SMTP accounts for Supplier, Customer, and Invoice emails. Emails will be sent using the assigned SMTP account; otherwise, the Default SMTP account will be used.">
+                                        </i></h5>
 
                                     <button class="btn btn-sm btn-primary create-form add-form" data-bs-toggle="offcanvas"
                                         data-bs-target="#smtpCanvas" data-title="Add SMTP" data-form="#smtpForm"
@@ -531,20 +560,19 @@
 
                                 <!-- 🔹 Header -->
                                 <div class="card-header d-flex justify-content-between align-items-center">
-                                    
+
                                     <div>
                                         <h5 class="mb-0 fw-semibold">GEO Filter <i class="fa-solid fa-circle-info ms-1"
-                                        data-bs-toggle="tooltip"
-                                        data-bs-placement="right"
-                                        title="Use latitude, longitude, and radius to find suppliers within a specific geographic area. Only suppliers inside the defined radius will be included.">
-                                        </i>
-                                      
-                                         </h5>
-                                         <small class="text-muted">
-                                         Supplier Search Radius
+                                                data-bs-toggle="tooltip" data-bs-placement="right"
+                                                title="Use latitude, longitude, and radius to find suppliers within a specific geographic area. Only suppliers inside the defined radius will be included.">
+                                            </i>
+
+                                        </h5>
+                                        <small class="text-muted">
+                                            Supplier Search Radius
                                         </small>
                                     </div>
-                                    
+
 
                                     {{-- @if ($project->geoFilter)
                                         <button class="btn btn-sm btn-primary edit-form" data-bs-toggle="offcanvas"
@@ -614,10 +642,9 @@
                                     <div>
 
                                         <h5 class="fw-bold mb-1">
-                                            Field Mapping <i class="fa-solid fa-circle-info ms-1"
-                                            data-bs-toggle="tooltip"
-                                            data-bs-placement="right"
-                                            title="Map CRM fields to your system fields. During synchronization, data from the selected CRM field will automatically populate the mapped system field.">
+                                            Field Mapping <i class="fa-solid fa-circle-info ms-1" data-bs-toggle="tooltip"
+                                                data-bs-placement="right"
+                                                title="Map CRM fields to your system fields. During synchronization, data from the selected CRM field will automatically populate the mapped system field.">
                                             </i>
                                         </h5>
 
@@ -695,16 +722,15 @@
 
                                     <div>
                                         <h5 class="fw-semibold mb-1">
-                                            Stage Actions <i class="fa-solid fa-circle-info ms-1"
-                                            data-bs-toggle="tooltip"
-                                            data-bs-placement="right"
-                                            title="Map CRM stages to Vendorbot CPQ workflow actions. As a deal progresses through the CPQ process, Vendorbot automatically updates the CRM deal stage based on the configured stage mappings.">
+                                            Stage Actions <i class="fa-solid fa-circle-info ms-1" data-bs-toggle="tooltip"
+                                                data-bs-placement="right"
+                                                title="Map CRM stages to Vendorbot CPQ workflow actions. As a deal progresses through the CPQ process, Vendorbot automatically updates the CRM deal stage based on the configured stage mappings.">
                                             </i>
                                         </h5>
 
                                         <!-- <small class="text-muted">
-                                            Configure actions for each pipeline stage.
-                                        </small> -->
+                                                    Configure actions for each pipeline stage.
+                                                </small> -->
                                     </div>
 
                                     <button class="btn btn-primary add-form" data-bs-toggle="offcanvas"
@@ -1049,6 +1075,7 @@
                         [
                             'name' => 'host',
                             'label' => 'Host',
+                            'placeholder' => 'e.g. localhost or 192.168.1.100',
                             'type' => 'text',
                             'col' => 6,
                             'required' => true,
@@ -1056,6 +1083,7 @@
 
                         [
                             'name' => 'port',
+                            'placeholder' => 'e.g. 587',
                             'label' => 'Port',
                             'type' => 'number',
                             'col' => 6,
@@ -1096,6 +1124,7 @@
                         ],
 
                         [
+                            'placeholder' => 'e.g. Support Team',
                             'name' => 'from_name',
                             'label' => 'From Name',
                             'type' => 'text',
@@ -1253,7 +1282,7 @@
                     $config = [
                         [
                             'name' => 'action_type',
-                            'label' => 'Action',
+                            'label' => 'Internal Action',
                             'type' => 'select',
                             'options' => $actions ?? [],
                             'required' => true,

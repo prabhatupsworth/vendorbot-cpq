@@ -448,6 +448,7 @@ class ProjectController extends Controller
                 ->latest()
                 ->limit(5)
                 ->get();
+
             $selectedUsers = $project->users
                 ->pluck('id')
                 ->toArray();
@@ -470,9 +471,6 @@ class ProjectController extends Controller
                 'Project Show Error: ' . $e->getMessage()
             );
 
-            // return response()->back([
-            //     'error' => 'Project not found'
-            // ], 404);
             return redirect()->route('projects.index')->with('error', 'Project not assigend');
         }
     }
