@@ -1,4 +1,4 @@
-@props(['label', 'name', 'required' => false, 'value' => null])
+@props(['label', 'name', 'required' => false, 'value' => null ,'step'=>null])
 
 <div class="mb-3">
     <label class="col-form-label">
@@ -7,7 +7,7 @@
         @endif
     </label>
 
-    <input @required($required) name="{{ $name }}" value="{{ old($name, $value) }}"
+    <input step="{{$step}}" @required($required) name="{{ $name }}" value="{{ old($name, $value) }}"
         {{ $attributes->merge(['class' => 'form-control']) }}>
     @error($name)
         <div class="invalid-feedback">

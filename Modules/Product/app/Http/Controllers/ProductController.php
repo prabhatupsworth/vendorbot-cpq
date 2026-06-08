@@ -58,10 +58,10 @@ class ProductController extends Controller
     public function create()
     {
         try {
-
-            $scrapCategories = ScrapCategory::where('active', true)
-                ->orderBy('name')
-                ->pluck('name', 'id')
+            $projectId = current_project_id();
+            $scrapCategories = ScrapCategory::whereHas('supplierRelations', function ($q) use ($projectId) {
+                $q->where('project_id', $projectId);
+            })->pluck('name', 'id')
                 ->toArray();
 
             return view(
@@ -85,9 +85,12 @@ class ProductController extends Controller
 
     public function edit(Product $product)
     {
-        $scrapCategories = ScrapCategory::query()
-            ->where('active', 1)
-            ->pluck('name', 'id');
+        $projectId = current_project_id();
+        $scrapCategories = ScrapCategory::whereHas('supplierRelations', function ($q) use ($projectId) {
+            $q->where('project_id', $projectId);
+        })->pluck('name', 'id')
+            ->toArray();
+
 
         return view('product::products.edit', [
             'product' => $product->load('scrapCategories'),

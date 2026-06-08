@@ -80,7 +80,7 @@
 
                                     <tbody id="project-table-body">
 
-                                        @include('project::partials.table')
+                                        @include('project::partials.table',['projects'=>$projects])
 
                                     </tbody>
                                 </table>
@@ -144,8 +144,9 @@
 
                     [
                         'name' => 'pipedrive_account_id',
-                        'label' => 'Pipedrive Account',
+                        'label' => 'CRM Account',
                         'type' => 'select',
+                        'required' => true,
                         'options' => $pipedriveAccounts ?? [],
                         'col' => 6,
                     ],
@@ -153,8 +154,9 @@
                     // 🔥 pipeline (dynamic)
                     [
                         'name' => 'pipeline_id',
-                        'label' => 'Pipeline',
+                        'label' => 'CRM Pipeline',
                         'type' => 'select',
+                        'required' => true,
                         'options' => [], // loaded via JS
                         'col' => 6,
                         'id' => 'pipelineSelect',

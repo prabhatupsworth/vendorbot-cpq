@@ -111,7 +111,7 @@
 
                                             <th>Product</th>
 
-                                            <th>CRM Project Id</th>
+                                            <th>CRM Product Id</th>
 
                                             <th>Cost Price</th>
 

@@ -83,8 +83,10 @@ class SupplierController extends Controller
 
         $statuses = SupplierStatusEnum::cases();
 
-        $categories = ScrapCategory::orderBy('name')
-            ->get();
+        $projectId = current_project_id();
+        $categories = ScrapCategory::whereHas('supplierRelations', function ($q) use ($projectId) {
+            $q->where('project_id', $projectId);
+        })->get();
 
         $countries = Country::where('status', 1)
             ->pluck('name', 'code');
@@ -149,19 +151,23 @@ class SupplierController extends Controller
             );
         }
 
+        if ($request->filled('email')) {
 
-        $exists = Supplier::where([
-            'project_id' => current_project_id(),
-            'email'      => $request->email,
-        ])->exists();
+            $exists = Supplier::where(
+                'project_id',
+                current_project_id()
+            )
+                ->where('email', $request->email)
+                ->exists();
 
-        if ($exists) {
-
-            return back()->withErrors([
-                'email' => 'Supplier already exists.'
-            ]);
+            if ($exists) {
+                return back()
+                    ->withErrors([
+                        'email' => 'Supplier already exists.'
+                    ])
+                    ->withInput();
+            }
         }
-
         $request->validate([
 
             'name' => 'required|string|max:255',

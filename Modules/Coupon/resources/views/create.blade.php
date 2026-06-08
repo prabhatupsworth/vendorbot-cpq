@@ -63,9 +63,11 @@
 
                                     <label class="form-label">
                                         Coupon Name
+                                        <span class="text-danger">*</span>
+
                                     </label>
 
-                                    <input type="text" name="name" id="couponName"
+                                    <input required type="text" name="name" id="couponName"
                                         class="form-control @error('name') is-invalid @enderror" placeholder="Summer Sale"
                                         value="{{ old('name') }}">
 
@@ -89,11 +91,13 @@
 
                                     <label class="form-label">
                                         Coupon Code
+                                        <span class="text-danger">*</span>
+
                                     </label>
 
                                     <div class="input-group">
 
-                                        <input type="text" name="code" id="couponCode"
+                                        <input required type="text" name="code" id="couponCode"
                                             class="form-control @error('code') is-invalid @enderror"
                                             placeholder="SUMMER-8X2K" value="{{ old('code') }}">
 
@@ -125,9 +129,11 @@
 
                                     <label class="form-label">
                                         Discount Type
+                                      <span class="text-danger">*</span>
+
                                     </label>
 
-                                    <select name="type" class="select @error('type') is-invalid @enderror">
+                                    <select required name="type" class="select @error('type') is-invalid @enderror">
 
                                         <option value="amount">
                                             Amount
@@ -159,9 +165,11 @@
 
                                     <label class="form-label">
                                         Discount Amount
+                                       <span class="text-danger">*</span>
+
                                     </label>
 
-                                    <input type="number" step="0.01" name="amount"
+                                    <input required type="number" step="0.01" name="amount"
                                         class="form-control @error('amount') is-invalid @enderror" placeholder="10"
                                         value="{{ old('amount') }}">
 

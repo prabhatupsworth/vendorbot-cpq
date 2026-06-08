@@ -52,18 +52,6 @@
 
                                 </p>
 
-                                <div class="d-flex flex-wrap gap-2">
-
-                                    @foreach ($supplier->categories as $category)
-                                        <span class="badge bg-primary px-3 py-2">
-
-                                            {{ $category->name }}
-
-                                        </span>
-                                    @endforeach
-
-                                </div>
-
                             </div>
 
                             <div>

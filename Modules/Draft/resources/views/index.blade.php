@@ -24,7 +24,7 @@
                     </div>
 
                     <div class="col-lg-6 text-end">
-                        @if(userCan('draft.create'))
+                        @if(userCan('email.create'))
                         <a href="{{ route('draft.create') }}" class="btn btn-primary">
 
                            <i class="ti ti-square-rounded-plus me-2"> </i>
@@ -178,9 +178,9 @@
                                         {{ $draft->updated_at->format('d M Y h:i A') }}
                                     </x-table.td>
 
-                                    <x-table.action-buttons :viewUrl="route('draft.show', $draft->id)" viewPermission="draft.view" :editUrl="route('draft.edit', $draft->id)"
-                                        editPermission="draft.edit" :editData="$draft" :deleteUrl="route('draft.destroy', $draft->id)"
-                                        deletePermission="draft.delete" :deleteId="$draft->id" :emailUrl="route('draft.email', $draft->id)" emailPermission="draft.edit"/>
+                                    <x-table.action-buttons :viewUrl="route('draft.show', $draft->id)" viewPermission="email.view" :editUrl="route('draft.edit', $draft->id)"
+                                        editPermission="email.edit" :editData="$draft" :deleteUrl="route('draft.destroy', $draft->id)"
+                                        deletePermission="email.delete" :deleteId="$draft->id" :emailUrl="route('draft.email', $draft->id)" emailPermission="email.edit"/>
 
 
                                 </x-table.tr>

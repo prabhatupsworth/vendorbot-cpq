@@ -333,9 +333,8 @@
 
                                                 <div>
                                                     <small class="text-muted">VAT</small>
-
                                                     <div class="fw-semibold">
-                                                        {{ number_format($project->vat ?? 0, 2) }}%
+                                                        {{ number_format($project->vat ?? 0, 0) }}%
                                                     </div>
                                                 </div>
                                             </div>
@@ -377,21 +376,6 @@
 
                                 <div class="card-body">
                                     <div class="row g-4">
-
-                                        {{-- Sync Status --}}
-                                        <div class="col-md-6">
-                                            <div class="d-flex align-items-start gap-3 p-3 rounded border bg-light-subtle">
-                                                <i class="ti ti-refresh fs-4 text-primary"></i>
-                                                <div>
-                                                    <small class="text-muted">Pipedrive Sync</small>
-                                                    <div>
-                                                        {!! $project->pipedrive_sync_status
-                                                            ? '<span class="badge bg-success px-3 py-1">Synced</span>'
-                                                            : '<span class="badge bg-warning text-dark px-3 py-1">Not Synced</span>' !!}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
 
                                         {{-- Plugin Status --}}
                                         <div class="col-md-6">
@@ -454,27 +438,11 @@
                                     <h5 class="fw-bold mb-0">Company Details</h5>
 
                                     {{-- ✅ Button Toggle --}}
-                                    @if ($company)
-                                        <button class="btn btn-sm btn-primary edit-form" data-bs-toggle="offcanvas"
-                                            data-bs-target="#companyCanvas" data-type="edit"
-                                            data-url="{{ route('projects.company.store', $project->id) }}"
-                                            data-method="POST" data-data='@json($company)'
-                                            data-bs-toggle="offcanvas" data-form="#companyForm">
-                                            <i class="ti ti-edit"></i> Edit Company
-                                        </button>
-                                    @else
-                                        <button class="btn btn-sm btn-success add-form" data-bs-toggle="offcanvas"
-                                            data-bs-target="#companyCanvas" data-title="Add Company"
-                                            data-form="#companyForm"
-                                            data-url="{{ route('projects.company.store', $project->id) }}">
-                                            <i class="ti ti-plus"></i> Add Company
-                                        </button>
-                                    @endif
                                 </div>
 
                                 <div class="card-body" id="company-section">
 
-                                    @include('project::partials.company', ['company' => $company])
+                                    @include('project::partials.company', ['company' => $company,'projectId'=>$project->id])
 
                                 </div>
                             </div>
@@ -1125,6 +1093,7 @@
                             'name' => 'latitude_range',
                             'label' => 'Latitude Range',
                             'type' => 'number',
+                            'step' => 'any',
                             'placeholder' => 'e.g. 0.03 (≈ 3 km)',
                             'col' => 6,
                         ],
@@ -1132,6 +1101,7 @@
                             'name' => 'longitude_range',
                             'label' => 'Longitude Range',
                             'type' => 'number',
+                            'step' => 'any',
                             'placeholder' => 'e.g. 0.03 (≈ 3 km)',
                             'col' => 6,
                         ],
@@ -1176,7 +1146,7 @@
                             'name' => 'subject',
                             'label' => 'Subject',
                             'type' => 'text',
-                            'placeholder' => 'SMTP Test Mail',
+                            'placeholder' => 'Enter Subject',
                             'required' => true,
                             'col' => 12,
                         ],

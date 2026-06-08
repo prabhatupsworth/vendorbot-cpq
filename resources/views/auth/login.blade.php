@@ -48,9 +48,9 @@
 
                     <div class="mb-4">
                         <h3 class="fw-bold mb-2">Sign In</h3>
-                        <p class="text-muted mb-0">
+                        {{-- <p class="text-muted mb-0">
                             Access the CRMS panel using your email and passcode.
-                        </p>
+                        </p> --}}
                     </div>
 
                     <div class="mb-3">
@@ -85,15 +85,15 @@
                         @enderror
                     </div>
 
-                    <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div class="d-flex  justify-content-end  align-items-center mb-4">
 
-                        <div class="form-check">
+                        {{-- <div class="form-check">
                             <input type="checkbox" name="remember" class="form-check-input" id="remember">
 
                             <label class="form-check-label" for="remember">
                                 Remember Me
                             </label>
-                        </div>
+                        </div> --}}
 
                         <a href="{{ route('password.request') }}" class="text-primary text-decoration-none">
                             Forgot Password?
