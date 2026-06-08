@@ -14,7 +14,7 @@
                             </div>
                             <div class="col-sm-8 text-sm-end">
                                 <div class="head-icons">
-                                    <a href="{{route('profile')}}" data-bs-toggle="tooltip" data-bs-placement="top"
+                                    <a href="{{ route('profile') }}" data-bs-toggle="tooltip" data-bs-placement="top"
                                         data-bs-original-title="Refresh"><i class="ti ti-refresh-dot"></i></a>
                                     <a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top"
                                         data-bs-original-title="Collapse" id="collapse-header"><i
@@ -38,14 +38,17 @@
                             <div class="card">
                                 <div class="card-body">
                                     <h4 class="fw-semibold mb-3">Profile Settings</h4>
-                                    <form action="{{ route('profile.update') }}" enctype="multipart/form-data" method="POST">
+                                    <form action="{{ route('profile.update') }}" enctype="multipart/form-data"
+                                        method="POST">
                                         @csrf
                                         <div class="border-bottom mb-3 pb-3">
                                             <h5 class="fw-semibold mb-1">Employee Information</h5>
                                             <p>Provide the information below</p>
                                         </div>
                                         <div class="mb-3">
-                                            <x-image-upload name="profile_image" :value="asset($user->profile_image)" />
+                                            <x-image-upload name="profile_image" :value="asset(
+                                                $user->profile_image ?: 'template/assets/img/profiles/avatar-20.jpg',
+                                            )" />
 
                                         </div>
                                         <div class="border-bottom mb-3">

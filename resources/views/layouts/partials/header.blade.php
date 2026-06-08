@@ -310,7 +310,6 @@
                 <a href="javascript:void(0);" class="nav-link userset" data-bs-toggle="dropdown">
                     <span class="user-info">
                         <span class="user-letter">
-                            {{-- <img src="{{ asset('template/assets/img/profiles/avatar-20.jpg') }}" alt="Profile"> --}}
                             <img src="{{ auth()->user()->profile_image
                                 ? asset( auth()->user()->profile_image)
                                 : asset('template/assets/img/profiles/avatar-20.jpg') }}"
