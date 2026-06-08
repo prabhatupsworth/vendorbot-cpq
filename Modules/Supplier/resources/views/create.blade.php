@@ -63,7 +63,7 @@
 
                                             <label class="form-label">
                                                 Supplier Name
-                                                 <span class="text-danger">*</span>
+                                                <span class="text-danger">*</span>
                                             </label>
 
                                             <div class="input-group">
@@ -74,7 +74,8 @@
 
                                                 </span>
 
-                                                <input placeholder="Enter supplier name" required type="text" name="name" class="form-control @error('name') is-invalid @enderror"
+                                                <input placeholder="Enter supplier name" required type="text"
+                                                    name="name" class="form-control @error('name') is-invalid @enderror"
                                                     value="{{ old('name') }}">
                                                 @error('name')
                                                     <div class="invalid-feedback">
@@ -97,6 +98,7 @@
 
                                             <label class="form-label">
                                                 City
+                                                <span class="text-danger">*</span>
                                             </label>
 
                                             <div class="input-group">
@@ -107,8 +109,17 @@
 
                                                 </span>
 
-                                                <input placeholder="Enter city" type="text" name="city" class="form-control"
+                                                <input required placeholder="Enter city" type="text" name="city"
+                                                    class="form-control @error('city') is-invalid @enderror"
                                                     value="{{ old('city') }}">
+
+                                                @error('city')
+                                                    <div class="invalid-feedback">
+
+                                                        {{ $message }}
+
+                                                    </div>
+                                                @enderror
 
                                             </div>
 
@@ -126,7 +137,8 @@
                                                 Country
                                             </label>
 
-                                            <select name="country" class="form-select select2">
+                                            <select name="country"
+                                                class="form-select select2 @error('city') is-invalid @enderror">
 
                                                 <option value="">
                                                     Select Country
@@ -139,6 +151,14 @@
 
                                                     </option>
                                                 @endforeach
+
+                                                @error('country')
+                                                    <div class="invalid-feedback">
+
+                                                        {{ $message }}
+
+                                                    </div>
+                                                @enderror
 
                                             </select>
 
@@ -155,7 +175,7 @@
                                                 Status
                                             </label>
 
-                                            <select name="status" class="select">
+                                            <select name="status" class="select @error('status') is-invalid @enderror">
 
                                                 @foreach (\Modules\Supplier\Enums\SupplierStatusEnum::cases() as $status)
                                                     <option value="{{ $status->value }}">
@@ -166,7 +186,13 @@
                                                 @endforeach
 
                                             </select>
+                                            @error('status')
+                                                <div class="invalid-feedback">
 
+                                                    {{ $message }}
+
+                                                </div>
+                                            @enderror
                                         </div>
 
                                     </div>
@@ -179,7 +205,8 @@
                                                 Salutation to the contact person
                                             </label>
 
-                                            <select name="cp_title" class="form-select select2"
+                                            <select name="cp_title"
+                                                class="form-select select2 @error('cp_title') is-invalid @enderror"
                                                 aria-label="Title Contact person">
 
                                                 <option value="">
@@ -199,7 +226,13 @@
                                                 </option>
 
                                             </select>
+                                            @error('cp_title')
+                                                <div class="invalid-feedback">
 
+                                                    {{ $message }}
+
+                                                </div>
+                                            @enderror
                                         </div>
 
                                     </div>
@@ -222,8 +255,17 @@
 
                                                 </span>
 
-                                                <input placeholder="Enter contact person" type="text" name="cp_name" class="form-control"
+                                                <input
+                                                    placeholder="Enter contact person @error('cp_name') is-invalid @enderror"
+                                                    type="text" name="cp_name" class="form-control"
                                                     value="{{ old('cp_name') }}">
+                                                 @error('cp_name')
+                                                    <div class="invalid-feedback">
+
+                                                        {{ $message }}
+
+                                                    </div>
+                                                @enderror
 
                                             </div>
 
@@ -249,8 +291,16 @@
 
                                                 </span>
 
-                                                <input placeholder="Enter Capacity" type="number" name="capacity" class="form-control"
+                                                <input placeholder="Enter Capacity" type="number" name="capacity"
+                                                    class="form-control @error('capacity') is-invalid @enderror"
                                                     value="{{ old('capacity') }}">
+                                                 @error('capacity')
+                                                    <div class="invalid-feedback">
+
+                                                        {{ $message }}
+
+                                                    </div>
+                                                @enderror
 
                                             </div>
 
@@ -292,7 +342,7 @@
 
                                             <label class="form-label">
                                                 Email
-                                                 <span class="text-danger">*</span>
+                                                <span class="text-danger">*</span>
                                             </label>
 
                                             <div class="input-group">
@@ -303,9 +353,10 @@
 
                                                 </span>
 
-                                                <input placeholder="Enter email" required type="email" name="email" class="form-control @error('email') is-invalid @enderror"
+                                                <input placeholder="Enter email" required type="email" name="email"
+                                                    class="form-control @error('email') is-invalid @enderror"
                                                     value="{{ old('email') }}">
-                                                 @error('email')
+                                                @error('email')
                                                     <div class="invalid-feedback">
 
                                                         {{ $message }}
@@ -337,8 +388,16 @@
 
                                                 </span>
 
-                                                <input type="text" name="phone" class="form-control"
-                                                    value="{{ old('phone') }}">
+                                                <input type="text" name="phone"
+                                                    class="form-control @error('phone') is-invalid @enderror"
+                                                    value="{{ old('phone') }}" placeholder="Enter Phone">
+                                                @error('phone')
+                                                    <div class="invalid-feedback">
+
+                                                        {{ $message }}
+
+                                                    </div>
+                                                @enderror
 
                                             </div>
 
@@ -364,8 +423,16 @@
 
                                                 </span>
 
-                                                <input type="text" name="url" class="form-control"
-                                                    value="{{ old('url') }}">
+                                                <input type="text" name="url"
+                                                    class="form-control @error('url') is-invalid @enderror"
+                                                    value="{{ old('url') }}" placeholder="Enter website">
+                                                @error('url')
+                                                    <div class="invalid-feedback">
+
+                                                        {{ $message }}
+
+                                                    </div>
+                                                @enderror
 
                                             </div>
 
@@ -391,9 +458,16 @@
 
                                                 </span>
 
-                                                <input type="text" name="social_facebook" class="form-control"
-                                                    value="{{ old('social_facebook') }}">
+                                                <input type="text" name="social_facebook"
+                                                    class="form-control @error('social_facebook') is-invalid @enderror"
+                                                    value="{{ old('social_facebook') }}" placeholder="Enter facebook url">
+                                                @error('social_facebook')
+                                                    <div class="invalid-feedback">
 
+                                                        {{ $message }}
+
+                                                    </div>
+                                                @enderror
                                             </div>
 
                                         </div>
@@ -418,9 +492,16 @@
 
                                                 </span>
 
-                                                <input type="text" name="social_instagram" class="form-control"
-                                                    value="{{ old('social_instagram') }}">
+                                                <input type="text" name="social_instagram"
+                                                    class="form-control @error('social_instagram') is-invalid @enderror"
+                                                    value="{{ old('social_instagram') }}" placeholder="Enter instagram placeholder">
+                                                @error('social_instagram')
+                                                    <div class="invalid-feedback">
 
+                                                        {{ $message }}
+
+                                                    </div>
+                                                @enderror
                                             </div>
 
                                         </div>
@@ -464,8 +545,16 @@
                                                 Street
                                             </label>
 
-                                            <input type="text" name="street" class="form-control"
-                                                value="{{ old('street') }}">
+                                            <input type="text" name="street"
+                                                class="form-control @error('street') is-invalid @enderror"
+                                                value="{{ old('street') }}" placeholder="Enter Street">
+                                            @error('street')
+                                                <div class="invalid-feedback">
+
+                                                    {{ $message }}
+
+                                                </div>
+                                            @enderror
 
                                         </div>
 
@@ -481,8 +570,16 @@
                                                 Postcode
                                             </label>
 
-                                            <input type="text" name="zip" class="form-control"
-                                                value="{{ old('zip') }}">
+                                            <input type="text" name="zip"
+                                                class="form-control @error('zip') is-invalid @enderror"
+                                                value="{{ old('zip') }}" placeholder="Enter postal code">
+                                            @error('zip')
+                                                <div class="invalid-feedback">
+
+                                                    {{ $message }}
+
+                                                </div>
+                                            @enderror
 
                                         </div>
 
@@ -498,8 +595,17 @@
                                                 Latitude
                                             </label>
 
-                                            <input type="text" name="lat" class="form-control"
-                                                value="{{ old('lat') }}">
+                                            <input type="text" name="lat"
+                                                class="form-control @error('lat') is-invalid @enderror"
+                                                value="{{ old('lat') }}" placeholder="0.03">
+
+                                            @error('lat')
+                                                <div class="invalid-feedback">
+
+                                                    {{ $message }}
+
+                                                </div>
+                                            @enderror
 
                                         </div>
 
@@ -515,8 +621,17 @@
                                                 Longitude
                                             </label>
 
-                                            <input type="text" name="lon" class="form-control"
-                                                value="{{ old('lon') }}">
+                                            <input type="text" name="lon"
+                                                class="form-control @error('lon') is-invalid @enderror"
+                                                value="{{ old('lon') }}" placeholder="0.05">
+
+                                            @error('lon')
+                                                <div class="invalid-feedback">
+
+                                                    {{ $message }}
+
+                                                </div>
+                                            @enderror
 
                                         </div>
 
@@ -538,14 +653,15 @@
                                     <i class="ti ti-category me-2"></i>
 
                                     Categories
-
+                                    <span class="text-danger">*</span>
                                 </h5>
 
                             </div>
 
                             <div class="card-body">
 
-                                <select name="categories[]" class="form-select select2" multiple>
+                                <select required name="categories[]"
+                                    class="form-select select2 @error('categories') is-invalid @enderror" multiple>
 
                                     @foreach ($categories as $category)
                                         <option value="{{ $category->id }}">
@@ -556,6 +672,14 @@
                                     @endforeach
 
                                 </select>
+
+                                @error('categories')
+                                    <div class="invalid-feedback">
+
+                                        {{ $message }}
+
+                                    </div>
+                                @enderror
 
                             </div>
 
@@ -577,8 +701,14 @@
 
                             <div class="card-body">
 
-                                <textarea name="notice" class="form-control" rows="4">{{ old('notice') }}</textarea>
+                                <textarea placeholder="Enter notice" name="notice" class="form-control @error('notice') is-invalid @enderror" rows="4">{{ old('notice') }}</textarea>
+                                @error('notice')
+                                    <div class="invalid-feedback">
 
+                                        {{ $message }}
+
+                                    </div>
+                                @enderror
                             </div>
 
                         </div>
@@ -599,8 +729,14 @@
 
                             <div class="card-body">
 
-                                <textarea name="notice_intern" class="form-control" rows="4">{{ old('notice_intern') }}</textarea>
+                                <textarea placeholder="Enter notice intern" name="notice_intern" class="form-control @error('notice_intern') is-invalid @enderror" rows="4">{{ old('notice_intern') }}</textarea>
+                                @error('notice_intern')
+                                    <div class="invalid-feedback">
 
+                                        {{ $message }}
+
+                                    </div>
+                                @enderror
                             </div>
 
 
@@ -634,14 +770,22 @@
                                     @foreach ($days as $key => $label)
                                         <div class="form-check">
 
-                                            <input class="form-check-input" type="checkbox" name="days_off[]"
-                                                value="{{ $key }}" id="{{ $key }}">
+                                            <input class="form-check-input  @error('days_off') is-invalid @enderror"
+                                                type="checkbox" name="days_off[]" value="{{ $key }}"
+                                                id="{{ $key }}">
 
                                             <label class="form-check-label" for="{{ $key }}">
 
                                                 {{ $label }}
 
                                             </label>
+                                            @error('days_off')
+                                                <div class="invalid-feedback">
+
+                                                    {{ $message }}
+
+                                                </div>
+                                            @enderror
 
                                         </div>
                                     @endforeach

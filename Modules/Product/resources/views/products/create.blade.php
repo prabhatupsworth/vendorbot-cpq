@@ -83,7 +83,8 @@
                                         <span class="text-danger">*</span>
                                     </label>
 
-                                    <select class="js-example-placeholder-multiple select2 js-states"
+                                    <select
+                                        class="js-example-placeholder-multiple select2 js-states @error('scrap_categories') is-invalid @enderror"
                                         name="scrap_categories[]" multiple required>
 
                                         @foreach ($scrapCategories as $id => $category)
@@ -93,6 +94,15 @@
                                         @endforeach
 
                                     </select>
+
+
+                                    @error('scrap_categories')
+                                        <div class="invalid-feedback">
+
+                                            {{ $message }}
+
+                                        </div>
+                                    @enderror
                                 </div>
 
                                 <div class="col-md-6">
@@ -100,36 +110,69 @@
                                         Product Title
                                         <span class="text-danger">*</span>
                                     </label>
-                                    <input type="text" name="title" class="form-control"
-                                        placeholder="Enter product title" required>
+                                    <input type="text" name="title"
+                                        class="form-control @error('title') is-invalid @enderror"
+                                        placeholder="Enter product title" value="{{ old('title') }}" required>
+
+                                    @error('title')
+                                        <div class="invalid-feedback">
+
+                                            {{ $message }}
+
+                                        </div>
+                                    @enderror
                                 </div>
 
                                 <div class="col-md-6">
                                     <label class="form-label">
                                         Sub Title
                                     </label>
-                                    <input type="text" name="sub_title" class="form-control"
-                                        placeholder="Enter sub title">
+                                    <input type="text" name="sub_title"
+                                        class="form-control @error('sub_title') is-invalid @enderror"
+                                        placeholder="Enter sub title" value="{{ old('sub_title') }}">
+
+                                    @error('sub_title')
+                                        <div class="invalid-feedback">
+
+                                            {{ $message }}
+
+                                        </div>
+                                    @enderror
                                 </div>
 
                                 <div class="col-md-6">
                                     <label class="form-label">
                                         Product Code
                                     </label>
-                                    <input type="text" name="product_code" class="form-control"
-                                        placeholder="Enter product code">
+                                    <input type="text" name="product_code"
+                                        class="form-control @error('sub_title') is-invalid @enderror"
+                                        placeholder="Enter product code" value="{{ old('product_code') }}">
+                                    @error('product_code')
+                                        <div class="invalid-feedback">
+
+                                            {{ $message }}
+
+                                        </div>
+                                    @enderror
                                 </div>
 
                                 <div class="col-md-6">
                                     <label class="form-label"></label>
                                     <div class="form-check form-switch mt-2">
-                                        <input class="form-check-input" type="checkbox" name="is_best_seller"
-                                            value="1">
+                                        <input class="form-check-input @error('is_best_seller') is-invalid @enderror"
+                                            type="checkbox" name="is_best_seller" value="{{ old('is_best_seller', 0) }}">
 
                                         <label class="form-check-label">
                                             Best Seller Product
                                         </label>
                                     </div>
+                                    @error('is_best_seller')
+                                        <div class="invalid-feedback">
+
+                                            {{ $message }}
+
+                                        </div>
+                                    @enderror
                                 </div>
 
                             </div>
@@ -147,9 +190,18 @@
                                 <div class="col-md-4">
                                     <label class="form-label">
                                         Cost Price
+                                        <span class="text-danger">*</span>
                                     </label>
-                                    <input type="number" name="cost" class="form-control"
-                                        placeholder="Enter cost price">
+                                    <input type="number" name="cost"
+                                        class="form-control @error('cost') is-invalid @enderror"
+                                        placeholder="Enter cost price" required  value="{{ old('cost') }}">
+                                    @error('cost')
+                                        <div class="invalid-feedback">
+
+                                            {{ $message }}
+
+                                        </div>
+                                    @enderror
                                 </div>
 
                                 <div class="col-md-4">
@@ -157,16 +209,32 @@
                                         Selling Price
                                         <span class="text-danger">*</span>
                                     </label>
-                                    <input type="number" name="price" class="form-control"
-                                        placeholder="Enter selling price" required>
+                                    <input type="number" name="price"
+                                        class="form-control @error('price') is-invalid @enderror"
+                                        placeholder="Enter selling price" required value="{{ old('price') }}">
+                                    @error('price')
+                                        <div class="invalid-feedback">
+
+                                            {{ $message }}
+
+                                        </div>
+                                    @enderror
                                 </div>
 
                                 <div class="col-md-4">
                                     <label class="form-label">
                                         Currency Code
                                     </label>
-                                    <input type="text" name="currency_code" class="form-control"
+                                    <input type="text" name="currency_code"
+                                        class="form-control @error('currency_code') is-invalid @enderror"
                                         value="{{ active_currency_code() ?? '' }}" disabled>
+                                    @error('currency_code')
+                                        <div class="invalid-feedback">
+
+                                            {{ $message }}
+
+                                        </div>
+                                    @enderror
                                 </div>
 
                             </div>
@@ -185,7 +253,17 @@
                                     <label class="form-label">
                                         Description
                                     </label>
-                                    <textarea name="description" class="form-control ckeditor" rows="5" placeholder="Enter product description"></textarea>
+                                    <textarea name="description" class="form-control ckeditor @error('description') is-invalid @enderror" rows="5"
+                                        placeholder="Enter product description">
+                                       {{ old('description') }}
+                                    </textarea>
+                                    @error('description')
+                                        <div class="invalid-feedback">
+
+                                            {{ $message }}
+
+                                        </div>
+                                    @enderror
                                 </div>
 
                             </div>
@@ -204,7 +282,15 @@
                                     <label class="form-label">
                                         Proposal Description
                                     </label>
-                                    <textarea name="proposal_desc" class="form-control ckeditor" rows="5" placeholder="Enter proposal description"></textarea>
+                                    <textarea name="proposal_desc" class="form-control ckeditor @error('proposal_desc') is-invalid @enderror" rows="5"
+                                        placeholder="Enter proposal description">{{ old('proposal_desc') }}</textarea>
+                                    @error('proposal_desc')
+                                        <div class="invalid-feedback">
+
+                                            {{ $message }}
+
+                                        </div>
+                                    @enderror
                                 </div>
 
                             </div>
