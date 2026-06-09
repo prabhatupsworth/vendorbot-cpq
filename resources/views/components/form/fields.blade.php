@@ -7,6 +7,7 @@
             @if ($field['type'] === 'checkbox')
 
                 <x-form.checkbox
+                    :middle="$field['middle'] ?? false"
                     :label="$field['label']"
                     :name="$field['name']"
                     :checked="$field['value'] ?? false"

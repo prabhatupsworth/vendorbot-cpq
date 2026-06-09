@@ -72,27 +72,27 @@
                                                         @endif
 
                                                         @if (userCan('invoice_management.delete'))
-                                                            @if(!$setting->projects()->exists())
-
-                                                            <form
-                                                                action="{{ route('settings.invoice.lexware.destroy', $setting->id) }}"
-                                                                method="POST" class="d-inline">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <button onclick="return confirm('Are you sure?')" type="submit"
-                                                                    class="btn btn-sm btn-icon btn-danger rounded-pill">
-                                                                    <i class="ti ti-trash text-white"></i>
-                                                                </button>
-                                                            </form>
-
+                                                            @if (!$setting->projects()->exists())
+                                                                <form
+                                                                    action="{{ route('settings.invoice.lexware.destroy', $setting->id) }}"
+                                                                    method="POST" class="d-inline">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <button onclick="return confirm('Are you sure?')"
+                                                                        type="submit"
+                                                                        class="btn btn-sm btn-icon btn-danger rounded-pill">
+                                                                        <i class="ti ti-trash text-white"></i>
+                                                                    </button>
+                                                                </form>
                                                             @endif
                                                         @endif
                                                     </div>
                                                 </div>
 
                                                 <div class="d-flex align-items-center justify-content-between mb-4">
-                                                    <p class="mb-0">{{ $setting?->type }}</p>
-
+                                                    <div>
+                                                        <small class="text-muted">{{ $setting?->type }}</small>
+                                                    </div>
                                                     <div class="connect-btn">
                                                         @if ($setting->is_verified)
                                                             <span class="badge badge-soft-success">Connected</span>
@@ -102,8 +102,9 @@
                                                                 Connection</a>
                                                         @endif
                                                     </div>
-                                                </div>
 
+                                                </div>
+                                                 <p class="mb-0 text-capitalize">{{ $setting?->account_name }}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -135,7 +136,22 @@
                     @csrf
 
                     <div class="row">
+                        {{-- Account name --}}
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                <label class="col-form-label">Account Name <span class="text-danger"
+                                        id="account_name_label">*</span></label>
+                                <div class="icon-form-end">
+                                    <input placeholder="Enter account name" type="text" name="account_name"
+                                        class="form-control @error('account_name') is-invalid @enderror"
+                                        value="{{ old('account_name') }}" required>
+                                </div>
 
+                                @error('account_name')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
                         <!-- INVOICE TYPE -->
                         <div class="col-md-12">
                             <div class="mb-3">
@@ -161,6 +177,7 @@
                             </div>
                         </div>
 
+
                         <!-- API KEY -->
                         <div class="col-md-12">
                             <div class="mb-3">
@@ -185,7 +202,7 @@
                                 <label class="col-form-label">Base URL <span class="text-danger">*</span></label>
                                 <input id="base_url" type="text" name="base_url"
                                     class="form-control @error('base_url') is-invalid @enderror"
-                                    placeholder="https://yourcompany.pipedrive.com" value="{{ old('base_url') }}"
+                                    placeholder="https://api.lexware.io" value="{{ old('base_url') }}"
                                     required>
 
                                 @error('base_url')
@@ -193,30 +210,6 @@
                                 @enderror
                             </div>
                         </div>
-                        {{-- Currency --}}
-                        <div class="col-md-12">
-                            <div class="mb-3">
-                                <label class="col-form-label">Currency <span class="text-danger">*</span></label>
-
-                                <select class="select @error('currency') is-invalid @enderror" name="currency"
-                                    required>
-                                    <option disabled>Select Currency</option>
-
-                                    <option value="EUR" {{ old('currency', 'EUR') == 'EUR' ? 'selected' : '' }}>
-                                        Euro (€)
-                                    </option>
-                                    <option value="USD" {{ old('currency') == 'USD' ? 'selected' : '' }}>
-                                        US Dollar ($)
-                                    </option>
-
-                                </select>
-
-                                @error('currency')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-
 
                     </div>
                     <div class="d-flex justify-content-end mt-3">
@@ -261,7 +254,7 @@
                                 <!-- 🔹 Account Header -->
                                 <div class="d-flex justify-content-between align-items-center mb-3">
                                     <div>
-                                        <h5 class="mb-0" id="InvoiceName">--</h5>
+                                        <h5 class="mb-0 text-capitalize" id="InvoiceName">--</h5>
                                         <small class="text-muted" id="invoiceAccountUrl">--</small>
                                     </div>
 
@@ -270,12 +263,6 @@
                                         <span class="badge bg-secondary">--</span>
                                     </div>
 
-                                </div>
-
-                                {{-- Currency   --}}
-                                <div>
-
-                                    Currency : <span class="badge bg-info" id="accountCurrency">--</span>
                                 </div>
 
                             </div>
@@ -311,12 +298,12 @@
     @push('scripts')
         {{-- Edit Account Script --}}
         <script>
-               $(document).on("click", ".add-btn", function() {
-                 $("#offcanvasTitle").text('Add Lexware Account');
-                 document.getElementById('submitBtn').innerText = 'Create';
-                 const form = document.getElementById('lexwareForm');
-                 form.action = `/settings/invoice/lexware/store`;
-                 form.method = "POST";
+            $(document).on("click", ".add-btn", function() {
+                $("#offcanvasTitle").text('Add Lexware Account');
+                document.getElementById('submitBtn').innerText = 'Create';
+                const form = document.getElementById('lexwareForm');
+                form.action = `/settings/invoice/lexware/store`;
+                form.method = "POST";
             });
             const func = new Promise(((resolve, reject) => {
                 setTimeout(() => {
@@ -341,6 +328,7 @@
                             $('#lexwareForm input[name="api_key"]').removeAttr('required');
                             $('#lexwareForm input[name="base_url"]').val(response.base_url);
                             $('#lexwareForm select[name="currency"]').val(response.currency);
+                            $('#lexwareForm input[name="account_name"]').val(response.account_name);
                             $('#submitBtn').text('Update');
                         },
                         error: function() {
@@ -359,9 +347,8 @@
                         url: '/settings/invoice/lexware/' + settingId + '/details',
                         method: 'GET',
                         success: function(response) {
-                            $('#InvoiceName').text(response.account.type);
+                            $('#InvoiceName').text(response.account.account_name);
                             $('#invoiceAccountUrl').text(response.account.base_url);
-                            $('#accountCurrency').text(response.account.currency);
                             if (response.account.is_verified) {
                                 $('#accountStatus').html(
                                     '<span class="badge bg-success">Connected</span>');

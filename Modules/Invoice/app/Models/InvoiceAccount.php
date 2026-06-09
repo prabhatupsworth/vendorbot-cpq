@@ -14,6 +14,7 @@ class InvoiceAccount extends Model
 
     protected $fillable = [
         'type',
+        'account_name',
         'api_key',
         'base_url',
         'is_verified',

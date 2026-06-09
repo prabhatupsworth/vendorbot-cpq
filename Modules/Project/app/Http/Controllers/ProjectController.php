@@ -80,10 +80,14 @@ class ProjectController extends Controller
                 'id'
             );
 
-            $invoiceAccounts = InvoiceAccount::pluck(
-                'type',
-                'id'
-            );
+            // $invoiceAccounts = InvoiceAccount::pluck(
+            //     'type',
+            //     'id'
+            // );
+
+            $invoiceAccounts = InvoiceAccount::selectRaw(
+    "id, CONCAT(account_name, ' (', UPPER(type), ')') as label"
+)->pluck('label', 'id');
 
             $currencies = Currency::pluck('name', 'code')->toArray();
 
