@@ -83,43 +83,7 @@
 
                             </div>
 
-                            {{-- CODE --}}
 
-                            <div class="col-md-6">
-
-                                <div class="mb-4">
-
-                                    <label class="form-label">
-                                        Coupon Code
-                                        <span class="text-danger">*</span>
-
-                                    </label>
-
-                                    <div class="input-group">
-
-                                        <input required type="text" name="code" id="couponCode"
-                                            class="form-control @error('code') is-invalid @enderror"
-                                            placeholder="SUMMER-8X2K" value="{{ old('code') }}">
-
-                                        <button type="button" class="btn btn-primary" id="generateCouponBtn">
-
-                                            Generate
-
-                                        </button>
-
-                                    </div>
-
-                                    @error('code')
-                                        <div class="invalid-feedback d-block">
-
-                                            {{ $message }}
-
-                                        </div>
-                                    @enderror
-
-                                </div>
-
-                            </div>
 
                             {{-- TYPE --}}
 
@@ -159,7 +123,7 @@
 
                             {{-- AMOUNT --}}
 
-                            <div class="col-md-4">
+                            <div class="col-md-6">
 
                                 <div class="mb-4">
 
@@ -175,6 +139,44 @@
 
                                     @error('amount')
                                         <div class="invalid-feedback">
+
+                                            {{ $message }}
+
+                                        </div>
+                                    @enderror
+
+                                </div>
+
+                            </div>
+
+                                {{-- CODE --}}
+
+                            <div class="col-md-6">
+
+                                <div class="mb-4">
+
+                                    <label class="form-label">
+                                        Coupon Code
+                                        <span class="text-danger">*</span>
+
+                                    </label>
+
+                                    <div class="input-group">
+
+                                        <input required type="text" name="code" id="couponCode"
+                                            class="form-control @error('code') is-invalid @enderror"
+                                            placeholder="SUMMER-8X2K" value="{{ old('code') }}">
+
+                                        <button type="button" class="btn btn-primary" id="generateCouponBtn">
+
+                                            Generate
+
+                                        </button>
+
+                                    </div>
+
+                                    @error('code')
+                                        <div class="invalid-feedback d-block">
 
                                             {{ $message }}
 

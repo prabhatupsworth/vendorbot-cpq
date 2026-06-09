@@ -23,10 +23,9 @@
                 {{-- DASHBOARD --}}
 
                 <li>
-
-                    <h6 class="submenu-hdr">
-                        Main Menu
-                    </h6>
+                     <h6 class="submenu-hdr">
+                            main
+                        </h6>
 
                     <ul>
 
@@ -42,20 +41,8 @@
                             </a>
 
                         </li>
-
-                    </ul>
-
-                </li>
-
-                {{-- PROJECT MANAGEMENT --}}
-                @if (userCanModule('projects'))
-                    <li>
-
-                        <h6 class="submenu-hdr">
-                            Project Management
-                        </h6>
-
-                        <ul>
+                        {{-- PROJECT --}}
+                        @if (userCanModule('projects'))
 
                             @if (userCan('projects.view'))
 
@@ -75,19 +62,19 @@
                                 @endif
 
                             @endif
+                        @endif
 
-                        </ul>
+                    </ul>
 
-                    </li>
+                </li>
 
-                @endif
 
                 {{-- DRAFTS --}}
                 @if (userCanModule('email'))
                     <li>
 
                         <h6 class="submenu-hdr">
-                            Emails Management
+                            Operations
                         </h6>
 
                         <ul>
@@ -111,258 +98,95 @@
 
                             @endif
 
-                        </ul>
+                            @if (userCanModule('suppliers'))
 
-                    </li>
-                @endif
-                {{-- SUPPLIERS --}}
+                                @if (userCan('suppliers.view'))
+                                    <li>
 
-                @if (userCanModule('suppliers'))
+                                        <a href="{{ route('suppliers.index') }}"
+                                            class="{{ request()->routeIs('suppliers.index') ? 'active' : '' }}">
+                                            <i class="ti ti-truck"></i>
+                                            <span>Suppliers</span>
+                                        </a>
 
-                    <li>
+                                    </li>
+                                @endif
+                            @endif
 
-                        <h6 class="submenu-hdr">
-                            Suppliers
-                        </h6>
+                            {{-- PRODUCTS --}}
 
-                        <ul>
+                            @if (userCanModule('products'))
+                                @if (userCan('products.view'))
+                                    <li>
 
-                            <li class="submenu">
+                                        <a href="{{ route('products.index') }}"
+                                            class="{{ request()->routeIs('products.index') ? 'active' : '' }}">
+                                            <i class="ti ti-package"></i>
+                                            <span>Products</span>
 
-                                <a href="javascript:void(0);"
-                                    class="{{ request()->routeIs('suppliers.*') ? 'subdrop active' : '' }}">
+                                        </a>
 
-                                    <i class="ti ti-truck"></i>
+                                    </li>
+                                @endif
 
-                                    <span>Supplier Management</span>
+                            @endif
 
-                                    <span class="menu-arrow"></span>
+                            {{-- COUPONS --}}
 
-                                </a>
+                            @if (userCanModule('coupons'))
 
-                                <ul
-                                    style="{{ request()->routeIs('suppliers.*') ? 'display:block;' : 'display:none;' }}">
-                                    @if (userCan('suppliers.view'))
-                                        <li>
+                                @if (userCan('coupons.view'))
+                                    <li>
 
-                                            <a href="{{ route('suppliers.index') }}"
-                                                class="{{ request()->routeIs('suppliers.index') ? 'active' : '' }}">
+                                        <a href="{{ route('coupon.index') }}"
+                                            class="{{ request()->routeIs('coupon.index') ? 'active' : '' }}">
+                                            <i class="ti ti-ticket"></i>
+                                            <span>Coupons</span>
 
-                                                Suppliers
+                                        </a>
 
-                                            </a>
-
-                                        </li>
-                                    @endif
-                                    {{-- <li>
-
-                                    <a href="{{ route('suppliers.create') }}"
-                                        class="{{ request()->routeIs('suppliers.create') ? 'active' : '' }}">
-
-                                        Create Supplier
-
-                                    </a>
-
-                                </li> --}}
-
-                                    {{-- <li>
-
-                                    <a href="{{ route('suppliers.import') }}"
-                                        class="{{ request()->routeIs('suppliers.import') ? 'active' : '' }}">
-
-                                        Import Suppliers
-
-                                    </a>
-
-                                </li> --}}
-                                </ul>
-
-                            </li>
+                                    </li>
+                                @endif
+                            @endif
 
                         </ul>
 
                     </li>
-
-                @endif
-                {{-- PRODUCTS --}}
-
-                @if (userCanModule('products'))
-                    <li>
-
-                        <h6 class="submenu-hdr">
-                            Products
-                        </h6>
-
-                        <ul>
-
-                            <li class="submenu">
-
-                                <a href="javascript:void(0);"
-                                    class="{{ request()->routeIs('products.*') ? 'subdrop active' : '' }}">
-
-                                    <i class="ti ti-package"></i>
-
-                                    <span>Product Management</span>
-
-                                    <span class="menu-arrow"></span>
-
-                                </a>
-
-                                <ul
-                                    style="{{ request()->routeIs('products.*') ? 'display:block;' : 'display:none;' }}">
-
-                                    @if (userCan('products.view'))
-                                        <li>
-
-                                            <a href="{{ route('products.index') }}"
-                                                class="{{ request()->routeIs('products.index') ? 'active' : '' }}">
-
-                                                Products
-
-                                            </a>
-
-                                        </li>
-                                    @endif
-
-                                    @if (userCan('products.create'))
-                                        <li>
-
-                                            <a href="{{ route('products.create') }}"
-                                                class="{{ request()->routeIs('products.create') ? 'active' : '' }}">
-
-                                                Create Product
-
-                                            </a>
-
-                                        </li>
-                                        <li>
-
-                                            <a href="{{ route('products.import') }}"
-                                                class="{{ request()->routeIs('products.import') ? 'active' : '' }}">
-
-                                                Import Product
-
-                                            </a>
-
-                                        </li>
-                                    @endif
-
-                                </ul>
-
-                            </li>
-
-                        </ul>
-
-                    </li>
-
                 @endif
 
-                {{-- COUPONS --}}
-                @if (userCanModule('coupons'))
 
-                    @if (userCan('coupons.view'))
-                        <li>
-
-                            <h6 class="submenu-hdr">
-                                Coupons
-                            </h6>
-
-                            <ul>
-                                <li class="submenu">
-
-                                    <a href="javascript:void(0);"
-                                        class="{{ request()->routeIs('coupon.*') ? 'subdrop active' : '' }}">
-
-                                        <i class="ti ti-ticket"></i>
-
-                                        <span>Coupon Management</span>
-
-                                        <span class="menu-arrow"></span>
-
-                                    </a>
-
-                                    <ul
-                                        style="{{ request()->routeIs('coupon.*') ? 'display:block;' : 'display:none;' }}">
-
-                                        <li>
-
-                                            <a href="{{ route('coupon.index') }}"
-                                                class="{{ request()->routeIs('coupon.index') ? 'active' : '' }}">
-
-                                                Coupons
-
-                                            </a>
-
-                                        </li>
-
-                                        <li>
-
-                                            <a href="{{ route('coupon.create') }}"
-                                                class="{{ request()->routeIs('coupon.create') ? 'active' : '' }}">
-
-                                                Create Coupon
-
-                                            </a>
-
-                                        </li>
-
-                                    </ul>
-
-                                </li>
-                            </ul>
-
-                        </li>
-                    @endif
-                @endif
-
-                {{-- USER MANAGEMENT --}}
+                {{-- USER --}}
 
                 @if (userCanModule('users'))
 
                     <li>
 
                         <h6 class="submenu-hdr">
-                            User Management
+                            Access Control
                         </h6>
 
                         <ul>
-                            <li class="submenu">
 
-                                <a href="javascript:void(0);"
-                                    class="{{ request()->routeIs('users.*') || request()->routeIs('roles.*') ? 'subdrop active' : '' }}">
+                            @if (userCan('users.view'))
+                                <li>
+                                    <a href="{{ route('users.index') }}"
+                                        class="{{ request()->routeIs('users.index') ? 'active' : '' }}">
+                                        <i class="ti ti-users"></i>
+                                        <span>Users</span>
+                                    </a>
+                                </li>
+                            @endif
 
-                                    <i class="ti ti-users"></i>
+                            @if (auth()->user()->hasRole('super_admin'))
+                                <li>
+                                    <a href="{{ route('roles.index') }}"
+                                        class="{{ request()->routeIs('roles.*') ? 'active' : '' }}">
+                                        <i class="ti ti-shield-lock"></i>
+                                        <span>Roles & Permissions</span>
+                                    </a>
+                                </li>
+                            @endif
 
-                                    <span>User Management</span>
-
-                                    <span class="menu-arrow"></span>
-
-                                </a>
-
-                                <ul
-                                    style="{{ request()->routeIs('users.*') || request()->routeIs('roles.*') ? 'display:block;' : 'display:none;' }}">
-
-                                    @if (userCan('users.view'))
-                                        <li>
-                                            <a href="{{ route('users.index') }}"
-                                                class="{{ request()->routeIs('users.index') ? 'active' : '' }}">
-                                                Users
-                                            </a>
-                                        </li>
-                                    @endif
-
-                                    @if (auth()->user()->hasRole('super_admin'))
-                                        <li>
-                                            <a href="{{ route('roles.index') }}"
-                                                class="{{ request()->routeIs('roles.*') ? 'active' : '' }}">
-                                                Roles & Permissions
-                                            </a>
-                                        </li>
-                                    @endif
-
-                                </ul>
-
-                            </li>
                         </ul>
 
                     </li>
