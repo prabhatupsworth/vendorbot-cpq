@@ -117,6 +117,7 @@
                     [
                         'name' => 'website_url',
                         'label' => 'Website URL',
+                        'required' => true,
                         'type' => 'text',
                         'placeholder' => 'Enter website URL',
                         'col' => 6,
@@ -125,6 +126,7 @@
                     [
                         'name' => 'event_name',
                         'label' => 'Event Name',
+                        'required' => true,
                         'type' => 'text',
                         'placeholder' => 'Enter event name',
                         'col' => 6,
@@ -133,6 +135,7 @@
                     [
                         'name' => 'flow_type',
                         'label' => 'Flow Type',
+                        'required' => true,
                         'type' => 'select',
                         'options' => [
                             'simple' => 'Simple',
@@ -163,12 +166,15 @@
                     ],
 
                     [
-                        'name' => 'invoice_account_id',
-                        'label' => 'Invoice Account',
+                        'name' => 'language_code',
+                        'label' => 'Language',
                         'type' => 'select',
-                        'options' => $invoiceAccounts ?? [],
+                        'options' => $languages ?? [],
+                        'required' => true,
                         'col' => 6,
                     ],
+
+
                     [
                         'name' => 'currency_code',
                         'label' => 'Currency',
@@ -178,14 +184,7 @@
                         'col' => 6,
                     ],
 
-                    [
-                        'name' => 'language_code',
-                        'label' => 'Language',
-                        'type' => 'select',
-                        'options' => $languages ?? [],
-                        'required' => true,
-                        'col' => 6,
-                    ],
+
                     [
                         'name' => 'vat_status',
                         'label' => 'VAT Status',
@@ -205,11 +204,19 @@
                         'value' => 0,
                         'col' => 6,
                     ],
+                     [
+                        'name' => 'invoice_account_id',
+                        'label' => 'Invoice Account',
+                        'type' => 'select',
+                        'options' => $invoiceAccounts ?? [],
+                        'col' => 6,
+                    ],
                     [
+                        'middle' => true,
                         'name' => 'invoice_enabled',
                         'label' => 'Invoice Enabled',
                         'type' => 'checkbox',
-                        'col' => 12,
+                        'col' => 6,
                     ],
                 ];
             @endphp

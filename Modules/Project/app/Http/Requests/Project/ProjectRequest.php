@@ -15,10 +15,10 @@ class ProjectRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'website_url' => 'nullable|url',
-            'event_name' => 'nullable|string|max:255',
-            'currency_code' => 'nullable|exists:currencies,code',
-            'language_code' => 'nullable|exists:languages,code',
+            'website_url' => 'required|url',
+            'event_name' => 'required|string|max:255',
+            'currency_code' => 'required|exists:currencies,code',
+            'language_code' => 'required|exists:languages,code',
             'vat' => 'nullable|numeric|min:0|max:100',
             'vat_status' => 'nullable|in:0,1',
             'flow_type' => 'required|in:simple,full',

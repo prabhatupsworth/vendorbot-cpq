@@ -29,16 +29,16 @@ class LexwareController extends Controller
     {
         $request->validate([
             'type' => 'required|in:lexware,manual,other',
+            'account_name' => 'required|string|max:255',
             'api_key' => 'required|string',
             'base_url' => 'required|url',
-            'currency' => 'nullable|string|max:3',
         ]);
 
         $invoiceAccount = InvoiceAccount::create([
             'type' => $request->type,
+            'account_name' => $request->account_name,
             'api_key' => $request->api_key,
             'base_url' => $request->base_url,
-            'currency' => $request->currency,
         ]);
 
         $this->activityLog([
@@ -57,18 +57,18 @@ class LexwareController extends Controller
     {
         $request->validate([
             'type' => 'required|in:lexware,manual,other',
+            'account_name' => 'required|string|max:255',
             'api_key' => 'nullable|string',
             'base_url' => 'required|url',
-            'currency' => 'nullable|string|max:3',
         ]);
 
         $account = InvoiceAccount::findOrFail($id);
 
         $account->update([
             'type' => $request->type,
+            'account_name' => $request->account_name,
             'api_key' => $request->api_key,
             'base_url' => $request->base_url,
-            'currency' => $request->currency,
         ]);
 
         $this->activityLog([

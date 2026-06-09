@@ -1,10 +1,10 @@
-@props(['label', 'name', 'value' => 1, 'checked' => false])
+@props(['label', 'name', 'value' => 1, 'checked' => false, 'middle' => false])
 
 @php
     $isChecked = old($name, $checked) ? true : false;
 @endphp
 
-<div class="form-check mb-3">
+<div class="form-check mb-3 {{ $middle ? 'mt-4' : '' }} ">
 
     <input type="checkbox" name="{{ $name }}" value="{{ $value }}" id="{{ $name }}"
         {{ $isChecked ? 'checked' : '' }}
