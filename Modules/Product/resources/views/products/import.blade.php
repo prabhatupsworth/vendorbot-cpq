@@ -15,7 +15,8 @@
                         <h4 class="page-title">
 
                             Import Product
-
+                            <i class="fa-solid fa-circle-info ms-1" data-bs-toggle="tooltip" data-bs-placement="right"
+                                title="Enter CRM Product ID, select scrap category, then submit to fetch and link product from CRM."></i>
                         </h4>
 
                     </div>
@@ -41,7 +42,7 @@
 
                 <div class="card-body">
 
-                    <form  method="POST" action="{{ route('products.import-product') }}">
+                    <form method="POST" action="{{ route('products.import-product') }}">
 
                         @csrf
 
@@ -70,7 +71,7 @@
                             <div class="col-md-6">
 
                                 <div class="mb-3">
-                                     <label class="form-label">
+                                    <label class="form-label">
                                         Scrap Categories
                                     </label>
                                     <select class="js-example-placeholder-multiple select2 js-states" id="scrap_categories"

@@ -18,6 +18,8 @@
                     :id="$field['id'] ?? ''"
                     :label="$field['label']"
                     :name="$field['name']"
+                    :info="$field['info'] ?? false"
+                    :infoTitle="$field['infoTitle'] ?? ''"
                     :options="$field['options'] ?? []"
                     :required="$field['required'] ?? false"
                     :placeholder="$field['placeholder'] ?? ''"
