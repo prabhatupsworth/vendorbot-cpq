@@ -312,7 +312,7 @@
         {{-- Edit Account Script --}}
         <script>
                $(document).on("click", ".add-btn", function() {
-                 $("#offcanvasTitle").text('Edit Lexware Account');
+                 $("#offcanvasTitle").text('Add Lexware Account');
                  document.getElementById('submitBtn').innerText = 'Create';
                  const form = document.getElementById('lexwareForm');
                  form.action = `/settings/invoice/lexware/store`;
