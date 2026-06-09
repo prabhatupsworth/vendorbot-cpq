@@ -12,11 +12,18 @@
                             </div>
                             <div class="col-4 text-end">
                                 <div class="head-icons">
-                                    <a href="manage-users.html" data-bs-toggle="tooltip" data-bs-placement="top"
+
+
+                                    <a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top"
+                                        data-bs-original-title="Add account, test connection, and sync stages and custom fields. Re-sync anytime when CRM data is updated." id="collapse-header">
+                                        <i class="fa-solid fa-circle-info"></i>
+                                    </a>
+                                    <a href="{{route('settings.pipedrive.index')}}" data-bs-toggle="tooltip" data-bs-placement="top"
                                         data-bs-original-title="Refresh"><i class="ti ti-refresh-dot"></i></a>
                                     <a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top"
                                         data-bs-original-title="Collapse" id="collapse-header"><i
                                             class="ti ti-chevrons-up"></i></a>
+
                                 </div>
                             </div>
                         </div>
@@ -76,20 +83,19 @@
                                                         @endif
 
                                                         @if (userCan('crm_integrations.delete'))
-                                                              @if($account->sync_stages != 1)
+                                                            @if ($account->sync_stages != 1)
+                                                                <form
+                                                                    action="{{ route('settings.pipedrive.destroy', $account->id) }}"
+                                                                    method="POST" class="d-inline">
+                                                                    @csrf
+                                                                    @method('DELETE')
 
-                                                            <form
-                                                                action="{{ route('settings.pipedrive.destroy', $account->id) }}"
-                                                                method="POST" class="d-inline">
-                                                                @csrf
-                                                                @method('DELETE')
-
-                                                                <button type="submit"
-                                                                    class="btn btn-sm btn-icon btn-danger rounded-pill"
-                                                                    onclick="return confirm('Are you sure?')">
-                                                                    <i class="ti ti-trash"></i>
-                                                                </button>
-                                                            </form>
+                                                                    <button type="submit"
+                                                                        class="btn btn-sm btn-icon btn-danger rounded-pill"
+                                                                        onclick="return confirm('Are you sure?')">
+                                                                        <i class="ti ti-trash"></i>
+                                                                    </button>
+                                                                </form>
                                                             @endif
                                                         @endif
                                                     </div>
@@ -448,7 +454,7 @@
                             fieldsTableBody.innerHTML = '';
 
                             document.getElementById('load_more').href = `/history/pipedrive/${id}`;
-                            console.log(data.stages,'stages');
+                            console.log(data.stages, 'stages');
                             // 🔥 STAGES TABLE
                             if (data.stages && data.stages.length > 0) {
                                 data.stages.forEach(stage => {
@@ -509,11 +515,11 @@
 
         <script>
             $(document).on("click", ".add-btn", function() {
-                 $("#offcanvasTitle").text('Add Pipedrive Account');
-                 document.getElementById('submitBtn').innerText = 'Create';
-                 const form = document.getElementById('pipedriveForm');
-                 form.action = `/settings/pipedrive`;
-                 form.method = "POST";
+                $("#offcanvasTitle").text('Add Pipedrive Account');
+                document.getElementById('submitBtn').innerText = 'Create';
+                const form = document.getElementById('pipedriveForm');
+                form.action = `/settings/pipedrive`;
+                form.method = "POST";
             });
             document.addEventListener('click', function(e) {
 

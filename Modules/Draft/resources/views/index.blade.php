@@ -160,7 +160,7 @@
 
                                         <h6 class="fw-semibold mb-0">
 
-                                            {{ $draft->subject }}
+                                            {{ \Illuminate\Support\Str::limit($draft->subject, 100) }}
 
                                         </h6>
 

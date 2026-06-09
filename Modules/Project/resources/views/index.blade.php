@@ -45,9 +45,12 @@
                                 <div class="col-sm-8">
                                     <div class="d-flex align-items-center flex-wrap row-gap-2 justify-content-sm-end">
                                         @if (userCan('projects.create'))
-                                            <a  href="javascript:void(0);" class="btn btn-primary add-form" data-bs-toggle="offcanvas"
-                                                data-bs-target="#projectCanvas" data-title="Add Project" data-form="#projectForm" data-url="{{ route('projects.store') }}">
+                                            <a href="javascript:void(0);" class="btn btn-primary add-form"
+                                                data-bs-toggle="offcanvas" data-bs-target="#projectCanvas"
+                                                data-title="Add Project" data-form="#projectForm"
+                                                data-url="{{ route('projects.store') }}">
                                                 <i class="ti ti-square-rounded-plus me-2"></i>Add New Project</a>
+
                                         @endif
                                     </div>
                                 </div>
@@ -80,7 +83,7 @@
 
                                     <tbody id="project-table-body">
 
-                                        @include('project::partials.table',['projects'=>$projects])
+                                        @include('project::partials.table', ['projects' => $projects])
 
                                     </tbody>
                                 </table>
@@ -133,6 +136,8 @@
                     ],
 
                     [
+                        'info' => true,
+                        'infoTitle' => 'Simple flow: Basic inquiry to close CPQ. Full flow: Complete process including inquiry, configuration, and checkout steps.',
                         'name' => 'flow_type',
                         'label' => 'Flow Type',
                         'required' => true,
@@ -174,7 +179,6 @@
                         'col' => 6,
                     ],
 
-
                     [
                         'name' => 'currency_code',
                         'label' => 'Currency',
@@ -183,7 +187,6 @@
                         'required' => true,
                         'col' => 6,
                     ],
-
 
                     [
                         'name' => 'vat_status',
@@ -204,7 +207,7 @@
                         'value' => 0,
                         'col' => 6,
                     ],
-                     [
+                    [
                         'name' => 'invoice_account_id',
                         'label' => 'Invoice Account',
                         'type' => 'select',

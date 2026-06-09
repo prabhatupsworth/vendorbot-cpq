@@ -502,7 +502,7 @@
 
                                                 </span>
 
-                                                <input placeholder="Enter facebook url" type="text"
+                                                <input placeholder="Enter facebook url" type="url"
                                                     name="social_facebook"
                                                     class="form-control  @error('social_facebook') is-invalid @enderror"
                                                     value="{{ old('social_facebook', $supplier->social_facebook) }}">
@@ -538,7 +538,7 @@
 
                                                 </span>
 
-                                                <input placeholder="Enter Instagram url" type="text"
+                                                <input placeholder="Enter Instagram url" type="url"
                                                     name="social_instagram"
                                                     class="form-control  @error('social_instagram') is-invalid @enderror"
                                                     value="{{ old('social_instagram', $supplier->social_instagram) }}">

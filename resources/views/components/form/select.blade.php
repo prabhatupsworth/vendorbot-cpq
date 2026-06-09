@@ -8,6 +8,8 @@
     'multiple' => false,
     'disabledOptions' => [],
     'disabled' => false,
+    'info' => true,
+    'infoTitle' => '',
 ])
 
 @php
@@ -38,11 +40,17 @@
         @if ($required)
             <span class="text-danger">*</span>
         @endif
+
+        @if ($info)
+            <i class="fa-solid fa-circle-info ms-1" data-bs-toggle="tooltip" data-bs-placement="right"
+                title="{{$infoTitle}}">
+            </i>
+        @endif
     </label>
 
     {{-- 🔹 Select --}}
     <select id="{{ $id }}" name="{{ $name }}" class="select {{ $multiple ? 'select2' : '' }}"
-        {{ $multiple ? 'multiple' : '' }}  {{ $disabled ? 'disabled' : '' }}>
+        {{ $multiple ? 'multiple' : '' }} {{ $disabled ? 'disabled' : '' }}>
 
         {{-- 🔹 Placeholder --}}
         @unless ($multiple)
