@@ -980,4 +980,35 @@ class SupplierController extends Controller
             ->back()
             ->with('success', 'Suppliers Imported Successfully');
     }
+
+    public function viewMap()
+    {
+        $projectId = current_project_id();
+
+        $suppliers = Supplier::select(
+            'id',
+            'name',
+            'city',
+            'lat',
+            'lon',
+            'status'
+        )->where('project_id', $projectId)->whereNotNull('lat')
+        ->whereNotNull('lon')
+        ->where('lat', '>', 0)
+        ->where('lon', '>', 0)
+        ->get();
+
+        $centerLat = 50.150177565985054;
+        $centerLon = 8.75564759755001;
+
+        return view(
+            'supplier::map',
+            compact(
+                'suppliers',
+                'centerLat',
+                'centerLon'
+                
+            )
+        );
+    }
 }
