@@ -53,6 +53,9 @@
                 <div class="card-header">
                     <h5 class="mb-0 fw-semibold">
                         Edit Product
+                        <i class="fa-solid fa-circle-info ms-1" data-bs-toggle="tooltip" data-bs-placement="right"
+                                title="Enter product details and submit to create the product in CRM and automatically link it to this product">
+                            </i>
                     </h5>
                 </div>
 
@@ -73,7 +76,7 @@
 
                             <div class="row g-3">
 
-                                <div class="col-md-6">
+                                {{-- <div class="col-md-6">
                                     <label class="form-label">
                                         CRM Product ID
                                     </label>
@@ -89,7 +92,7 @@
 
                                         </div>
                                     @enderror
-                                </div>
+                                </div> --}}
 
                                 <div class="col-md-6">
                                     <label class="form-label">

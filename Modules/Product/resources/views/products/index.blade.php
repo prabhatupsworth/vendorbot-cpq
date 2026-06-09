@@ -80,9 +80,16 @@
                                 <!-- Add Product -->
                                 <div class="col-sm-8">
 
-                                    <div class="d-flex justify-content-sm-end mt-3 mt-sm-0">
+                                    <div class="d-flex gap-2 justify-content-sm-end mt-3 mt-sm-0">
                                         @if (userCan('products.create'))
-                                            <a href="{{route('products.create')}}" class="btn btn-primary" >
+                                            <a href="{{ route('products.import') }}" class="btn btn-info">
+
+                                                <i class="ti ti-download me-2"></i>
+
+                                                Import Product
+
+                                            </a>
+                                            <a href="{{ route('products.create') }}" class="btn btn-primary">
 
                                                 <i class="ti ti-square-rounded-plus me-2"></i>
 
@@ -131,7 +138,9 @@
 
                                     <tbody id="product-list">
 
-                                        @include('product::products.partials.list',['products'=>$products])
+                                        @include('product::products.partials.list', [
+                                            'products' => $products,
+                                        ])
                                     </tbody>
 
                                 </table>

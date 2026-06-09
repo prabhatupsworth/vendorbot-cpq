@@ -53,7 +53,12 @@
             <!-- Card -->
             <div class="card">
                 <div class="card-header">
-                    <h5 class="mb-0 fw-semibold">Add Product</h5>
+                    <h5 class="mb-0 fw-semibold">
+                        Add Product
+                        <i class="fa-solid fa-circle-info ms-1" data-bs-toggle="tooltip" data-bs-placement="right"
+                            title="Enter product details and submit to create the product in CRM and automatically link it to this product">
+                        </i>
+                    </h5>
                 </div>
                 <div class="card-body">
 
@@ -69,13 +74,13 @@
 
                             <div class="row g-3">
 
-                                <div class="col-md-6">
+                                {{-- <div class="col-md-6">
                                     <label class="form-label">
                                         CRM Product ID
                                     </label>
                                     <input type="text" name="crm_product_id" class="form-control"
                                         placeholder="Enter CRM product ID">
-                                </div>
+                                </div> --}}
 
                                 <div class="col-md-6">
                                     <label class="form-label">
@@ -194,7 +199,7 @@
                                     </label>
                                     <input type="number" name="cost"
                                         class="form-control @error('cost') is-invalid @enderror"
-                                        placeholder="Enter cost price" required  value="{{ old('cost') }}">
+                                        placeholder="Enter cost price" required value="{{ old('cost') }}">
                                     @error('cost')
                                         <div class="invalid-feedback">
 
@@ -282,8 +287,8 @@
                                     <label class="form-label">
                                         Proposal Description
                                     </label>
-                                    <textarea name="proposal_desc" class="form-control ckeditor @error('proposal_desc') is-invalid @enderror" rows="5"
-                                        placeholder="Enter proposal description">{{ old('proposal_desc') }}</textarea>
+                                    <textarea name="proposal_desc" class="form-control ckeditor @error('proposal_desc') is-invalid @enderror"
+                                        rows="5" placeholder="Enter proposal description">{{ old('proposal_desc') }}</textarea>
                                     @error('proposal_desc')
                                         <div class="invalid-feedback">
 

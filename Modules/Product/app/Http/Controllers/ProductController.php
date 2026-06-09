@@ -11,6 +11,7 @@ use Modules\Product\Models\ScrapCategory;
 use Modules\Project\Models\Project;
 use Modules\Pipedrive\Models\PipedriveAccount;
 use Throwable;
+use Modules\Pipedrive\Services\ProductService;
 
 class ProductController extends Controller
 {
@@ -98,7 +99,7 @@ class ProductController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(Request $request, ProductService $productService)
     {
         $validated = $request->validate([
 
@@ -134,9 +135,9 @@ class ProductController extends Controller
 
                 'product_code' => $validated['product_code'] ?? null,
 
-                'cost' => $validated['cost'] ?? null,
+                'cost' => $validated['cost'] ?? 0,
 
-                'price' => $validated['price'],
+                'price' => $validated['price'] ?? 0,
 
                 'currency_code' => active_currency_code(),
 
@@ -154,6 +155,8 @@ class ProductController extends Controller
             $product->scrapCategories()->sync(
                 $request->scrap_categories
             );
+
+            $productService->createProduct($product);
 
             DB::commit();
 
@@ -305,154 +308,184 @@ class ProductController extends Controller
         }
     }
 
-    public function importProduct(Request $request)
+    // public function importProduct(Request $request)
+    // {
+
+    //     $validated = $request->validate([
+
+    //         'crm_product_id' => [
+    //             'required'
+    //         ],
+
+    //         'scrap_categories' => [
+    //             'nullable',
+    //             'array'
+    //         ],
+    //     ]);
+
+    //     try {
+
+    //         /*
+    //     |--------------------------------------------------------------------------
+    //     | Get Connected Account
+    //     |--------------------------------------------------------------------------
+    //     */
+
+    //         $account = PipedriveAccount::where(
+    //             'is_verified',
+    //             true
+    //         )->first();
+
+    //         if (!$account) {
+
+    //             return back()->with(
+    //                 'error',
+    //                 'Pipedrive account not connected'
+    //             );
+    //         }
+
+
+    //         /*
+    //     |--------------------------------------------------------------------------
+    //     | Fetch Product From Pipedrive
+    //     |--------------------------------------------------------------------------
+    //     */
+
+    //         $response = Http::timeout(120)
+    //             ->acceptJson()
+    //             ->get(
+    //                 "https://api.pipedrive.com/v1/products/{$validated['crm_product_id']}",
+    //                 [
+    //                     'api_token' => $account->api_key,
+    //                 ]
+    //             );
+
+    //         if ($response->status() === 404) {
+
+    //             return back()->with(
+    //                 'error',
+    //                 'The selected product no longer exists in Pipedrive. Please refresh products and try again.'
+    //             );
+    //         }
+
+    //         if (! $response->successful()) {
+
+    //             return back()->with(
+    //                 'error',
+    //                 'Failed to fetch product from Pipedrive.'
+    //             );
+    //         }
+
+    //         $data = $response->json('data');
+
+    //         if (! $data) {
+
+    //             return back()->with(
+    //                 'error',
+    //                 'The selected product was not found in Pipedrive.'
+    //             );
+    //         }
+
+    //         /*
+    //     |--------------------------------------------------------------------------
+    //     | Product Price
+    //     |--------------------------------------------------------------------------
+    //     */
+
+    //         $price = 0;
+
+    //         if (!empty($data['prices'])) {
+
+    //             $price = $data['prices'][0]['price'] ?? 0;
+    //         }
+
+    //         /*
+    //     |--------------------------------------------------------------------------
+    //     | Create / Update Product
+    //     |--------------------------------------------------------------------------
+    //     */
+
+    //         $product = Product::updateOrCreate(
+
+    //             [
+    //                 'crm_product_id' =>
+    //                 $data['id'],
+    //             ],
+
+    //             [
+    //                 'project_id' => current_project_id(),
+
+    //                 'title' => $data['name'],
+
+    //                 'product_code' => $data['code'],
+
+    //                 'description' => $data['description'] ?? null,
+
+    //                 'price' => $price,
+
+    //                 'cost' => $data['prices'][0]['cost'] ?? 0,
+
+    //                 'currency_code' => $data['prices'][0]['currency'] ?? 'USD',
+
+    //                 'active' => $data['active_flag'] ?? true,
+
+    //                 'is_sync_backend' => true,
+    //             ]
+    //         );
+
+    //         /*
+    //     |--------------------------------------------------------------------------
+    //     | Attach Categories
+    //     |--------------------------------------------------------------------------
+    //     */
+    //         $product->scrapCategories()->sync(
+    //             $validated['scrap_categories'] ?? []
+    //         );
+
+    //         return redirect()
+    //             ->back()
+    //             ->with(
+    //                 'success',
+    //                 'Product imported successfully'
+    //             );
+    //     } catch (\Exception $e) {
+
+    //         return redirect()
+    //             ->back()
+    //             ->with(
+    //                 'error',
+    //                 $e->getMessage()
+    //             );
+    //     }
+    // }
+
+
+    public function importProduct(Request $request, ProductService $productService)
     {
-
         $validated = $request->validate([
-
-            'crm_product_id' => [
-                'required'
-            ],
-
-            'scrap_categories' => [
-                'nullable',
-                'array'
-            ],
+            'crm_product_id' => ['required'],
+            'scrap_categories' => ['nullable', 'array'],
         ]);
 
         try {
 
-            /*
-        |--------------------------------------------------------------------------
-        | Get Connected Account
-        |--------------------------------------------------------------------------
-        */
-
-            $account = PipedriveAccount::where(
-                'is_verified',
-                true
-            )->first();
-
-            if (!$account) {
-
-                return back()->with(
-                    'error',
-                    'Pipedrive account not connected'
-                );
-            }
-
-
-            /*
-        |--------------------------------------------------------------------------
-        | Fetch Product From Pipedrive
-        |--------------------------------------------------------------------------
-        */
-
-            $response = Http::timeout(120)
-                ->acceptJson()
-                ->get(
-                    "https://api.pipedrive.com/v1/products/{$validated['crm_product_id']}",
-                    [
-                        'api_token' => $account->api_key,
-                    ]
-                );
-
-            if ($response->status() === 404) {
-
-                return back()->with(
-                    'error',
-                    'The selected product no longer exists in Pipedrive. Please refresh products and try again.'
-                );
-            }
-
-            if (! $response->successful()) {
-
-                return back()->with(
-                    'error',
-                    'Failed to fetch product from Pipedrive.'
-                );
-            }
-
-            $data = $response->json('data');
-
-            if (! $data) {
-
-                return back()->with(
-                    'error',
-                    'The selected product was not found in Pipedrive.'
-                );
-            }
-
-            /*
-        |--------------------------------------------------------------------------
-        | Product Price
-        |--------------------------------------------------------------------------
-        */
-
-            $price = 0;
-
-            if (!empty($data['prices'])) {
-
-                $price = $data['prices'][0]['price'] ?? 0;
-            }
-
-            /*
-        |--------------------------------------------------------------------------
-        | Create / Update Product
-        |--------------------------------------------------------------------------
-        */
-
-            $product = Product::updateOrCreate(
-
-                [
-                    'crm_product_id' =>
-                    $data['id'],
-                ],
-
-                [
-                    'project_id' => current_project_id(),
-
-                    'title' => $data['name'],
-
-                    'product_code' => $data['code'],
-
-                    'description' => $data['description'] ?? null,
-
-                    'price' => $price,
-
-                    'cost' => $data['prices'][0]['cost'] ?? 0,
-
-                    'currency_code' => $data['prices'][0]['currency'] ?? 'USD',
-
-                    'active' => $data['active_flag'] ?? true,
-
-                    'is_sync_backend' => true,
-                ]
-            );
-
-            /*
-        |--------------------------------------------------------------------------
-        | Attach Categories
-        |--------------------------------------------------------------------------
-        */
-            $product->scrapCategories()->sync(
+            $product = $productService->importProduct(
+                $validated['crm_product_id'],
                 $validated['scrap_categories'] ?? []
             );
 
             return redirect()
-                ->back()
+                ->route('products.index')
                 ->with(
                     'success',
                     'Product imported successfully'
                 );
         } catch (\Exception $e) {
 
-            return redirect()
-                ->back()
-                ->with(
-                    'error',
-                    $e->getMessage()
-                );
+            return back()->with(
+                'error',
+                $e->getMessage()
+            );
         }
     }
 }
