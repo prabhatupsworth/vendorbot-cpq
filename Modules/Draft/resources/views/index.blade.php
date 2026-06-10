@@ -111,7 +111,7 @@
 
                 <div class="card-body p-0">
 
-                    <x-table.table class="table table-hover align-middle mb-0">
+                    <x-table.table class="table align-middle mb-0">
 
                         <x-table.thead>
 
@@ -164,7 +164,7 @@
 
                                         <h6 class="fw-semibold mb-0">
 
-                                            {{ \Illuminate\Support\Str::limit($draft->subject, 100) }}
+                                            {{ \Illuminate\Support\Str::limit($draft->subject, 60) }}
 
                                         </h6>
 
