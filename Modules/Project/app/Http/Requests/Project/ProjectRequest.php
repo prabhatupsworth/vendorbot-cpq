@@ -20,13 +20,12 @@ class ProjectRequest extends FormRequest
             'event_name' => 'required|string|max:255',
             'currency_code' => 'required|exists:currencies,code',
             'language_code' => 'required|exists:languages,code',
-            'vat_status' => 'nullable|in:0,1',
+            'vat_status' => 'required|in:0,1',
             'vat' => [
-                'nullable',
+                'exclude_if:vat_status,0',
                 'required_if:vat_status,1',
-                'exclude_unless:vat_status,1',
                 'numeric',
-                'min:0',
+                'gt:0',
                 'max:100',
             ],
             'flow_type' => 'required|in:simple,full',
@@ -49,6 +48,9 @@ class ProjectRequest extends FormRequest
             'flow_type.in' => 'Invalid flow type selected',
             'pipeline_id.required_with' =>
             'Please select a CRM Pipeline when a CRM Account is selected.',
+            'vat.required_if' => 'VAT percentage is required when VAT is Included.',
+            'vat.gt' => 'VAT percentage must be greater than 0.',
+            'vat.max' => 'VAT percentage cannot be greater than 100.',
         ];
     }
 
