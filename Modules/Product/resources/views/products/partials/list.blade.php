@@ -31,7 +31,7 @@
                   <a href="{{ rtrim($product->project->pipedriveAccount->base_url, '/') }}/product/{{ $product->crm_product_id }}"
                       target="_blank" data-bs-toggle="tooltip" title="View in Pipedrive">
                       {{ $product->crm_product_id }}
-                      <i class="ti ti-info-circle ms-1"></i>
+                      <i class="fa-solid fa-circle-info"></i>
                   </a>
               @else
                   -
