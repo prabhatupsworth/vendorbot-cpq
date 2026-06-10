@@ -262,7 +262,8 @@
                 icon: 'success',
                 title: res?.message || 'Success',
                 timer: 1500,
-                showConfirmButton: false
+                showConfirmButton: true,
+                confirmButtonColor: '#d33'
             });
 
         });
@@ -278,6 +279,7 @@
                 icon: 'error',
                 title: 'Error',
                 text: err?.message || 'Something went wrong',
+                showConfirmButton: true,
                 confirmButtonColor: '#d33'
             });
 

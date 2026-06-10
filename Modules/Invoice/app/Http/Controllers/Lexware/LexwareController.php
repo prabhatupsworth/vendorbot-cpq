@@ -4,7 +4,7 @@ namespace Modules\Invoice\Http\Controllers\Lexware;
 
 use App\Http\Controllers\Controller;
 use App\Models\ActivityLog;
-
+use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use Modules\Invoice\Models\InvoiceAccount;
 use App\Traits\ActivityLogTrait;
@@ -31,9 +31,14 @@ class LexwareController extends Controller
             'type' => 'required|in:lexware,manual,other',
             'account_name' => 'required|string|max:255',
             'api_key' => 'required|string',
-            'base_url' => 'required|url',
+            'base_url' => [
+                'required',
+                'url',
+                'regex:/^https:\/\/[a-zA-Z0-9-]+\.lexware\.com\/?$/'
+            ],
+        ], [
+            'base_url.regex' => 'Enter a valid Lexware URL (https://company.lexware.com)',
         ]);
-
         $invoiceAccount = InvoiceAccount::create([
             'type' => $request->type,
             'account_name' => $request->account_name,
@@ -55,21 +60,52 @@ class LexwareController extends Controller
 
     public function update(Request $request, int $id)
     {
-        $request->validate([
+        $validated = $request->validate([
             'type' => 'required|in:lexware,manual,other',
             'account_name' => 'required|string|max:255',
             'api_key' => 'nullable|string',
-            'base_url' => 'required|url',
+
+            'base_url' => [
+                'required',
+                'url',
+                function ($attribute, $value, $fail) use ($request) {
+
+                    if ($request->type !== 'lexware') {
+                        return;
+                    }
+
+                    $host = parse_url($value, PHP_URL_HOST);
+
+                    if (
+                        !$host ||
+                        !preg_match('/^[a-zA-Z0-9-]+\.lexware\.io$/', $host)
+                    ) {
+                        $fail(
+                            'Enter a valid Lexware URL (https://company.lexware.io)'
+                        );
+                    }
+                },
+            ],
+        ], [
+            'account_name.required' => 'Account name is required',
+            'base_url.required' => 'Base URL is required',
+            'base_url.url' => 'Enter a valid URL',
         ]);
 
         $account = InvoiceAccount::findOrFail($id);
 
-        $account->update([
-            'type' => $request->type,
-            'account_name' => $request->account_name,
-            'api_key' => $request->api_key,
-            'base_url' => $request->base_url,
-        ]);
+        $updateData = [
+            'type' => $validated['type'],
+            'account_name' => $validated['account_name'],
+            'base_url' => $validated['base_url'],
+        ];
+
+        // Update API key only if provided
+        if (!empty($validated['api_key'])) {
+            $updateData['api_key'] = $validated['api_key'];
+        }
+
+        $account->update($updateData);
 
         $this->activityLog([
             'module' => 'lexware',
@@ -80,7 +116,10 @@ class LexwareController extends Controller
             'message' => 'Account updated successfully.',
         ]);
 
-        return redirect()->back()->with('success', 'Account updated successfully.');
+        return back()->with(
+            'success',
+            'Account updated successfully.'
+        );
     }
     // show details of the invoice account
     public function details(int $id)
@@ -97,132 +136,79 @@ class LexwareController extends Controller
 
     public function testConnection(int $id)
     {
-        $account = InvoiceAccount::findOrFail($id);
+        try {
 
-        $lexwareService = new LexwareService($account);
+            $account = InvoiceAccount::findOrFail($id);
 
-        $response = $lexwareService->testConnection();
+            $lexwareService = new LexwareService($account);
 
-        if ($response['success']) {
+            $response = $lexwareService->testConnection();
 
+            if ($response['success']) {
+
+                $account->update([
+                    'is_verified' => true,
+                ]);
+
+                $this->activityLog([
+                    'module'       => 'lexware',
+                    'action'       => 'connection_tested',
+                    'record_id'    => $id,
+                    'performed_at' => now(),
+                    'status'       => 'success',
+                    'message'      => 'Lexware connection successful.',
+                ]);
+
+                return back()->with(
+                    'success',
+                    $response['message']
+                );
+            }
+
+            // ❌ Mark account unverified
             $account->update([
-                'is_verified' => true,
+                'is_verified' => false,
             ]);
 
             $this->activityLog([
-                'module' => 'lexware',
-                'action' => 'connection_tested',
-                'record_id' => $id,
+                'module'       => 'lexware',
+                'action'       => 'connection_failed',
+                'record_id'    => $id,
                 'performed_at' => now(),
-                'status' => 'success',
-                'message' => 'Lexware connection successful.',
+                'status'       => 'failed',
+                'message'      => $response['message'] ?? 'Connection failed.',
             ]);
 
-            return redirect()
-                ->back()
-                ->with(
-                    'success',
-                    'Lexware connected successfully.'
-                );
-        }
-
-        $this->activityLog([
-            'module' => 'lexware',
-            'action' => 'connection_failed',
-            'record_id' => $id,
-            'performed_at' => now(),
-            'status' => 'failed',
-            'message' => 'Lexware connection failed.',
-        ]);
-
-        return redirect()
-            ->back()
-            ->with(
+            return back()->with(
                 'error',
                 $response['message'] ?? 'Connection failed.'
             );
+        } catch (\Throwable $e) {
+
+            Log::error('Lexware Test Connection Error', [
+                'account_id' => $id,
+                'message'    => $e->getMessage(),
+                'file'       => $e->getFile(),
+                'line'       => $e->getLine(),
+            ]);
+
+            $this->activityLog([
+                'module'       => 'lexware',
+                'action'       => 'connection_exception',
+                'record_id'    => $id,
+                'performed_at' => now(),
+                'status'       => 'failed',
+                'message'      => $e->getMessage(),
+            ]);
+
+            return back()->with(
+                'error',
+                config('app.debug')
+                    ? $e->getMessage()
+                    : 'Something went wrong while testing the connection.'
+            );
+        }
     }
-
-    public function createInvoice()
-    {
-        $account = InvoiceAccount::findOrFail(1);
-
-        $lexwareService = new LexwareService($account);
-
-        $payload = [
-
-            "archived" => false,
-
-            "voucherDate" => now()->toISOString(),
-
-            "address" => [
-                "name" => "Bike & Ride GmbH & Co. KG",
-                "supplement" => "Gebäude 10",
-                "street" => "Musterstraße 42",
-                "city" => "Freiburg",
-                "zip" => "79112",
-                "countryCode" => "DE"
-            ],
-
-            "lineItems" => [
-
-                [
-                    "type" => "custom",
-                    "name" => "Energieriegel Testpaket",
-                    "quantity" => 1,
-                    "unitName" => "Stück",
-
-                    "unitPrice" => [
-                        "currency" => "EUR",
-                        "netAmount" => 5,
-                        "taxRatePercentage" => 0
-                    ],
-
-                    "discountPercentage" => 0
-                ],
-
-                [
-                    "type" => "text",
-                    "name" => "Strukturieren Sie Ihre Belege durch Text-Elemente.",
-                    "description" => "Das hilft beim Verständnis"
-                ]
-            ],
-
-            "totalPrice" => [
-                "currency" => "EUR"
-            ],
-
-            "taxConditions" => [
-                "taxType" => "net"
-            ],
-
-            "paymentConditions" => [
-                "paymentTermLabel" => "10 Tage - 3 %, 30 Tage netto",
-                "paymentTermDuration" => 30,
-
-                "paymentDiscountConditions" => [
-                    "discountPercentage" => 3,
-                    "discountRange" => 10
-                ]
-            ],
-
-            "shippingConditions" => [
-                "shippingDate" => now()->addDays(2)->toISOString(),
-                "shippingType" => "delivery"
-            ],
-
-            "title" => "Rechnung",
-
-            "introduction" => "Ihre bestellten Positionen stellen wir Ihnen hiermit in Rechnung",
-
-            "remark" => "Vielen Dank für Ihren Einkauf"
-        ];
-
-        $response = $lexwareService->createInvoice($payload);
-
-
-    }
-
 
     public function destroy(int $id)
     {

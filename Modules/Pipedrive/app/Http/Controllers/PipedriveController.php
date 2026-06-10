@@ -5,7 +5,7 @@ namespace Modules\Pipedrive\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Models\ActivityLog;
-
+use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Modules\Pipedrive\Models\PipedriveAccount;
@@ -28,18 +28,23 @@ class PipedriveController extends Controller
 
     public function store(Request $request)
     {
+        // ✅ VALIDATION
+        $validated = $request->validate([
+            'account_name' => 'required|string|max:255',
+            'api_key'      => 'required|string|min:10',
+            'base_url'     => [
+                'required',
+                'url',
+                'regex:/^https:\/\/[a-zA-Z0-9-]+\.pipedrive\.com\/?$/'
+            ],
+        ], [
+            'account_name.required' => 'Account name is required',
+            'api_key.required'      => 'API key is required',
+            'base_url.required'     => 'Base URL is required',
+            'base_url.url'          => 'Enter a valid URL',
+            'base_url.regex'        => 'Enter a valid Pipedrive URL (https://company.pipedrive.com)',
+        ]);
         try {
-            // ✅ VALIDATION
-            $validated = $request->validate([
-                'account_name' => 'required|string|max:255',
-                'api_key'      => 'required|string|min:10',
-                'base_url'     => 'required|url',
-            ], [
-                'account_name.required' => 'Account name is required',
-                'api_key.required'      => 'API key is required',
-                'base_url.required'     => 'Base URL is required',
-                'base_url.url'          => 'Enter a valid URL (https://example.pipedrive.com)',
-            ]);
 
             DB::beginTransaction();
 
@@ -86,19 +91,9 @@ class PipedriveController extends Controller
     }
 
 
-    public function update(
-        UpdatePipedriveRequest $request,
-        int $id
-    ) {
-        $account = PipedriveAccount::find($id);
-
-        if (!$account) {
-
-            return back()->with(
-                'error',
-                'Account not found'
-            );
-        }
+    public function update(UpdatePipedriveRequest $request, int $id)
+    {
+        $account = PipedriveAccount::findOrFail($id);
 
         try {
 
@@ -114,12 +109,11 @@ class PipedriveController extends Controller
 
             /*
         |--------------------------------------------------------------------------
-        | Keep Old API Key
+        | Keep Existing API Key
         |--------------------------------------------------------------------------
         */
 
             if (empty($validated['api_key'])) {
-
                 unset($validated['api_key']);
             }
 
@@ -133,6 +127,16 @@ class PipedriveController extends Controller
                 $validated['base_url'],
                 '/'
             );
+
+            /*
+        |--------------------------------------------------------------------------
+        | Mark Unverified if Credentials Changed
+        |--------------------------------------------------------------------------
+        */
+
+            // if ((isset($validated['api_key']) &&  $validated['api_key'] !== $account->api_key) || $validated['base_url'] !== $account->base_url) {
+            //     $validated['is_verified'] = false;
+            // }
 
             /*
         |--------------------------------------------------------------------------
@@ -151,34 +155,22 @@ class PipedriveController extends Controller
         */
 
             $this->activityLog([
-
-                'module' => 'pipedrive',
-
+                'module'    => 'pipedrive',
                 'record_id' => $account->id,
-
-                'action' => 'update',
-
-                'status' => 'success',
-
-                'message' => 'Pipedrive account updated successfully',
-
-                'meta' => [
-
-                    'account_name' => $account->account_name,
-
-                    'base_url' => $account->base_url,
-
+                'action'    => 'update',
+                'status'    => 'success',
+                'message'   => 'Pipedrive account updated successfully',
+                'meta'      => [
+                    'account_name' => $account->fresh()->account_name,
+                    'base_url'     => $account->fresh()->base_url,
                 ]
-
             ]);
 
-            return redirect()
-                ->back()
-                ->with(
-                    'success',
-                    'Pipedrive account updated successfully!'
-                );
-        } catch (\Exception $e) {
+            return back()->with(
+                'success',
+                'Pipedrive account updated successfully!'
+            );
+        } catch (\Throwable $e) {
 
             DB::rollBack();
 
@@ -189,17 +181,18 @@ class PipedriveController extends Controller
         */
 
             $this->activityLog([
+                'module'    => 'pipedrive',
+                'record_id' => $account->id,
+                'action'    => 'update',
+                'status'    => 'failed',
+                'message'   => $e->getMessage(),
+            ]);
 
-                'module' => 'pipedrive',
-
-                'record_id' => $account->id ?? null,
-
-                'action' => 'update',
-
-                'status' => 'failed',
-
-                'message' => $e->getMessage(),
-
+            Log::error('Pipedrive Account Update Failed', [
+                'account_id' => $account->id,
+                'message'    => $e->getMessage(),
+                'file'       => $e->getFile(),
+                'line'       => $e->getLine(),
             ]);
 
             return back()

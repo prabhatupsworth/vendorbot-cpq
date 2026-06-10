@@ -13,11 +13,13 @@
                             <div class="col-4 text-end">
                                 <div class="head-icons">
                                     <a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top"
-                                        data-bs-original-title="Add account, test connection, and it will show as successfully connected." id="collapse-header">
+                                        data-bs-original-title="Add account, test connection, and it will show as successfully connected."
+                                        id="collapse-header">
                                         <i class="fa-solid fa-circle-info"></i>
                                     </a>
-                                    <a href="{{route('settings.invoice.lexware.index')}}" data-bs-toggle="tooltip" data-bs-placement="top"
-                                        data-bs-original-title="Refresh"><i class="ti ti-refresh-dot"></i></a>
+                                    <a href="{{ route('settings.invoice.lexware.index') }}" data-bs-toggle="tooltip"
+                                        data-bs-placement="top" data-bs-original-title="Refresh"><i
+                                            class="ti ti-refresh-dot"></i></a>
                                     <a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top"
                                         data-bs-original-title="Collapse" id="collapse-header"><i
                                             class="ti ti-chevrons-up"></i></a>
@@ -99,16 +101,26 @@
                                                     </div>
                                                     <div class="connect-btn">
                                                         @if ($setting->is_verified)
-                                                            <span class="badge badge-soft-success">Connected</span>
+                                                            <a href="{{ route('settings.invoice.lexware.test-connection', $setting->id) }}"
+                                                                class="btn btn-sm btn-outline-warning"
+                                                                data-bs-toggle="tooltip"
+                                                                title="Verify the connection again after updating the API credentials.">
+                                                                <i class="fa-solid fa-arrows-rotate me-1"></i>
+                                                                Re-Test Connection
+                                                            </a>
                                                         @else
                                                             <a href="{{ route('settings.invoice.lexware.test-connection', $setting->id) }}"
-                                                                class="badge border bg-white text-default">Test
-                                                                Connection</a>
+                                                                class="btn btn-sm btn-outline-primary"
+                                                                data-bs-toggle="tooltip"
+                                                                title="Verify that the API key is working correctly.">
+                                                                <i class="fa-solid fa-plug-circle-check me-1"></i>
+                                                                Test Connection
+                                                            </a>
                                                         @endif
                                                     </div>
 
                                                 </div>
-                                                 <p class="mb-0 text-capitalize">{{ $setting?->account_name }}</p>
+                                                <p class="mb-0 text-capitalize">{{ $setting?->account_name }}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -161,9 +173,9 @@
                             <div class="mb-3">
                                 <label class="col-form-label">Invoice Type <span class="text-danger">*</span></label>
                                 <select class="select" name="type" required>
-                                    <option disabled>Invoice Type</option>
+                                    <option value="">Invoice Type</option>
 
-                                    <option value="lexware" {{ old('type', 'lexware') == 'lexware' ? 'selected' : '' }}>
+                                    <option value="lexware" {{ old('type', $setting->type ?? '') }}>
                                         Lexware
                                     </option>
 
@@ -185,8 +197,14 @@
                         <!-- API KEY -->
                         <div class="col-md-12">
                             <div class="mb-3">
-                                <label class="col-form-label">API Key <span class="text-danger"
-                                        id="invoice_api_key_label">*</span></label>
+                                <label class="col-form-label d-flex align-items-center gap-1">
+                                    API Key
+                                    <span class="text-danger" id="invoice_api_key_label">*</span>
+                                     <i id="keyInfo" class="fa-solid fa-circle-info text-primary"
+                                        data-bs-toggle="tooltip" data-bs-placement="right"
+                                        title="The saved API key is hidden for security. Enter a new key only to update the existing one. Leave blank to keep the current key.">
+                                    </i>
+                                </label>
                                 <div class="icon-form-end">
                                     <span class="form-icon"><i class="ti ti-eye-off"></i></span>
                                     <input type="password" name="api_key"
@@ -206,8 +224,7 @@
                                 <label class="col-form-label">Base URL <span class="text-danger">*</span></label>
                                 <input id="base_url" type="url" name="base_url"
                                     class="form-control @error('base_url') is-invalid @enderror"
-                                    placeholder="https://api.lexware.io" value="{{ old('base_url') }}"
-                                    required>
+                                    placeholder="https://api.lexware.io" value="{{ old('base_url') }}" required>
 
                                 @error('base_url')
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -306,6 +323,19 @@
                 $("#offcanvasTitle").text('Add Lexware Account');
                 document.getElementById('submitBtn').innerText = 'Create';
                 const form = document.getElementById('lexwareForm');
+                form.reset();
+
+                $("#keyInfo").removeClass('d-block');
+                $("#keyInfo").addClass('d-none');
+
+                $('#api_key').val('');
+                 $('#api_key').attr('required', true);
+                $('#invoice_api_key_label').show();
+
+                $('#lexwareForm select[name="type"]')
+                    .val(null)
+                    .trigger('change');
+
                 form.action = `/settings/invoice/lexware/store`;
                 form.method = "POST";
             });
@@ -321,6 +351,10 @@
                     let settingId = $(this).data('id');
                     $("#offcanvasTitle").text("Edit Lexware Account");
                     $('#submitBtn').text('Update');
+
+                    $("#keyInfo").removeClass('d-none');
+                    $("#keyInfo").addClass('d-block');
+
                     $.ajax({
                         url: '/settings/invoice/lexware/' + settingId + '/edit',
                         method: 'GET',
@@ -328,12 +362,16 @@
                             $('#lexwareForm').attr('action', '/settings/invoice/lexware/' +
                                 settingId + '/update');
 
-                            $("#lexwareForm #invoice_api_key_label").remove();
                             $('#lexwareForm input[name="api_key"]').removeAttr('required');
+                            $('#invoice_api_key_label').hide();
+
                             $('#lexwareForm input[name="base_url"]').val(response.base_url);
-                            $('#lexwareForm select[name="currency"]').val(response.currency);
+                            $('#lexwareForm select[name="type"]')
+                                .val(response.type)
+                                .trigger('change');
                             $('#lexwareForm input[name="account_name"]').val(response.account_name);
                             $('#submitBtn').text('Update');
+
                         },
                         error: function() {
                             alert('Failed to fetch account details. Please try again.');

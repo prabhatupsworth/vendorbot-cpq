@@ -17,8 +17,9 @@ $(document).on("click", ".add-form", function () {
 
     form.find('input[name="_method"]').remove();
 
-    console.log("Title:", btn.attr("data-title"));
-    console.log("URL:", btn.attr("data-url"));
+    form.find('select.select2-hidden-accessible')
+        .val(null)
+        .trigger('change');
 });
 
 $(document).on("click", ".edit-form", function () {

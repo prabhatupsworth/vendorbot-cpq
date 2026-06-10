@@ -2,6 +2,7 @@
 
 namespace Modules\Invoice\Services;
 
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Modules\Invoice\Models\InvoiceAccount;
@@ -11,8 +12,9 @@ class LexwareService
     protected string $baseUrl;
     protected string $apiToken;
 
-    public function __construct(protected InvoiceAccount $account)
-    {
+    public function __construct(
+        protected InvoiceAccount $account
+    ) {
         $this->baseUrl = rtrim(
             $account->base_url,
             '/'
@@ -21,174 +23,149 @@ class LexwareService
         $this->apiToken = $account->api_key;
     }
 
+    /**
+     * Default Headers
+     */
     protected function headers(): array
     {
         return [
             'Authorization' => 'Bearer ' . $this->apiToken,
-            'Accept' => 'application/json',
-            'Content-Type' => 'application/json',
+            'Accept'        => 'application/json',
+            'Content-Type'  => 'application/json',
         ];
     }
 
-    public function testConnection(): array
-    {
-        try {
-
-            $response = Http::withHeaders(
-                $this->headers()
-            )->get(
-                $this->baseUrl . '/profile'
-            );
-
-            if ($response->successful()) {
-
-                return [
-                    'success' => true,
-                    'message' => 'Lexware connected successfully.',
-                    'data' => $response->json(),
-                ];
-            }
-
-            return [
-                'success' => false,
-                'message' => 'Connection failed.',
-                'status' => $response->status(),
-                'error' => $response->json(),
-            ];
-        } catch (\Throwable $e) {
-
-            Log::error('Lexware Error', [
-                'message' => $e->getMessage(),
-            ]);
-
-            return [
-                'success' => false,
-                'message' => $e->getMessage(),
-            ];
-        }
-    }
-
-
-    public function createInvoice(array $payload): array
-    {
-        try {
-
-            $response = Http::withHeaders(
-                $this->headers()
-            )->post(
-                $this->baseUrl . '/invoices',
-                $payload
-            );
-
-            if ($response->successful()) {
-
-                return [
-                    'success' => true,
-                    'message' => 'Invoice created successfully.',
-                    'data'    => $response->json(),
-                ];
-            }
-
-            return [
-                'success' => false,
-                'message' => 'Invoice creation failed.',
-                'status'  => $response->status(),
-                'error'   => $response->json(),
-            ];
-        } catch (\Throwable $e) {
-
-            Log::error('Lexware Create Invoice Error', [
-                'message' => $e->getMessage(),
-            ]);
-
-            return [
-                'success' => false,
-                'message' => $e->getMessage(),
-            ];
-        }
-    }
-
     /**
-     * Retrieve Invoice
+     * Reusable Request Method
      */
-    public function getInvoice(string $invoiceId): array
-    {
+    protected function request(
+        string $method,
+        string $endpoint,
+        array $data = []
+    ): array {
+
         try {
 
-            $response = Http::withHeaders(
+            $url = $this->baseUrl . '/' . ltrim($endpoint, '/');
+
+            $request = Http::withHeaders(
                 $this->headers()
-            )->get(
-                $this->baseUrl . '/invoices/' . $invoiceId
-            );
+            )
+                ->acceptJson()
+                ->timeout(60);
 
-            if ($response->successful()) {
+            $response = match (strtolower($method)) {
+                'get'    => $request->get($url, $data),
+                'post'   => $request->post($url, $data),
+                'put'    => $request->put($url, $data),
+                'patch'  => $request->patch($url, $data),
+                'delete' => $request->delete($url, $data),
+                default  => throw new \Exception(
+                    "Unsupported HTTP method: {$method}"
+                ),
+            };
 
-                return [
-                    'success' => true,
-                    'data'    => $response->json(),
-                ];
-            }
+            $json = $response->json();
 
-            return [
-                'success' => false,
-                'message' => 'Invoice not found.',
-                'status'  => $response->status(),
-                'error'   => $response->json(),
-            ];
-        } catch (\Throwable $e) {
+            if (!$response->successful()) {
 
-            Log::error('Lexware Get Invoice Error', [
-                'message' => $e->getMessage(),
-            ]);
-
-            return [
-                'success' => false,
-                'message' => $e->getMessage(),
-            ];
-        }
-    }
-
-    /**
-     * Download Invoice File
-     */
-    public function downloadInvoice(string $invoiceId)
-    {
-        try {
-
-            $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . $this->apiToken,
-                'Accept'        => 'application/pdf',
-            ])->get(
-                $this->baseUrl . '/invoices/' . $invoiceId . '/document'
-            );
-
-            if (! $response->successful()) {
+                Log::warning('Lexware API Error', [
+                    'url'      => $url,
+                    'status'   => $response->status(),
+                    'response' => $json,
+                ]);
 
                 return [
                     'success' => false,
-                    'message' => 'Invoice download failed.',
                     'status'  => $response->status(),
+                    'message' => match ($response->status()) {
+                        400 => 'Bad request.',
+                        401 => 'Invalid API token.',
+                        403 => 'Access denied.',
+                        404 => 'Invalid API URL.',
+                        422 => 'Validation failed.',
+                        429 => 'Rate limit exceeded.',
+                        500 => 'Lexware server error.',
+                        default => $json['message']
+                            ?? $json['error']
+                            ?? 'Lexware API request failed.',
+                    }
                 ];
             }
 
-            return response(
-                $response->body(),
-                200,
-                [
-                    'Content-Type'        => 'application/pdf',
-                    'Content-Disposition' => 'attachment; filename="invoice-' . $invoiceId . '.pdf"',
-                ]
-            );
+            return [
+                'success' => true,
+                'data' => $json,
+            ];
+
+        } catch (ConnectionException $e) {
+
+            Log::error('Lexware Connection Error', [
+                'url'     => $url ?? null,
+                'message' => $e->getMessage(),
+            ]);
+
+            if (str_contains(
+                strtolower($e->getMessage()),
+                'could not resolve host'
+            )) {
+                return [
+                    'success' => false,
+                    'message' => 'Invalid Base URL.',
+                ];
+            }
+
+            if (str_contains(
+                strtolower($e->getMessage()),
+                'timed out'
+            )) {
+                return [
+                    'success' => false,
+                    'message' => 'Connection timeout.',
+                ];
+            }
+
+            return [
+                'success' => false,
+                'message' => 'Unable to connect to Lexware server.',
+            ];
+
         } catch (\Throwable $e) {
 
-            Log::error('Lexware Download Invoice Error', [
+            Log::error('Lexware Request Exception', [
+                'url'     => $url ?? null,
                 'message' => $e->getMessage(),
+                'file'    => $e->getFile(),
+                'line'    => $e->getLine(),
             ]);
 
             return [
                 'success' => false,
-                'message' => $e->getMessage(),
+                'message' => config('app.debug')
+                    ? $e->getMessage()
+                    : 'Something went wrong while connecting to Lexware.',
             ];
         }
+    }
+
+    /**
+     * Test Connection
+     */
+    public function testConnection(): array
+    {
+        $response = $this->request(
+            'get',
+            'v1/profile'
+        );
+
+        if (!$response['success']) {
+            return $response;
+        }
+
+        return [
+            'success' => true,
+            'message' => 'Lexware connected successfully.',
+            'data'    => $response['data'],
+        ];
     }
 }
