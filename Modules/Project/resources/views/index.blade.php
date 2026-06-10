@@ -121,7 +121,7 @@
                         'name' => 'website_url',
                         'label' => 'Website URL',
                         'required' => true,
-                        'type' => 'text',
+                        'type' => 'url',
                         'placeholder' => 'Enter website URL',
                         'col' => 6,
                     ],
