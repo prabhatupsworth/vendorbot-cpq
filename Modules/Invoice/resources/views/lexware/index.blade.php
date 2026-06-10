@@ -105,15 +105,13 @@
                                                                 class="btn btn-sm btn-outline-warning"
                                                                 data-bs-toggle="tooltip"
                                                                 title="Verify the connection again after updating the API credentials.">
-                                                                <i class="fa-solid fa-arrows-rotate me-1"></i>
-                                                                Re-Test Connection
+                                                                Reconnect
                                                             </a>
                                                         @else
                                                             <a href="{{ route('settings.invoice.lexware.test-connection', $setting->id) }}"
                                                                 class="btn btn-sm btn-outline-primary"
                                                                 data-bs-toggle="tooltip"
                                                                 title="Verify that the API key is working correctly.">
-                                                                <i class="fa-solid fa-plug-circle-check me-1"></i>
                                                                 Test Connection
                                                             </a>
                                                         @endif
