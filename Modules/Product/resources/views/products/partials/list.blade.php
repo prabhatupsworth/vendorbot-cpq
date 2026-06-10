@@ -28,10 +28,9 @@
 
           <td>
               @if ($product->crm_product_id && $product->project?->pipedriveAccount?->base_url)
-                  <a href="{{ rtrim($product->project->pipedriveAccount->base_url, '/') }}/product/{{ $product->crm_product_id }}"
-                      target="_blank" data-bs-toggle="tooltip" title="View in Pipedrive">
+                  <a class="btn btn-link text-blue text-decoration-none" href="{{ rtrim($product->project->pipedriveAccount->base_url, '/') }}/product/{{ $product->crm_product_id }}"
+                      target="_blank">
                       {{ $product->crm_product_id }}
-                      <i class="fa-solid fa-circle-info"></i>
                   </a>
               @else
                   -

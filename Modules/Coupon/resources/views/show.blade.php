@@ -186,8 +186,8 @@
 
 
                                         @else
-
-                                         {{ active_currency_symbol() }} {{ number_format($coupon->amount, 0) }}%
+                                         {{ currency(($coupon->min_order_value * $coupon->amount) / 100 )}}
+                                         {{-- {{ active_currency_symbol() }} {{ number_format($coupon->amount, 0) }}% --}}
 
                                         @endif
 

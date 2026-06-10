@@ -417,11 +417,10 @@
                                                 </span>
 
                                                 {{-- COPY BUTTON --}}
-                                                <button type="button" class="btn btn-icon btn-sm btn-success"
-                                                    onclick="copyCouponCode('{{ $coupon->code }}')" title="Copy Coupon">
+                                                <button type="button" class="btn btn-sm btn-light border copy-coupon-btn"
+                                                    data-copy="{{ $coupon->code  }}" title="Copy Coupon Code">
 
                                                     <i class="ti ti-copy"></i>
-
                                                 </button>
 
                                             </div>
@@ -459,7 +458,8 @@
                                             @if ($coupon->type === 'amount')
                                                 {{ currency($coupon->amount) }}
                                             @else
-                                               {{ active_currency_symbol() }} {{ number_format($coupon->amount, 0) }}%
+                                                {{ currency(($coupon->min_order_value * $coupon->amount) / 100 )}}
+                                               {{-- {{ active_currency_symbol() }} {{ number_format($coupon->amount, 0) }}% --}}
                                             @endif
 
                                         </h6>
@@ -561,19 +561,23 @@
 @endsection
 
 @push('scripts')
-    <script>
-        /*
-                            |--------------------------------------------------------------------------
-                            | Copy Coupon Code
-                            |--------------------------------------------------------------------------
-                            */
+     <script>
+            $(document).on('click', '.copy-coupon-btn', function() {
 
-        function copyCouponCode(code) {
-            navigator.clipboard.writeText(code);
+                const text = $(this).data('copy');
 
-            toastr.success(
-                'Coupon code copied!'
-            );
-        }
-    </script>
+                navigator.clipboard.writeText(text);
+
+                const icon = $(this).find('i');
+
+                icon.removeClass('ti-copy')
+                    .addClass('ti-check text-success');
+
+                setTimeout(() => {
+                    icon.removeClass('ti-check text-success')
+                        .addClass('ti-copy');
+                }, 1500);
+
+            });
+        </script>
 @endpush

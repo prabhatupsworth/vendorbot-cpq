@@ -47,12 +47,10 @@ class UpdatePipedriveRequest extends FormRequest
 
             ],
 
-            'base_url' => [
-
+            'base_url'     => [
                 'required',
-
                 'url',
-
+                'regex:/^https:\/\/[a-zA-Z0-9-]+\.pipedrive\.com\/?$/'
             ],
 
         ];

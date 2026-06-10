@@ -108,6 +108,50 @@ class ProductService
         return $data;
     }
 
+    public function updateProduct(Product $product): array
+    {
+        if (!$product->crm_product_id) {
+            throw new \Exception(
+                'CRM Product ID not found.'
+            );
+        }
+
+        $account = $this->getAccount();
+
+        $response = Http::timeout(120)
+            ->acceptJson()
+            ->put(
+                "https://api.pipedrive.com/v1/products/{$product->crm_product_id}?api_token={$account->api_key}",
+                [
+                    'name' => $product->title,
+                    'code' => $product->product_code,
+                    'description' => $product->description,
+                    'active_flag' => (bool) $product->active,
+
+                    'prices' => [
+                        [
+                            'price' => (float) $product->price,
+                            'cost' => (float) $product->cost,
+                            'currency' => $product->currency_code,
+                        ]
+                    ],
+                ]
+            );
+
+        if (!$response->successful()) {
+            throw new \Exception(
+                $response->json('error') ??
+                    'Failed to update product in Pipedrive.'
+            );
+        }
+
+        $product->update([
+            'is_sync_backend' => true,
+        ]);
+
+        return $response->json('data');
+    }
+
     protected function getAccount(): PipedriveAccount
     {
         $account = PipedriveAccount::where(
@@ -134,5 +178,14 @@ class ProductService
         }
 
         return $account;
+    }
+
+    public function syncProduct(Product $product): array
+    {
+        if ($product->crm_product_id) {
+            return $this->updateProduct($product);
+        }
+
+        return $this->createProduct($product);
     }
 }

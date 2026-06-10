@@ -14,6 +14,13 @@ use Modules\Pipedrive\Services\ProductService;
 
 class ProductController extends Controller
 {
+     protected ProductService $pipedriveService;
+
+    public function __construct(
+        ProductService $pipedriveService
+    ) {
+        $this->pipedriveService = $pipedriveService;
+    }
     public function index()
     {
         try {
@@ -227,6 +234,7 @@ class ProductController extends Controller
                 $request->scrap_categories
             );
 
+            $this->pipedriveService->syncProduct($product);
             DB::commit();
 
             return redirect()

@@ -15,11 +15,13 @@
 
 
                                     <a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top"
-                                        data-bs-original-title="Add account, test connection, and sync stages and custom fields. Re-sync anytime when CRM data is updated." id="collapse-header">
+                                        data-bs-original-title="Add account, test connection, and sync stages and custom fields. Re-sync anytime when CRM data is updated."
+                                        id="collapse-header">
                                         <i class="fa-solid fa-circle-info"></i>
                                     </a>
-                                    <a href="{{route('settings.pipedrive.index')}}" data-bs-toggle="tooltip" data-bs-placement="top"
-                                        data-bs-original-title="Refresh"><i class="ti ti-refresh-dot"></i></a>
+                                    <a href="{{ route('settings.pipedrive.index') }}" data-bs-toggle="tooltip"
+                                        data-bs-placement="top" data-bs-original-title="Refresh"><i
+                                            class="ti ti-refresh-dot"></i></a>
                                     <a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top"
                                         data-bs-original-title="Collapse" id="collapse-header"><i
                                             class="ti ti-chevrons-up"></i></a>
@@ -60,6 +62,7 @@
                                                         src="{{ asset('template/assets/img/icons/pipedrive.png') }}"
                                                         alt="Icon">
                                                     <div>
+
                                                         @if (userCan('crm_integrations.edit'))
                                                             <button
                                                                 class="btn btn-sm btn-icon btn-primary rounded-pill edit-btn"
@@ -106,11 +109,21 @@
 
                                                     <div class="connect-btn">
                                                         @if ($account->is_verified)
-                                                            <span class="badge badge-soft-success">Connected</span>
+                                                            {{-- <span class="badge badge-soft-success">Connected</span> --}}
+                                                            <a href="{{ route('settings.pipedrive.connect', $account->id) }}"
+                                                                class="btn btn-sm btn-outline-warning"
+                                                                data-bs-toggle="tooltip" data-bs-placement="top"
+                                                                title="Reconnect and verify the account connection after updating the API credentials.">
+                                                                <i class="fa-solid fa-arrows-rotate me-1"></i>
+                                                                Reconnect
+                                                            </a>
                                                         @else
                                                             <a href="{{ route('settings.pipedrive.connect', $account->id) }}"
-                                                                class="badge border bg-white text-default">Test
-                                                                Connection</a>
+                                                                class="btn btn-sm btn-outline-primary"
+                                                                data-bs-toggle="tooltip" data-bs-placement="top"
+                                                                title="Verify that the API URL and API key are working correctly.">
+                                                                Test Connection
+                                                            </a>
                                                         @endif
                                                     </div>
                                                 </div>
@@ -141,7 +154,6 @@
                                                                     <i class="fas fa-sync-alt me-2"></i> Sync Fields
                                                                 </button>
                                                             @endif
-
                                                         </div>
                                                     @endif
                                                 </div>
@@ -172,7 +184,6 @@
             <div class="offcanvas-body">
                 <form id="pipedriveForm" action="{{ route('settings.pipedrive.store') }}" method="POST">
                     @csrf
-
                     <div class="row">
 
                         <!-- ACCOUNT NAME -->
@@ -192,8 +203,15 @@
                         <!-- API KEY -->
                         <div class="col-md-12">
                             <div class="mb-3">
-                                <label class="col-form-label">API Key <span class="text-danger"
-                                        id="api_required_label">*</span></label>
+                                <label class="col-form-label d-flex align-items-center gap-1">
+                                    API Key
+                                    <span class="text-danger" id="api_required_label">*</span>
+
+                                    <i id="keyInfo" class="fa-solid fa-circle-info text-primary"
+                                        data-bs-toggle="tooltip" data-bs-placement="right"
+                                        title="The saved API key is hidden for security. Enter a new key only to update the existing one. Leave blank to keep the current key.">
+                                    </i>
+                                </label>
                                 <div class="icon-form-end">
                                     <span class="form-icon"><i class="ti ti-eye-off"></i></span>
                                     <input id="apiKey" type="password" name="api_key"
@@ -516,8 +534,17 @@
         <script>
             $(document).on("click", ".add-btn", function() {
                 $("#offcanvasTitle").text('Add Pipedrive Account');
+
+                $("#keyInfo").removeClass('d-block');
+                $("#keyInfo").addClass('d-none');
+
+                $('#api_key').val('');
+                $('#api_key').attr('required', true);
+                $('#api_required_label').show();
+
                 document.getElementById('submitBtn').innerText = 'Create';
                 const form = document.getElementById('pipedriveForm');
+                form.reset();
                 form.action = `/settings/pipedrive`;
                 form.method = "POST";
             });
@@ -525,6 +552,9 @@
 
                 const btn = e.target.closest('.edit-btn');
                 if (!btn) return;
+                $("#keyInfo").removeClass('d-none');
+                $("#keyInfo").addClass('d-block');
+
                 // 👉 Change title & button
                 document.getElementById('offcanvasTitle').innerText = 'Edit Pipedrive Account';
                 document.getElementById('submitBtn').innerText = 'Update';
@@ -538,9 +568,8 @@
                 document.querySelector('#base_url').value = btn.dataset.url;
 
                 const apiKey = document.querySelector('#apiKey');
-                const apiKeyLabel = document.querySelector("#api_required_label");
-                if (apiKeyLabel) apiKeyLabel.remove();
-                if (apiKey) apiKey.removeAttribute('required');
+                $('#api_key').removeAttr('required');
+                $('#api_required_label').hide();
 
             });
         </script>
@@ -590,6 +619,8 @@
                 const btn = e.target.closest('.sync-btn');
                 if (!btn) return;
 
+                let isSuccess = false;
+
                 const id = btn.dataset.id;
                 const type = btn.dataset.type;
 
@@ -599,11 +630,13 @@
 
                 const originalHTML = btn.innerHTML;
 
-                // 🔥 Loader
-                btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Syncing...';
+                btn.innerHTML =
+                    '<i class="fas fa-spinner fa-spin me-2"></i> Syncing...';
                 btn.disabled = true;
 
-                const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+                const csrf = document
+                    .querySelector('meta[name="csrf-token"]')
+                    ?.getAttribute('content');
 
                 fetch(url, {
                         method: 'POST',
@@ -614,37 +647,56 @@
                     })
                     .then(res => res.json())
                     .then(data => {
+
+                        if (!data.status) {
+                            throw new Error(data.message || 'Sync failed');
+                        }
+
                         isSuccess = true;
-                        btn.classList.remove('btn-outline-danger', 'btn-outline-info');
+
+                        btn.classList.remove(
+                            'btn-outline-danger',
+                            'btn-outline-info'
+                        );
+
                         btn.classList.add('btn-outline-success');
+
                         btn.innerHTML = type === 'stages' ?
                             '<i class="fas fa-sync-alt me-2"></i> Re-sync Stages' :
                             '<i class="fas fa-sync-alt me-2"></i> Re-sync Fields';
 
-                        // 🔥 Optional: reload modal / data
-                        // const viewBtn = document.querySelector(`.view-details[data-id="${id}"]`);
-                        // if (viewBtn) viewBtn.click();
+                        Swal.fire({
+                            icon: 'success',
+                            title: data.message || 'Synced successfully',
+                            showConfirmButton: false,
+                            timer: 2500,
+                            showConfirmButton: true,
+                            confirmButtonColor: '#d33'
 
-                        // 🔥 SweetAlert
-                        if (typeof Swal !== 'undefined') {
-                            Swal.fire({
-                                toast: true,
-                                position: 'top-end',
-                                icon: 'success',
-                                title: data.message || 'Synced successfully',
-                                showConfirmButton: false,
-                                timer: 1500
-                            });
-                        }
-
+                        });
                     })
-                    .catch(() => {
-                        btn.innerHTML = '<i class="fas fa-times text-danger me-2"></i> Failed';
+                    .catch(error => {
+
+                        btn.classList.remove('btn-outline-success');
+                        btn.classList.add('btn-outline-danger');
+
+                        btn.innerHTML =
+                            '<i class="fas fa-times me-2"></i> Failed';
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: error.message || 'Sync failed',
+                            showConfirmButton: false,
+                            timer: 4000,
+                            showConfirmButton: true,
+                            confirmButtonColor: '#d33'
+
+                        });
                     })
                     .finally(() => {
+
                         setTimeout(() => {
 
-                            // ❌ only revert if NOT success
                             if (!isSuccess) {
                                 btn.innerHTML = originalHTML;
                             }
