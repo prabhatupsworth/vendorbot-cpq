@@ -197,7 +197,7 @@
                                         Cost Price
                                         <span class="text-danger">*</span>
                                     </label>
-                                    <input type="number" name="cost"
+                                    <input step="0.01" type="number" name="cost"
                                         class="form-control @error('cost') is-invalid @enderror"
                                         placeholder="Enter cost price" required value="{{ old('cost') }}">
                                     @error('cost')
@@ -214,7 +214,7 @@
                                         Selling Price
                                         <span class="text-danger">*</span>
                                     </label>
-                                    <input type="number" name="price"
+                                    <input step="0.01" type="number" name="price"
                                         class="form-control @error('price') is-invalid @enderror"
                                         placeholder="Enter selling price" required value="{{ old('price') }}">
                                     @error('price')

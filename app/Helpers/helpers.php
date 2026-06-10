@@ -78,10 +78,11 @@ if (!function_exists('currency')) {
         $currency = Currency::where('code', $currencyCode)->first();
 
         if (!$currency) {
-            return number_format($amount, 2);
+            return number_format($amount, 2, ',', '.');
         }
 
-        return $currency->symbol . ' ' . number_format($amount, 2);
+        return $currency->symbol . ' ' .
+            number_format($amount, 2, ',', '.');
     }
 }
 
