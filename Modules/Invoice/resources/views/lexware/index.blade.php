@@ -204,7 +204,7 @@
                         <div class="col-md-12">
                             <div class="mb-3">
                                 <label class="col-form-label">Base URL <span class="text-danger">*</span></label>
-                                <input id="base_url" type="text" name="base_url"
+                                <input id="base_url" type="url" name="base_url"
                                     class="form-control @error('base_url') is-invalid @enderror"
                                     placeholder="https://api.lexware.io" value="{{ old('base_url') }}"
                                     required>

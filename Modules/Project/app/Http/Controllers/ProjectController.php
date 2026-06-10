@@ -75,19 +75,12 @@ class ProjectController extends Controller
                 ]);
             }
 
-            $pipedriveAccounts = PipedriveAccount::pluck(
-                'account_name',
-                'id'
-            );
+            $pipedriveAccounts = PipedriveAccount::where('is_verified', 1)
+                ->pluck('account_name', 'id');
 
-            // $invoiceAccounts = InvoiceAccount::pluck(
-            //     'type',
-            //     'id'
-            // );
-
-            $invoiceAccounts = InvoiceAccount::selectRaw(
-    "id, CONCAT(account_name, ' (', UPPER(type), ')') as label"
-)->pluck('label', 'id');
+            $invoiceAccounts = InvoiceAccount::where('is_verified', 1)
+                ->selectRaw("id,CONCAT(account_name, ' (', UPPER(type), ')') as label")
+                ->pluck('label', 'id');
 
             $currencies = Currency::pluck('name', 'code')->toArray();
 
