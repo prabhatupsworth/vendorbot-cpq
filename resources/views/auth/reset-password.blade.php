@@ -13,11 +13,11 @@
 
        .auth-right {
            width: 55%;
-           background-image: url('../template/assets/img/authentication/vendor.png');
+           background-image: url('https://genussmarathon.events/wp-content/uploads/Gemini_Generated_Image_342dh0342dh0342d.png');
            background-repeat: no-repeat;
            background-position: center center;
            background-size: cover;
-           background-size: 100% 100%;
+           /* background-size: 100% 100%; */
        }
 
        @media (max-width: 991px) {
