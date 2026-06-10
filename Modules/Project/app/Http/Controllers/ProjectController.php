@@ -112,7 +112,6 @@ class ProjectController extends Controller
     // ✅ STORE
     public function store(ProjectRequest $request)
     {
-
         try {
             $validated = $request->validated();
             // 1. Generate the slug manually first

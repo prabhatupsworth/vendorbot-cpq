@@ -13,17 +13,25 @@ class ProjectRequest extends FormRequest
 
     public function rules(): array
     {
+
         return [
             'name' => 'required|string|max:255',
             'website_url' => 'required|url',
             'event_name' => 'required|string|max:255',
             'currency_code' => 'required|exists:currencies,code',
             'language_code' => 'required|exists:languages,code',
-            'vat' => 'nullable|numeric|min:0|max:100',
             'vat_status' => 'nullable|in:0,1',
+            'vat' => [
+                'nullable',
+                'required_if:vat_status,1',
+                'exclude_unless:vat_status,1',
+                'numeric',
+                'min:0',
+                'max:100',
+            ],
             'flow_type' => 'required|in:simple,full',
             'invoice_enabled' => 'nullable|boolean',
-            'pipedrive_account_id' => 'nullable|exists:pipedrive_accounts,id',
+            'pipedrive_account_id' => 'required|exists:pipedrive_accounts,id',
             'pipeline_id' => [
                 'nullable',
                 'exists:pipedrive_pipelines,id',

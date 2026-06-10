@@ -196,7 +196,7 @@
                             0 => 'Excluded',
                             1 => 'Included',
                         ],
-                        'value' => 0,
+                        'value' => null,
                         'col' => 6,
                     ],
                     [
@@ -204,7 +204,7 @@
                         'label' => 'VAT (%)',
                         'type' => 'number',
                         'placeholder' => 'Enter VAT percentage',
-                        'value' => 0,
+                        'value' => null,
                         'col' => 6,
                     ],
                     [
