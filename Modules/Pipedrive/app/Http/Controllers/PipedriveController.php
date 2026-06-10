@@ -217,13 +217,13 @@ class PipedriveController extends Controller
             );
         }
 
-        if ($account->is_verified) {
+        // if ($account->is_verified) {
 
-            return back()->with(
-                'info',
-                'Already connected'
-            );
-        }
+        //     return back()->with(
+        //         'success',
+        //         'Already connected'
+        //     );
+        // }
 
         $pipedriveService = new PipedriveService(
             baseUrl: $account->base_url,
@@ -231,8 +231,6 @@ class PipedriveController extends Controller
         );
 
         $connection = $pipedriveService->testConnection();
-
-        // dd($connection );
 
         if (!$connection['status']) {
 

@@ -166,9 +166,9 @@ class LexwareController extends Controller
             }
 
             // ❌ Mark account unverified
-            $account->update([
-                'is_verified' => false,
-            ]);
+            // $account->update([
+            //     'is_verified' => false,
+            // ]);
 
             $this->activityLog([
                 'module'       => 'lexware',
