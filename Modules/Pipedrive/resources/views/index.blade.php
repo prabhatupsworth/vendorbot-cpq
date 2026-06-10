@@ -555,6 +555,10 @@
                 $("#keyInfo").removeClass('d-none');
                 $("#keyInfo").addClass('d-block');
 
+
+                $('#pipedriveForm input[name="api_key"]').removeAttr('required');
+                $('#api_required_label').hide();
+
                 // 👉 Change title & button
                 document.getElementById('offcanvasTitle').innerText = 'Edit Pipedrive Account';
                 document.getElementById('submitBtn').innerText = 'Update';
@@ -566,10 +570,6 @@
                 // 👉 Fill values
                 document.querySelector('#account_name').value = btn.dataset.name;
                 document.querySelector('#base_url').value = btn.dataset.url;
-
-                const apiKey = document.querySelector('#apiKey');
-                $('#api_key').removeAttr('required');
-                $('#api_required_label').hide();
 
             });
         </script>
