@@ -97,7 +97,7 @@
                                         <span class="text-danger">*</span>
                                     </label>
 
-                                    <select required name="type" class="select @error('type') is-invalid @enderror">
+                                    <select id="couponType" required name="type" class="select @error('type') is-invalid @enderror">
 
                                         <option value="amount"
                                             {{ old('type', $coupon->type) == 'amount' ? 'selected' : '' }}>
@@ -134,7 +134,7 @@
                                         <span class="text-danger">*</span>
                                     </label>
 
-                                    <input required type="number" step="0.01" name="amount"
+                                    <input id="couponAmount" required type="number" step="0.01" name="amount"
                                         class="form-control @error('amount') is-invalid @enderror"
                                         value="{{ old('amount', $coupon->amount) }}">
 
@@ -150,7 +150,7 @@
 
                             </div>
 
-                             {{-- CODE --}}
+                            {{-- CODE --}}
 
                             <div class="col-md-6">
 
@@ -358,48 +358,25 @@
 @endsection
 
 @push('scripts')
-    <script>
-        function generateCouponCode() {
-            let name =
-                document
-                .getElementById(
-                    'couponName'
-                )
-                .value;
+    @push('scripts')
+        <script>
+            $('#generateCouponBtn').on('click', function() {
 
-            if (!name) {
+                $.ajax({
+                    url: "{{ route('coupon.generate-code') }}",
+                    method: "POST",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        coupon_name: $('#couponName').val(),
+                        type: $('#couponType').val(),
+                        amount: $('#couponAmount').val()
+                    },
+                    success: function(response) {
+                        $('#couponCode').val(response.code);
+                    }
+                });
 
-                name = 'COUPON';
-            }
-
-            name = name
-                .toUpperCase()
-                .replace(/[^A-Z0-9]/g, '-')
-                .replace(/-+/g, '-');
-
-            let random =
-                Math.random()
-                .toString(36)
-                .substring(2, 6)
-                .toUpperCase();
-
-            let code =
-                `${name}-${random}`;
-
-            document
-                .getElementById(
-                    'couponCode'
-                )
-                .value = code;
-        }
-
-        document
-            .getElementById(
-                'generateCouponBtn'
-            )
-            .addEventListener(
-                'click',
-                generateCouponCode
-            );
-    </script>
+            });
+        </script>
+    @endpush
 @endpush

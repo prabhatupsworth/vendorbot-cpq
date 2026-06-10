@@ -1,6 +1,11 @@
-  @forelse($products as $product)
+  @forelse($products as $index => $product)
       <tr class="product-list" data-id={{ $product->id }}>
+          <td>
+              <span class="fw-semibold text-muted">
+                  {{ $products->firstItem() + $index }}
+              </span>
 
+          </td>
           <td>
 
               <div class="d-flex flex-column">
@@ -22,9 +27,15 @@
           </td>
 
           <td>
-
-              {{ $product->crm_product_id ?? '-' }}
-
+              @if ($product->crm_product_id && $product->project?->pipedriveAccount?->base_url)
+                  <a href="{{ rtrim($product->project->pipedriveAccount->base_url, '/') }}/product/{{ $product->crm_product_id }}"
+                      target="_blank" data-bs-toggle="tooltip" title="View in Pipedrive">
+                      {{ $product->crm_product_id }}
+                      <i class="ti ti-info-circle ms-1"></i>
+                  </a>
+              @else
+                  -
+              @endif
           </td>
 
           <td>

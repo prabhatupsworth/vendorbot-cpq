@@ -115,7 +115,7 @@
                                     <thead>
 
                                         <tr>
-
+                                            <th>#</th>
                                             <th>Product</th>
 
                                             <th>CRM Product Id</th>

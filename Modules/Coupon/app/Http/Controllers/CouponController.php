@@ -349,7 +349,7 @@ class CouponController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy( int $id)
+    public function destroy(int $id)
     {
         $coupon = Coupon::findOrFail($id);
 
@@ -361,5 +361,19 @@ class CouponController extends Controller
                 'success',
                 'Coupon deleted successfully.'
             );
+    }
+    public function generateCode(Request $request)
+    {
+        $code = Coupon::generateCouponCode(
+            Project::find(current_project_id())?->name,
+            $request->coupon_name,
+            $request->type,
+            $request->amount
+        );
+
+        return response()->json([
+            'success' => true,
+            'code' => $code
+        ]);
     }
 }

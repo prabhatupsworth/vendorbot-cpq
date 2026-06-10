@@ -77,10 +77,6 @@
                                         Category
 
                                         <span class="text-danger">*</span>
-                                        <i class="fa-solid fa-circle-info ms-1" data-bs-toggle="tooltip"
-                                            data-bs-placement="right"
-                                            title="Each category represents a CPQ workflow step. Configure one email template per category. Templates can use placeholders to automatically insert deal, supplier, customer, and product information when emails are generated and sent.">
-                                        </i>
                                     </label>
 
                                     <select name="draft_category_id"

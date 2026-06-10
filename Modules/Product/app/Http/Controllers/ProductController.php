@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Http;
 use Modules\Product\Models\Product;
 use Modules\Product\Models\ScrapCategory;
 use Modules\Project\Models\Project;
-use Modules\Pipedrive\Models\PipedriveAccount;
 use Throwable;
 use Modules\Pipedrive\Services\ProductService;
 
@@ -21,6 +20,7 @@ class ProductController extends Controller
 
             $products = Product::with([
                 'project',
+                'project.pipedriveAccount:id,base_url',
             ])
                 ->latest()
                 ->paginate(20);
