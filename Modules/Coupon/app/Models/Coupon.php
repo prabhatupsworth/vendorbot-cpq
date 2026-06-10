@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Project\Models\Project;
 use App\Traits\BelongsToProject;
+use Illuminate\Support\Str;
 
 // use Modules\Coupon\Database\Factories\CouponFactory;
 
@@ -226,5 +227,55 @@ class Coupon extends Model
             &&
 
             $this->status;
+    }
+
+    public static function generateCouponCode(
+        ?string $projectName = null,
+        ?string $couponName = null,
+        ?string $type = null,
+        ?float $amount = null
+    ) {
+        do {
+
+            $parts = [];
+
+            if ($projectName) {
+                $parts[] = strtoupper(substr(
+                    preg_replace('/[^A-Za-z0-9]/', '', $projectName),
+                    0,
+                    3
+                ));
+            }
+
+            if ($couponName) {
+                $parts[] = strtoupper(substr(
+                    preg_replace('/[^A-Za-z0-9]/', '', $couponName),
+                    0,
+                    3
+                ));
+            }
+
+            if ($type) {
+                $parts[] = strtolower($type) === 'percentage'
+                    ? 'PER'
+                    : 'AMT';
+            }
+
+            if ($amount) {
+                $parts[] = (int)$amount;
+            }
+
+            $parts[] = strtoupper(Str::random(4));
+
+            $code = implode('-', $parts);
+
+            if (empty($projectName) && empty($couponName)) {
+                $code = 'CPQ-' . strtoupper(Str::random(8));
+            }
+        } while (
+            Coupon::where('code', $code)->exists()
+        );
+
+        return $code;
     }
 }

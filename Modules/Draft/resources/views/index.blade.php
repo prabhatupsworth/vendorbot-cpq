@@ -15,6 +15,10 @@
 
                         <h3 class="page-title fw-bold">
                             Emails
+                             <i class="fa-solid fa-circle-info ms-1" data-bs-toggle="tooltip"
+                                            data-bs-placement="right"
+                                            title="Each category represents a CPQ workflow step. Configure one email template per category. Templates can use placeholders to automatically insert deal, supplier, customer, and product information when emails are generated and sent.">
+                                        </i>
                         </h3>
 
                         <p class="text-muted mb-0">
